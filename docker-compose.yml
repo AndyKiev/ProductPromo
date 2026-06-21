@@ -1,0 +1,38 @@
+# ProductPromo — backend (FastAPI on legacy MySQL) + frontend (Vite) + nginx.
+# The legacy MySQL is EXTERNAL (your existing DB); it is not provisioned here.
+# Postgres + alembic-migrate are intentionally omitted (no schema changes).
+networks:
+  productpromo:
+    driver: bridge
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - stack.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # lets the container reach a MySQL on the host
+    ports:
+      - "8004:8004"
+    networks: [productpromo]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        APP_MODE: development
+    environment:
+      - VITE_BACKEND_API_URL=        # empty => SPA calls same-origin /api/v1 via nginx
+    networks: [productpromo]
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on: [backend, frontend]
+    ports:
+      - "80:80"
+    networks: [productpromo]

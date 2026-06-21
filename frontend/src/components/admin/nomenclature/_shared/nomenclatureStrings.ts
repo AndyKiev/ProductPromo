@@ -1,0 +1,32 @@
+// Static i18n for the Nomenclature feature. Passed to useString({ str }).
+// DB-managed strings (translationsStore) still take precedence.
+const nomenclatureStrings: Record<string, Record<string, string>> = {
+    nomenclature: { ukr: "номенклатура", eng: "nomenclature" },
+    markets: { ukr: "ринки", eng: "markets" },
+    market: { ukr: "ринок", eng: "market" },
+    segments: { ukr: "сегменти", eng: "segments" },
+    segment: { ukr: "сегмент", eng: "segment" },
+    categories: { ukr: "категорії", eng: "categories" },
+    category: { ukr: "категорія", eng: "category" },
+    families: { ukr: "родини", eng: "family" },
+    family: { ukr: "родина", eng: "family" },
+    keys: { ukr: "ключі", eng: "keys" },
+    key_name: { ukr: "назва ключа", eng: "key name" },
+    links: { ukr: "зв'язки", eng: "links" },
+    status: { ukr: "статус", eng: "status" },
+    code: { ukr: "код", eng: "code" },
+    name: { ukr: "назва", eng: "name" },
+    createdAt: { ukr: "створено", eng: "created" },
+    admin: { ukr: "адміністрування", eng: "admin" },
+    add: { ukr: "додати", eng: "add" },
+    edit: { ukr: "редагувати", eng: "edit" },
+    delete: { ukr: "видалити", eng: "delete" },
+    create: { ukr: "створити", eng: "create" },
+    save: { ukr: "зберегти", eng: "save" },
+    cancel: { ukr: "скасувати", eng: "cancel" },
+    confirmDelete: { ukr: "підтвердити видалення", eng: "confirm delete" },
+    deletePrompt: { ukr: "видалити цей запис?", eng: "Delete this record?" },
+    required: { ukr: "обов'язкове поле", eng: "required" },
+    selectPlaceholder: { ukr: "оберіть…", eng: "select…" },
+};
+export default nomenclatureStrings;

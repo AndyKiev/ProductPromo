@@ -30,7 +30,7 @@ export interface CategoryUpdate {
 
 export interface MutationResponse<T> { detail: string; data: T; }
 
-export const fetchCategorys = async (segmentId?: number): Promise<Category[]> => {
+export const fetchCategories= async (segmentId?: number): Promise<Category[]> => {
     const res = await axiosInstance.get<Category[]>(BASE, { params: { segment_id: segmentId } });
     return res.data ?? [];
 };

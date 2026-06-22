@@ -1,9 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Button, CircularProgress, Paper, Snackbar, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
-import { fetchCategorys, type Category } from './categoryApi';
+import { fetchCategories, type Category } from './categoryApi';
 import { CATEGORY_QK, useCategoryMutations } from './useCategoryMutations';
 import { useCategoryColumns } from './useCategoryColumns';
 import { CategoryForm } from './CategoryForm';
@@ -22,7 +22,7 @@ export function CategoryCrud() {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
     const { data: rows = [], isLoading, error } = useQuery({
-        queryKey: CATEGORY_QK, queryFn: () => fetchCategorys(), staleTime: 2 * 60 * 1000,
+        queryKey: CATEGORY_QK, queryFn: () => fetchCategories(), staleTime: 2 * 60 * 1000,
     });
 
     const { createMutation, updateMutation, deleteMutation } = useCategoryMutations({

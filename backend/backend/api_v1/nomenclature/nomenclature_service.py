@@ -61,7 +61,7 @@ class NomenclatureService(BaseService):
         detail = await self._resolve_domain_success(NomenclatureUpdateSuccess(str(orm.id)))
         return MutationResponse(detail=detail, data=schema)
 
-    async def delete_nomenclature(self, id: int) -> None:
+    async def delete_nomenclature(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(NomenclatureNotFound(id))
@@ -71,3 +71,5 @@ class NomenclatureService(BaseService):
             delete_error_exc=NomenclatureDeleteError,
             delete_success_exc=NomenclatureDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(NomenclatureDeleteSuccess(str(obj.id)))
+        return MutationResponse(detail=detail, data=None)

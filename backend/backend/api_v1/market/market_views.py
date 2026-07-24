@@ -44,9 +44,9 @@ async def update_market(
     return await service.update_market(item.id, body)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{item_id}", response_model=MutationResponse[None], status_code=status.HTTP_200_OK)
 async def delete_market(
     item_id: int,
     service: Annotated[MarketService, Depends(get_market_service)],
 ):
-    await service.delete_market(item_id)
+    return await service.delete_market(item_id)

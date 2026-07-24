@@ -44,9 +44,9 @@ async def update_nomenclature(
     return await service.update_nomenclature(item.id, body)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{item_id}", response_model=MutationResponse[None], status_code=status.HTTP_200_OK)
 async def delete_nomenclature(
     item_id: int,
     service: Annotated[NomenclatureService, Depends(get_nomenclature_service)],
 ):
-    await service.delete_nomenclature(item_id)
+    return await service.delete_nomenclature(item_id)

@@ -45,9 +45,9 @@ async def update_family(
     return await service.update_family(item.id, body)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{item_id}", response_model=MutationResponse[None], status_code=status.HTTP_200_OK)
 async def delete_family(
     item_id: int,
     service: Annotated[FamilyService, Depends(get_family_service)],
 ):
-    await service.delete_family(item_id)
+    return await service.delete_family(item_id)

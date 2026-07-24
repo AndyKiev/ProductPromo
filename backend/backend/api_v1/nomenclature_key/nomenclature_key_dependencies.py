@@ -21,7 +21,7 @@ async def get_nomenclature_key_service(
 
 
 async def nomenclature_key_by_id(
-    nomenclature_key_id: int,
+    item_id: int,
     service: NomenclatureKeyService = Depends(get_nomenclature_key_service),
 ) -> NomenclatureKeySchema:
-    return await service.get_by_id(nomenclature_key_id)
+    return await service.get_by_id(item_id)

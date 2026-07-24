@@ -51,12 +51,14 @@ class FamilyService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(FamilyCreateSuccess(body.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(FamilyNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(FamilyNameTaken(body.name))
+            raise
 
     async def update_family(self, id: int, body: FamilyUpdate) -> MutationResponse[FamilySchema]:
         if body.name:
-            await self.exists_by_name(body.name, already_exists_exc=FamilyNameTaken)
+            await self.exists_by_name(body.name, already_exists_exc=FamilyNameTaken, exclude_id=id)
         orm = await self.repository.get_by_id(id)
         if not orm:
             raise await self._resolve_domain_error(FamilyNotFound(id))
@@ -65,10 +67,12 @@ class FamilyService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(FamilyUpdateSuccess(schema.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(FamilyNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(FamilyNameTaken(body.name))
+            raise
 
-    async def delete_family(self, id: int) -> None:
+    async def delete_family(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(FamilyNotFound(id))
@@ -78,3 +82,5 @@ class FamilyService(BaseService):
             delete_error_exc=FamilyDeleteError,
             delete_success_exc=FamilyDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(FamilyDeleteSuccess(obj.name))
+        return MutationResponse(detail=detail, data=None)

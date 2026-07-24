@@ -45,9 +45,9 @@ async def update_segment(
     return await service.update_segment(item.id, body)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{item_id}", response_model=MutationResponse[None], status_code=status.HTTP_200_OK)
 async def delete_segment(
     item_id: int,
     service: Annotated[SegmentService, Depends(get_segment_service)],
 ):
-    await service.delete_segment(item_id)
+    return await service.delete_segment(item_id)

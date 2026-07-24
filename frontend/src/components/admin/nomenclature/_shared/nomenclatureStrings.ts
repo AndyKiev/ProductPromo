@@ -27,6 +27,7 @@ const nomenclatureStrings: Record<string, Record<string, string>> = {
     confirmDelete: { ukr: "підтвердити видалення", eng: "confirm delete" },
     deletePrompt: { ukr: "видалити цей запис?", eng: "Delete this record?" },
     required: { ukr: "обов'язкове поле", eng: "required" },
+    max_length: { ukr: "перевищено максимальну довжину", eng: "max length exceeded" },
     selectPlaceholder: { ukr: "оберіть…", eng: "select…" },
 };
 export default nomenclatureStrings;

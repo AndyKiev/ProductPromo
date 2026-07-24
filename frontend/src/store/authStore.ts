@@ -1,22 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export interface AuthUser {
-  id: number;
-  name: string;
-  lang?: { id?: number; short_name?: string };
-}
-
-interface LoginPayload {
-  access_token: string;
-  user: AuthUser;
-}
-
 interface AuthState {
   access_token: string | null;
-  user: AuthUser | null;
+  refresh_token: string | null;
   isAuthenticated: boolean;
-  login: (payload: LoginPayload) => void;
+
+  setTokens: (accessToken: string, refreshToken: string) => void;
+  setAccessToken: (accessToken: string) => void;
   logout: () => void;
 }
 
@@ -24,17 +15,25 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       access_token: null,
-      user: null,
+      refresh_token: null,
       isAuthenticated: false,
-      login: ({ access_token, user }) =>
-        set({ access_token, user, isAuthenticated: true }),
-      logout: () => set({ access_token: null, user: null, isAuthenticated: false }),
+
+      setTokens: (accessToken, refreshToken) =>
+        set({ access_token: accessToken, refresh_token: refreshToken, isAuthenticated: true }),
+
+      setAccessToken: (accessToken) =>
+        set({ access_token: accessToken, isAuthenticated: true }),
+
+      logout: () =>
+        set({ access_token: null, refresh_token: null, isAuthenticated: false }),
     }),
     {
       name: 'productpromo-auth',
       storage: createJSONStorage(() => localStorage),
-      // persist only the token; user is re-hydrated on login
-      partialize: (state) => ({ access_token: state.access_token }) as AuthState,
+      partialize: (state) => ({
+        access_token: state.access_token,
+        refresh_token: state.refresh_token,
+      }),
     },
   ),
 );

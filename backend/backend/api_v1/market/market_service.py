@@ -46,8 +46,10 @@ class MarketService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(MarketCreateSuccess(body.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(MarketNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(MarketNameTaken(body.name))
+            raise
 
     async def update_market(self, id: int, body: MarketUpdate) -> MutationResponse[MarketSchema]:
         if body.name:
@@ -60,10 +62,12 @@ class MarketService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(MarketUpdateSuccess(schema.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(MarketNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(MarketNameTaken(body.name))
+            raise
 
-    async def delete_market(self, id: int) -> None:
+    async def delete_market(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(MarketNotFound(id))
@@ -73,3 +77,5 @@ class MarketService(BaseService):
             delete_error_exc=MarketDeleteError,
             delete_success_exc=MarketDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(MarketDeleteSuccess(obj.name))
+        return MutationResponse(detail=detail, data=None)

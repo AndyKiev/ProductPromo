@@ -1,6 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Button,
+  Box,
+  CircularProgress,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Button, Box, CircularProgress } from '@mui/material';
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { Category, CategoryCreate, CategoryUpdate, MutationResponse } from './categoryApi';
 import useString from '../../../../hooks/useString';
@@ -9,78 +22,138 @@ import nomenclatureStrings from '../_shared/nomenclatureStrings';
 import { fetchSegments } from '../segment/segmentApi';
 import { fetchStatusTypes } from '../status_type/statusTypeApi';
 
+const schema = z.object({
+  code: z.string().min(1, 'required').max(8, 'max_length'),
+  name: z.string().min(1, 'required').max(64, 'max_length'),
+  segment_id: z.number({ message: 'required' }).min(1, 'required'),
+  status_id: z.number({ message: 'required' }).min(1, 'required'),
+});
+
+type FormValues = z.infer<typeof schema>;
+
 interface Props {
-    open: boolean;
-    editing: Category | null;          // null = create mode
-    onClose: () => void;
-    createMutation: UseMutationResult<MutationResponse<Category>, Error, CategoryCreate>;
-    updateMutation: UseMutationResult<MutationResponse<Category>, Error, { id: number; data: CategoryUpdate }>;
+  open: boolean;
+  editing: Category | null;
+  onClose: () => void;
+  createMutation: UseMutationResult<MutationResponse<Category>, Error, CategoryCreate>;
+  updateMutation: UseMutationResult<MutationResponse<Category>, Error, { id: number; data: CategoryUpdate }>;
 }
 
 export function CategoryForm({ open, editing, onClose, createMutation, updateMutation }: Props) {
-    const getString = useString({ str: nomenclatureStrings });
-    const [segment_id, set_segment_id] = useState<string>('');
-    const [status_id, set_status_id] = useState<string>('');
-    const [code, set_code] = useState<string>('');
-    const [name, set_name] = useState<string>('');
-    const { data: segment_idOpts = [] } = useQuery({ queryKey: ['segments'], queryFn: fetchSegments });
-    const { data: status_idOpts = [] } = useQuery({ queryKey: ['directories','status_types'], queryFn: fetchStatusTypes, staleTime: Infinity });
+  const getString = useString({ str: nomenclatureStrings });
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onSubmit',
+    defaultValues: { code: '', name: '', segment_id: 0, status_id: 0 },
+  });
 
-    useEffect(() => {
-        if (editing) {
-            set_segment_id(String((editing as any).segment_id ?? ''));
-            set_status_id(String((editing as any).status_id ?? ''));
-            set_code(String((editing as any).code ?? ''));
-            set_name(String((editing as any).name ?? ''));
-        } else {
-        set_segment_id('');
-        set_status_id('');
-        set_code('');
-        set_name('');
-        }
-    }, [editing, open]);
+  const { data: segments = [] } = useQuery({ queryKey: ['segments'], queryFn: () => fetchSegments() });
+  const { data: statuses = [] } = useQuery({ queryKey: ['directories', 'status_types'], queryFn: fetchStatusTypes, staleTime: Infinity });
 
-    const pending = createMutation.isPending || updateMutation.isPending;
+  useEffect(() => {
+    reset({
+      code: editing?.code ?? '',
+      name: editing?.name ?? '',
+      segment_id: editing?.segment_id ?? 0,
+      status_id: editing?.status_id ?? 0,
+    });
+  }, [editing, open, reset]);
 
-    const handleSubmit = () => {
-        const payload = {
-            segment_id: Number(segment_id),
-            status_id: Number(status_id),
-            code: code,
-            name: name,
-        };
-        if (editing) updateMutation.mutate({ id: editing.id, data: payload });
-        else createMutation.mutate(payload as CategoryCreate);
-    };
+  const pending = createMutation.isPending || updateMutation.isPending;
 
-    return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>{cfl(getString(editing ? 'edit' : 'create'))} — {getString('category')}</DialogTitle>
-            <DialogContent>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-                <TextField label={cfl(getString('code')) || 'code'} fullWidth size="small"
-                    value={code} onChange={(e) => set_code(e.target.value)}
-                    slotProps={{ htmlInput: { maxLength: 8 } }} />
-                <TextField label={cfl(getString('name')) || 'name'} fullWidth size="small"
-                    value={name} onChange={(e) => set_name(e.target.value)}
-                    slotProps={{ htmlInput: { maxLength: 64 } }} />
-                <TextField select label={cfl(getString('segment')) || 'segment'} fullWidth size="small"
-                    value={segment_id} onChange={(e) => set_segment_id(e.target.value)}>
-                    {segment_idOpts.map((o: any) => <MenuItem key={o.id} value={String(o.id)}>{o.name ?? o.code ?? o.id}</MenuItem>)}
+  const onSubmit = (values: FormValues) => {
+    if (editing) updateMutation.mutate({ id: editing.id, data: values });
+    else createMutation.mutate(values);
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        {cfl(getString(editing ? 'edit' : 'create'))} — {getString('category')}
+      </DialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            <Controller
+              name="code"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label={cfl(getString('code')) || 'code'}
+                  fullWidth size="small"
+                  {...field}
+                  error={!!errors.code}
+                  helperText={errors.code?.message ? getString(errors.code.message as any) : undefined}
+                  slotProps={{ htmlInput: { maxLength: 8 } }}
+                />
+              )}
+            />
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label={cfl(getString('name')) || 'name'}
+                  fullWidth size="small"
+                  {...field}
+                  error={!!errors.name}
+                  helperText={errors.name?.message ? getString(errors.name.message as any) : undefined}
+                  slotProps={{ htmlInput: { maxLength: 64 } }}
+                />
+              )}
+            />
+            <Controller
+              name="segment_id"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  select
+                  label={cfl(getString('segment')) || 'segment'}
+                  fullWidth size="small"
+                  {...field}
+                  value={field.value ?? 0}
+                  error={!!errors.segment_id}
+                  helperText={errors.segment_id?.message ? getString(errors.segment_id.message as any) : undefined}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                >
+                  {segments.map((o: any) => (
+                    <MenuItem key={o.id} value={o.id}>{o.name ?? o.code ?? o.id}</MenuItem>
+                  ))}
                 </TextField>
-                <TextField select label={cfl(getString('status')) || 'status'} fullWidth size="small"
-                    value={status_id} onChange={(e) => set_status_id(e.target.value)}>
-                    {status_idOpts.map((o: any) => <MenuItem key={o.id} value={String(o.id)}>{o.name ?? o.code ?? o.id}</MenuItem>)}
+              )}
+            />
+            <Controller
+              name="status_id"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  select
+                  label={cfl(getString('status')) || 'status'}
+                  fullWidth size="small"
+                  {...field}
+                  value={field.value ?? 0}
+                  error={!!errors.status_id}
+                  helperText={errors.status_id?.message ? getString(errors.status_id.message as any) : undefined}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                >
+                  {statuses.map((o: any) => (
+                    <MenuItem key={o.id} value={o.id}>{o.name ?? o.code ?? o.id}</MenuItem>
+                  ))}
                 </TextField>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button variant="outlined" onClick={onClose} disabled={pending}>{getString('cancel')}</Button>
-                <Button variant="contained" onClick={handleSubmit} disabled={pending}
-                    startIcon={pending ? <CircularProgress size={16} color="inherit" /> : undefined}>
-                    {getString(editing ? 'save' : 'create')}
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+              )}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClose} disabled={pending}>
+            {getString('cancel')}
+          </Button>
+          <Button variant="contained" type="submit" disabled={pending}
+            startIcon={pending ? <CircularProgress size={16} color="inherit" /> : undefined}>
+            {getString(editing ? 'save' : 'create')}
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
 }

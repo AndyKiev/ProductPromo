@@ -1,4 +1,5 @@
-# Local dev (no docker). Requires poetry (backend) and node 20+ (frontend).
+# Local dev (no docker). Requires poetry (backend), node 20+ (frontend),
+# and a running PostgreSQL (e.g. the docker-compose postgres service or local install).
 
 install-backend:
 	cd backend && poetry install
@@ -6,10 +7,20 @@ install-backend:
 install-frontend:
 	cd frontend && npm install
 
-# FastAPI on :8004 (run from backend/ so the `backend` package resolves)
+# Create tables in the DB (idempotent). Need APP_CONFIG__DB__* in backend/.env.
+init-db:
+	cd backend && poetry run python -c "import asyncio; from backend.database.init_db import init_db; asyncio.run(init_db())"
+
+# FastAPI on :8004 → Swagger http://127.0.0.1:8004/docs (run from backend/)
 run-backend:
 	cd backend && poetry run uvicorn backend.main:app --host 127.0.0.1 --port 8004 --reload
 
-# Vite on :4000, pointed straight at the backend
+# Vite — port comes from vite.config.ts (default :8009). Set VITE_BACKEND_API_URL before calling.
 run-frontend:
-	cd frontend && export VITE_BACKEND_API_URL=http://127.0.0.1:8004 && npm run dev -- --host 127.0.0.1
+	cd frontend && npm run dev -- --host 127.0.0.1
+
+# --- Docker helpers (no local Python/node needed) ---
+run-postgres:
+	docker compose up -d postgres
+stop-postgres:
+	docker compose stop postgres

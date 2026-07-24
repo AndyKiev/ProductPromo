@@ -21,7 +21,7 @@ async def get_nomenclature_service(
 
 
 async def nomenclature_by_id(
-    nomenclature_id: int,
+    item_id: int,
     service: NomenclatureService = Depends(get_nomenclature_service),
 ) -> NomenclatureSchema:
-    return await service.get_by_id(nomenclature_id)
+    return await service.get_by_id(item_id)

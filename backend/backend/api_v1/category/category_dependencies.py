@@ -21,7 +21,7 @@ async def get_category_service(
 
 
 async def category_by_id(
-    category_id: int,
+    item_id: int,
     service: CategoryService = Depends(get_category_service),
 ) -> CategorySchema:
-    return await service.get_by_id(category_id)
+    return await service.get_by_id(item_id)

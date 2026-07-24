@@ -51,12 +51,14 @@ class SegmentService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(SegmentCreateSuccess(body.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(SegmentNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(SegmentNameTaken(body.name))
+            raise
 
     async def update_segment(self, id: int, body: SegmentUpdate) -> MutationResponse[SegmentSchema]:
         if body.name:
-            await self.exists_by_name(body.name, already_exists_exc=SegmentNameTaken)
+            await self.exists_by_name(body.name, already_exists_exc=SegmentNameTaken, exclude_id=id)
         orm = await self.repository.get_by_id(id)
         if not orm:
             raise await self._resolve_domain_error(SegmentNotFound(id))
@@ -65,10 +67,12 @@ class SegmentService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(SegmentUpdateSuccess(schema.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(SegmentNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(SegmentNameTaken(body.name))
+            raise
 
-    async def delete_segment(self, id: int) -> None:
+    async def delete_segment(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(SegmentNotFound(id))
@@ -78,3 +82,5 @@ class SegmentService(BaseService):
             delete_error_exc=SegmentDeleteError,
             delete_success_exc=SegmentDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(SegmentDeleteSuccess(obj.name))
+        return MutationResponse(detail=detail, data=None)

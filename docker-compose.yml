@@ -1,21 +1,42 @@
-# ProductPromo — backend (FastAPI on legacy MySQL) + frontend (Vite) + nginx.
-# The legacy MySQL is EXTERNAL (your existing DB); it is not provisioned here.
-# Postgres + alembic-migrate are intentionally omitted (no schema changes).
+# ProductPromo — backend (FastAPI) + frontend (Vite) + nginx + PostgreSQL.
+# DB driver is parametrized: set APP_CONFIG__DB__DRIVER to switch between
+# postgresql+asyncpg (default) and mysql+aiomysql.
 networks:
   productpromo:
     driver: bridge
 
+volumes:
+  postgres_data:
+
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${APP_CONFIG__DB__USER:-productpromo}
+      POSTGRES_PASSWORD: ${APP_CONFIG__DB__PASSWORD:-productpromo}
+      POSTGRES_DB: ${APP_CONFIG__DB__NAME:-productpromo}
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${APP_CONFIG__DB__USER:-productpromo} -d ${APP_CONFIG__DB__NAME:-productpromo}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [productpromo]
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     env_file:
       - stack.env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"   # lets the container reach a MySQL on the host
     ports:
       - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks: [productpromo]
 
   frontend:
@@ -24,6 +45,8 @@ services:
       dockerfile: Dockerfile
       args:
         APP_MODE: development
+    ports:
+      - "8009:8009"
     environment:
       - VITE_BACKEND_API_URL=        # empty => SPA calls same-origin /api/v1 via nginx
     networks: [productpromo]

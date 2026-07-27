@@ -21,7 +21,7 @@ async def get_family_service(
 
 
 async def family_by_id(
-    family_id: int,
+    item_id: int,
     service: FamilyService = Depends(get_family_service),
 ) -> FamilySchema:
-    return await service.get_by_id(family_id)
+    return await service.get_by_id(item_id)

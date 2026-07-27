@@ -30,7 +30,7 @@ export interface FamilyUpdate {
 
 export interface MutationResponse<T> { detail: string; data: T; }
 
-export const fetchFamilys = async (categoryId?: number): Promise<Family[]> => {
+export const fetchFamilies = async (categoryId?: number): Promise<Family[]> => {
     const res = await axiosInstance.get<Family[]>(BASE, { params: { category_id: categoryId } });
     return res.data ?? [];
 };

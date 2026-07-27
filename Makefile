@@ -1,4 +1,60 @@
-# Local dev (no docker). Requires poetry (backend) and node 20+ (frontend).
+# ProductPromo — dev entry points.
+#
+# The database is a NATIVE Windows PostgreSQL 18 cluster on the host, not a
+# container: C:\Users\andre\PostgresData\product_promo, 127.0.0.1:5435.
+# It is not a Windows service, so it does not start at boot — run `make db-up`
+# first, both for native dev and before `make docker-up`.
+# See docs/DB_MIGRATION.md.
+
+PGDATA_DIR = C:/Users/andre/PostgresData/product_promo
+PGLOG      = C:/Users/andre/PostgresData/product_promo.log
+PGPORT     = 5435
+PGUSER     = admin
+PGDB       = product_promo
+
+# --- Host PostgreSQL ---------------------------------------------------------
+
+# start the host Postgres cluster
+db-up:
+	pg_ctl -D "$(PGDATA_DIR)" -l "$(PGLOG)" -o "-p $(PGPORT)" start
+
+# stop it
+db-down:
+	pg_ctl -D "$(PGDATA_DIR)" stop
+
+# is it running?
+db-status:
+	pg_ctl -D "$(PGDATA_DIR)" status
+
+# open a psql shell on the product_promo database
+db-shell:
+	psql -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB)
+
+# timestamped -Fc dump (see docs/DB_MIGRATION.md)
+db-backup:
+	pg_dump -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB) -Fc -f "C:/Users/andre/PostgresBackups/product_promo_$(shell date +%Y%m%d_%H%M).dump"
+
+# --- Docker: the app stack (backend + frontend) ------------------------------
+# Postgres is NOT in compose — run `make db-up` first. See docker-compose.yml.
+# Published: backend http://127.0.0.1:8012, frontend http://127.0.0.1:8013
+
+# build images and start everything (first run, or after a dependency change)
+docker-up:
+	docker compose up --build -d
+
+# start without rebuilding
+docker-start:
+	docker compose up -d
+
+# stop and remove the containers. The host database is untouched.
+docker-down:
+	docker compose down
+
+docker-logs:
+	docker compose logs -f
+
+# --- Native dev (no docker) --------------------------------------------------
+# Requires poetry (backend), node 20+ (frontend), and `make db-up`.
 
 install-backend:
 	cd backend && poetry install
@@ -6,10 +62,14 @@ install-backend:
 install-frontend:
 	cd frontend && npm install
 
-# FastAPI on :8004 (run from backend/ so the `backend` package resolves)
+# Create tables in the DB (idempotent). Needs APP_CONFIG__DB__* in backend/.env.
+init-db:
+	cd backend && poetry run python -c "import asyncio; from backend.database.init_db import bootstrap; asyncio.run(bootstrap())"
+
+# FastAPI on :8004 → Swagger http://127.0.0.1:8004/docs (run from backend/)
 run-backend:
 	cd backend && poetry run uvicorn backend.main:app --host 127.0.0.1 --port 8004 --reload
 
-# Vite on :4000, pointed straight at the backend
+# Vite on :8009 (vite.config.ts). Uses frontend/.env for VITE_BACKEND_API_URL.
 run-frontend:
-	cd frontend && export VITE_BACKEND_API_URL=http://127.0.0.1:8004 && npm run dev -- --host 127.0.0.1
+	cd frontend && npm run dev -- --host 127.0.0.1

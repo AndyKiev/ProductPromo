@@ -1,0 +1,14 @@
+# core.autocrlf=true on this machine, so without these rules a fresh clone gets
+# CRLF shell scripts and the backend image dies at startup with
+# `/bin/bash^M: bad interpreter`. Anything a Linux container executes or parses
+# must stay LF.
+* text=auto
+
+*.sh            text eol=lf
+Dockerfile      text eol=lf
+*.dockerignore  text eol=lf
+docker-compose.yml text eol=lf
+Makefile        text eol=lf
+*.env           text eol=lf
+*.env.example   text eol=lf
+stack.env*      text eol=lf

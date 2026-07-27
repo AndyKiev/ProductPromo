@@ -21,7 +21,7 @@ async def get_market_service(
 
 
 async def market_by_id(
-    market_id: int,
+    item_id: int,
     service: MarketService = Depends(get_market_service),
 ) -> MarketSchema:
-    return await service.get_by_id(market_id)
+    return await service.get_by_id(item_id)

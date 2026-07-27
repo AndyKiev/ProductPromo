@@ -46,8 +46,10 @@ class NomenclatureKeyService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(NomenclatureKeyCreateSuccess(body.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
+            raise
 
     async def update_nomenclature_key(self, id: int, body: NomenclatureKeyUpdate) -> MutationResponse[NomenclatureKeySchema]:
         if body.name:
@@ -60,10 +62,12 @@ class NomenclatureKeyService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(NomenclatureKeyUpdateSuccess(schema.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
+            raise
 
-    async def delete_nomenclature_key(self, id: int) -> None:
+    async def delete_nomenclature_key(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(NomenclatureKeyNotFound(id))
@@ -73,3 +77,5 @@ class NomenclatureKeyService(BaseService):
             delete_error_exc=NomenclatureKeyDeleteError,
             delete_success_exc=NomenclatureKeyDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(NomenclatureKeyDeleteSuccess(obj.name))
+        return MutationResponse(detail=detail, data=None)

@@ -21,7 +21,7 @@ async def get_segment_service(
 
 
 async def segment_by_id(
-    segment_id: int,
+    item_id: int,
     service: SegmentService = Depends(get_segment_service),
 ) -> SegmentSchema:
-    return await service.get_by_id(segment_id)
+    return await service.get_by_id(item_id)

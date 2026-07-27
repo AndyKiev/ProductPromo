@@ -45,9 +45,9 @@ async def update_category(
     return await service.update_category(item.id, body)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{item_id}", response_model=MutationResponse[None], status_code=status.HTTP_200_OK)
 async def delete_category(
     item_id: int,
     service: Annotated[CategoryService, Depends(get_category_service)],
 ):
-    await service.delete_category(item_id)
+    return await service.delete_category(item_id)

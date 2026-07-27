@@ -43,7 +43,9 @@ class BaseRepository:
         await self.session.delete(instance)
         await self.session.commit()
 
-    async def exists_by_name(self, name) -> bool:
+    async def exists_by_name(self, name, exclude_id: Optional[int] = None) -> bool:
         stmt = select(self.model).where(getattr(self.model, "name") == name)
+        if exclude_id is not None:
+            stmt = stmt.where(getattr(self.model, "id") != exclude_id)
         res = await self.session.execute(stmt)
         return res.scalars().first() is not None

@@ -51,12 +51,14 @@ class CategoryService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(CategoryCreateSuccess(body.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(CategoryNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(CategoryNameTaken(body.name))
+            raise
 
     async def update_category(self, id: int, body: CategoryUpdate) -> MutationResponse[CategorySchema]:
         if body.name:
-            await self.exists_by_name(body.name, already_exists_exc=CategoryNameTaken)
+            await self.exists_by_name(body.name, already_exists_exc=CategoryNameTaken, exclude_id=id)
         orm = await self.repository.get_by_id(id)
         if not orm:
             raise await self._resolve_domain_error(CategoryNotFound(id))
@@ -65,10 +67,12 @@ class CategoryService(BaseService):
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(CategoryUpdateSuccess(schema.name))
             return MutationResponse(detail=detail, data=schema)
-        except IntegrityError:
-            raise await self._resolve_domain_error(CategoryNameTaken(body.name))
+        except IntegrityError as e:
+            if self._is_unique_violation(e):
+                raise await self._resolve_domain_error(CategoryNameTaken(body.name))
+            raise
 
-    async def delete_category(self, id: int) -> None:
+    async def delete_category(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(CategoryNotFound(id))
@@ -78,3 +82,5 @@ class CategoryService(BaseService):
             delete_error_exc=CategoryDeleteError,
             delete_success_exc=CategoryDeleteSuccess,
         )
+        detail = await self._resolve_domain_success(CategoryDeleteSuccess(obj.name))
+        return MutationResponse(detail=detail, data=None)

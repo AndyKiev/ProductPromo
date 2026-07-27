@@ -14,6 +14,9 @@ from backend.api_v1.base.errors import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from backend.database.init_db import init_db, seed_status_types
+    await init_db()
+    await seed_status_types()
     yield
 
 

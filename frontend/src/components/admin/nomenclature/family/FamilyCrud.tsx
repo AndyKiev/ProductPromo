@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Button, CircularProgress, Paper, Snackbar, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
-import { fetchFamilys, type Family } from './familyApi';
+import { fetchFamilies, type Family } from './familyApi';
 import { FAMILY_QK, useFamilyMutations } from './useFamilyMutations';
 import { useFamilyColumns } from './useFamilyColumns';
 import { FamilyForm } from './FamilyForm';
@@ -22,7 +22,7 @@ export function FamilyCrud() {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
     const { data: rows = [], isLoading, error } = useQuery({
-        queryKey: FAMILY_QK, queryFn: () => fetchFamilys(), staleTime: 2 * 60 * 1000,
+        queryKey: FAMILY_QK, queryFn: () => fetchFamilies(), staleTime: 2 * 60 * 1000,
     });
 
     const { createMutation, updateMutation, deleteMutation } = useFamilyMutations({

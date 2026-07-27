@@ -14,6 +14,11 @@ class BaseService:
     from the talent project — wire it into _resolve_* when ready.
     """
 
+    # PostgreSQL unique violation code
+    PG_UNIQUE_VIOLATION = "23505"
+    # MySQL duplicate entry code
+    MYSQL_DUPLICATE_ENTRY = "1062"
+
     def __init__(self, repository, user=None, session: Optional[AsyncSession] = None) -> None:
         self.repository = repository
         self.user = user
@@ -41,8 +46,8 @@ class BaseService:
         data = schema.model_dump(exclude_unset=partial)
         return await self.repository.update(instance, data)
 
-    async def exists_by_name(self, name, already_exists_exc):
-        if await self.repository.exists_by_name(name):
+    async def exists_by_name(self, name, already_exists_exc, exclude_id: Optional[int] = None):
+        if await self.repository.exists_by_name(name, exclude_id=exclude_id):
             raise await self._resolve_domain_error(already_exists_exc(name))
 
     async def delete_by_id(self, id, name=None, delete_error_exc=None, delete_success_exc=None):
@@ -64,3 +69,14 @@ class BaseService:
 
     async def _resolve_domain_success(self, success) -> str:
         return getattr(success, "fallback", None) or getattr(success, "message", None) or "OK"
+
+    @staticmethod
+    def _is_unique_violation(exc: IntegrityError) -> bool:
+        """Check if IntegrityError is a unique constraint violation (not FK or other)."""
+        orig = getattr(exc, "orig", None)
+        if orig is None:
+            return False
+        code = getattr(orig, "sqlstate", None) or getattr(orig, "args", [None])[0]
+        if isinstance(code, int):
+            code = str(code)
+        return code in (BaseService.PG_UNIQUE_VIOLATION, BaseService.MYSQL_DUPLICATE_ENTRY)

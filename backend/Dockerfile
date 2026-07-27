@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 # build deps for aiomysql/cryptography
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential default-libmysqlclient-dev pkg-config openssl curl \
+    build-essential default-libmysqlclient-dev libpq-dev pkg-config openssl curl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir "poetry>=2.0,<3.0"

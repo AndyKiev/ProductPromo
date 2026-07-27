@@ -1,0 +1,19 @@
+# The host's venv is a Windows one; copying it over the image's Linux install
+# breaks every console script (`Command not found: uvicorn`). A bare `.venv/`
+# only matches the build-context root, hence the `**/`.
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+
+.env
+.env.local
+.env.*.local
+
+# JWT keys are generated at runtime, never baked into the image.
+backend/auth/keys/*.pem
+backend/auth/keys/*.key
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.log

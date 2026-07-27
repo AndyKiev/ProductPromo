@@ -32,6 +32,17 @@ async def seed_status_types() -> None:
                 ))
 
 
+async def bootstrap() -> None:
+    """Create tables and seed, in a single event loop.
+
+    `db_helper.engine` is module-level, so its connection pool binds to
+    whichever loop first used it. Two separate `asyncio.run()` calls therefore
+    fail with "attached to a different loop" — call this instead.
+    """
+    await init_db()
+    await seed_status_types()
+
+
 # Explicitly import every model so its table is registered in Base.metadata.
 # (flake8 will complain about unused imports — keep them.)
 import backend.api_v1.status_type.status_type_model  # noqa: F401,E402

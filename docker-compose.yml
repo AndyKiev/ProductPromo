@@ -1,61 +1,99 @@
-# ProductPromo — backend (FastAPI) + frontend (Vite) + nginx + PostgreSQL.
-# DB driver is parametrized: set APP_CONFIG__DB__DRIVER to switch between
-# postgresql+asyncpg (default) and mysql+aiomysql.
+# App stack: FastAPI backend + Vite dev server. Postgres is NOT in here.
+#
+# The database is a native Windows cluster on the host —
+# C:\Users\andre\PostgresData\product_promo, port 5435 — so no `docker` command
+# can ever destroy it, and it matches production, where the DB is an external
+# server. Start it before this stack (`make db-up`); it is not a Windows
+# service, so it does not come back on its own after a reboot.
+#
+#   make db-up                     # start the host Postgres first
+#   docker compose up --build -d   # first run
+#   docker compose up -d           # after that
+#
+# See docs/DB_MIGRATION.md for how the data got there and how to operate it.
+#
+# The old `productpromo_postgres_data` volume still holds the pre-migration
+# copy of the data. Delete it only once you are sure.
+#
+# There is no nginx service any more: the host's port 80 belongs to talent's
+# nginx, and with the backend published directly the SPA has nothing to proxy
+# through. nginx.conf and the root Dockerfile are left in the repo, unused.
+name: productpromo
+
 networks:
   productpromo:
     driver: bridge
 
-volumes:
-  postgres_data:
-
 services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: ${APP_CONFIG__DB__USER:-productpromo}
-      POSTGRES_PASSWORD: ${APP_CONFIG__DB__PASSWORD:-productpromo}
-      POSTGRES_DB: ${APP_CONFIG__DB__NAME:-productpromo}
-    ports:
-      - "5435:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${APP_CONFIG__DB__USER:-productpromo} -d ${APP_CONFIG__DB__NAME:-productpromo}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks: [productpromo]
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: productpromo-backend
+    restart: unless-stopped
     env_file:
       - stack.env
+    # 127.0.0.1 inside a container is the container, not the host, so the
+    # host cluster is reached through the gateway alias.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # Reach the host's native Postgres. It has listen_addresses='*' and
+      # pg_hba lines for the Docker subnets (172.16.0.0/12, 192.168.65.0/24).
+      # Real env vars beat the values in stack.env, which say 127.0.0.1 —
+      # correct for native dev, meaningless inside a container.
+      APP_CONFIG__DB__HOST: host.docker.internal
+      APP_CONFIG__DB__PORT: "5435"
+      # Bind all interfaces so the published port is reachable.
+      APP_CONFIG__RUN__HOST: 0.0.0.0
+      APP_CONFIG__RUN__PORT: "8004"
+      # Auto-reload on host edits (the bind mount below). Windows bind mounts
+      # deliver no inotify events, so watchfiles has to poll — without
+      # FORCE_POLLING the watcher silently never fires.
+      APP_CONFIG__RUN__RELOAD: "true"
+      WATCHFILES_FORCE_POLLING: "true"
     ports:
-      - "8004:8004"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      # 8012 on the host, not 8004: talent publishes 8005 and anee_data 8006,
+      # and 8004 / 8009 are already taken by native dev servers here. Inside
+      # the container the app still listens on 8004, so only the host moved.
+      - "8012:8004"
+    volumes:
+      # Live source for reloads. Only the package dir is mounted, so the host's
+      # Windows backend/.venv is never exposed — do NOT add an anonymous
+      # `/app/backend/.venv` volume to mask it: the empty directory that
+      # creates is picked up by poetry as an in-project venv, and every
+      # `poetry run` then fails with ModuleNotFoundError.
+      - ./backend/backend:/app/backend/backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8004/openapi.json > /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
     networks: [productpromo]
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        APP_MODE: development
+    container_name: productpromo-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
     ports:
-      - "8009:8009"
+      # The container serves 8009 (matching vite.config.ts); 8009 on the host
+      # is already taken, so it is published on 8013.
+      - "8013:8009"
+    volumes:
+      - ./frontend:/app/frontend
+      # Keep the image's Linux node_modules — the bind mount above would
+      # otherwise expose the host's Windows install.
+      - /app/frontend/node_modules
     environment:
-      - VITE_BACKEND_API_URL=        # empty => SPA calls same-origin /api/v1 via nginx
-    networks: [productpromo]
-
-  nginx:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    depends_on: [backend, frontend]
-    ports:
-      - "80:80"
+      # The browser runs on the host, so it calls the *published* backend port.
+      # Origin only, no /api/v1 — the client appends that itself
+      # (src/utils/eNums.ts, src/api/axiosInstance.ts).
+      VITE_BACKEND_API_URL: http://127.0.0.1:8012
+      # Turns on watch polling + the HMR client port in vite.config.ts.
+      VITE_IN_DOCKER: "true"
     networks: [productpromo]

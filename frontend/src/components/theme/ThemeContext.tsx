@@ -1,50 +1,106 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import { useState, useMemo, type FC, type ReactNode } from "react";
+import {
+    createTheme,
+    ThemeProvider as MuiThemeProvider,
+    CssBaseline,
+} from "@mui/material";
+import type {} from "@mui/x-data-grid/themeAugmentation";
+import {
+    themes,
+    THEME_KEYS,
+    THEME_FAMILIES,
+    DEFAULT_THEME,
+    type ThemeKey,
+} from "./themes";
+import { ThemeContext } from "./useTheme";
 
-type Mode = 'light' | 'dark';
+const STORAGE_KEY = "productpromo.theme";
 
-interface Palette {
-  bg: string; cardBg: string; text: string; textMuted: string;
-  border: string; borderLight: string; inputBg: string; disabledBg: string;
-  accent: string;
+function readStored(): ThemeKey {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored && (THEME_KEYS as string[]).includes(stored)
+        ? (stored as ThemeKey)
+        : DEFAULT_THEME;
 }
 
-const PALETTES: Record<Mode, Palette> = {
-  light: {
-    bg: '#f6f7f9', cardBg: '#ffffff', text: '#1a1f2b', textMuted: '#5b6472',
-    border: '#d7dce3', borderLight: '#e7ebf0', inputBg: '#ffffff', disabledBg: '#f0f2f5',
-    accent: '#3a5bd0',
-  },
-  dark: {
-    bg: '#0f1218', cardBg: '#171b22', text: '#e7ebf0', textMuted: '#9aa4b2',
-    border: '#2a313c', borderLight: '#222831', inputBg: '#1b212a', disabledBg: '#161b22',
-    accent: '#5b7cff',
-  },
+export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [themeKey, setThemeKeyState] = useState<ThemeKey>(readStored);
+    const t = themes[themeKey] ?? themes[DEFAULT_THEME];
+    const mode: "light" | "dark" = t.isDark ? "dark" : "light";
+
+    const setThemeKey = (key: ThemeKey) => {
+        setThemeKeyState(key);
+        localStorage.setItem(STORAGE_KEY, key);
+    };
+    const toggle = () => setThemeKey(THEME_FAMILIES[themeKey]);
+
+    const muiTheme = useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode,
+                    primary: { main: t.accent },
+                    background: { default: t.appBg, paper: t.cardBg },
+                    text: { primary: t.text, secondary: t.textMuted, disabled: t.disabledText },
+                    divider: t.border,
+                },
+                typography: { fontFamily: "'Segoe UI', 'Roboto', sans-serif" },
+                shape: { borderRadius: 10 },
+                components: {
+                    MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
+                    MuiAutocomplete: { defaultProps: { handleHomeEndKeys: false } },
+                    MuiButton: { styleOverrides: { root: { textTransform: "none", fontWeight: 600 } } },
+                    MuiTab: { styleOverrides: { root: { textTransform: "none", fontWeight: 500, minHeight: 48 } } },
+                    MuiOutlinedInput: {
+                        styleOverrides: {
+                            root: {
+                                backgroundColor: t.inputBg,
+                                "& .MuiOutlinedInput-notchedOutline": { borderColor: t.border },
+                                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: t.accent },
+                            },
+                        },
+                    },
+                    MuiSelect: { styleOverrides: { select: { paddingTop: "9px", paddingBottom: "9px" } } },
+                    // Tooltips are portaled to <body>, so one that resolves past the
+                    // right edge WIDENS the document and leaves the page scrolling
+                    // sideways into empty background. Keep every tooltip inside the
+                    // viewport and cap its width so a long hint wraps instead.
+                    MuiTooltip: {
+                        defaultProps: {
+                            PopperProps: {
+                                modifiers: [
+                                    { name: "preventOverflow", options: { boundary: "viewport", padding: 8 } },
+                                    { name: "flip", options: { fallbackPlacements: ["top", "bottom", "left"] } },
+                                ],
+                            },
+                        },
+                        styleOverrides: { tooltip: { maxWidth: 280 } },
+                    },
+                    MuiMenuItem: { styleOverrides: { root: { whiteSpace: "normal", wordBreak: "break-word" } } },
+                    MuiDataGrid: {
+                        defaultProps: { columnHeaderHeight: 44 },
+                        styleOverrides: {
+                            columnHeader: ({ theme }) => ({
+                                backgroundColor: theme.palette.primary.light,
+                                color: mode === "dark" ? "#000" : "#fff",
+                            }),
+                            columnHeaderTitle: { fontWeight: "bold", color: mode === "dark" ? "#000" : "#fff" },
+                            iconButtonContainer: { "& button": { color: mode === "dark" ? "#000" : "#fff" } },
+                            menuIcon: { "& button": { color: mode === "dark" ? "#000" : "#fff" } },
+                            sortIcon: { color: mode === "dark" ? "#fff" : "#000", opacity: 0.9 },
+                        },
+                    },
+                },
+            }),
+        [mode, t],
+    );
+
+    return (
+        <ThemeContext.Provider value={{ t, themeKey, setThemeKey, availableThemes: THEME_KEYS, mode, toggle }}>
+            <MuiThemeProvider theme={muiTheme}>
+                <CssBaseline />
+                {children}
+            </MuiThemeProvider>
+        </ThemeContext.Provider>
+    );
 };
-
-interface ThemeCtx { t: Palette; mode: Mode; toggle: () => void; }
-const ThemeContext = createContext<ThemeCtx | null>(null);
-
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<Mode>('light');
-  const t = PALETTES[mode];
-
-  const muiTheme = useMemo(
-    () => createTheme({ palette: { mode, primary: { main: t.accent }, background: { default: t.bg, paper: t.cardBg } } }),
-    [mode, t.accent, t.bg, t.cardBg],
-  );
-
-  const value = useMemo<ThemeCtx>(() => ({ t, mode, toggle: () => setMode((m) => (m === 'light' ? 'dark' : 'light')) }), [t, mode]);
-
-  return (
-    <ThemeContext.Provider value={value}>
-      <MuiThemeProvider theme={muiTheme}>{children}</MuiThemeProvider>
-    </ThemeContext.Provider>
-  );
-}
-
-export function useTheme(): ThemeCtx {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
-}

@@ -2,7 +2,7 @@ import { type FC, type ReactNode } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { AppBar, Box, Toolbar, Typography, Button, Stack, Chip, Tooltip, IconButton } from '@mui/material';
 import { LogoutRounded, CategoryRounded } from '@mui/icons-material';
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../theme/useTheme';
 import { useAuthStore } from '../../store/authStore';
 import ThemeSwitch from '../theme/ThemeSwitch';
 import cfl from '../../utils/capitalizeFirstLetter';

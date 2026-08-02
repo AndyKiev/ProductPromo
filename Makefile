@@ -14,9 +14,9 @@ PGDB       = product_promo
 
 # --- Host PostgreSQL ---------------------------------------------------------
 
-# start the host Postgres cluster
+# start the host Postgres cluster (idempotent: no-op if already running)
 db-up:
-	pg_ctl -D "$(PGDATA_DIR)" -l "$(PGLOG)" -o "-p $(PGPORT)" start
+	pg_ctl -D "$(PGDATA_DIR)" status >nul 2>&1 || pg_ctl -D "$(PGDATA_DIR)" -l "$(PGLOG)" -o "-p $(PGPORT)" start
 
 # stop it
 db-down:

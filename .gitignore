@@ -29,6 +29,7 @@ stack.env
 Thumbs.db
 .vscode/*
 !.vscode/extensions.json
+!.vscode/tasks.json
 .idea/
 *.swp
 

@@ -1,0 +1,57 @@
+{
+  // ProductPromo dev stack — each role runs in its OWN dedicated VSCode integrated
+  // terminal (named after the task).
+  //   Ctrl+Alt+3 → "ProductPromo: start3"
+  // PostgreSQL is kept persistent (stop, not down) with named volume postgres_data.
+  // External port 5434 avoids conflicts with other local PostgreSQL instances.
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}",
+    "shell": {
+      "executable": "powershell.exe",
+      "args": ["-NoProfile", "-NoExit", "-Command"]
+    }
+  },
+  "presentation": {
+    "echo": true,
+    "reveal": "always",
+    "panel": "dedicated",
+    "group": "productpromo",
+    "clear": true
+  },
+  "tasks": [
+    {
+      "label": "PP-db",
+      "type": "shell",
+      "command": "make db-up",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "PP-backend",
+      "type": "shell",
+      "command": "make db-up; make init-db; make run-backend",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "PP-frontend",
+      "type": "shell",
+      "command": "$env:VITE_BACKEND_API_URL = 'http://127.0.0.1:8004'; make run-frontend",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "ProductPromo: start3",
+      "dependsOn": ["PP-db", "PP-backend", "PP-frontend"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "ProductPromo: stop",
+      "type": "shell",
+      "command": "docker compose stop",
+      "problemMatcher": []
+    }
+  ]
+}

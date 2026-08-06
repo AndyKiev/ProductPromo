@@ -35,6 +35,11 @@ export const fetchFamilies = async (categoryId?: number): Promise<Family[]> => {
     return res.data ?? [];
 };
 
+export const searchFamilies = async (q: string, categoryId?: number, limit = 20): Promise<Family[]> => {
+    const res = await axiosInstance.get<Family[]>(BASE, { params: { q, category_id: categoryId, limit } });
+    return res.data ?? [];
+};
+
 export const createFamily = async (body: FamilyCreate): Promise<MutationResponse<Family>> =>
     (await axiosInstance.post<MutationResponse<Family>>(BASE, body)).data;
 

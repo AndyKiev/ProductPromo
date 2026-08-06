@@ -29,8 +29,16 @@ class NomenclatureKeyService(BaseService):
             raise await self._resolve_domain_error(NomenclatureKeyNotFound(id))
         return self._to_schema(row)
 
-    async def list_nomenclature_key(self, sort: Optional[str] = None) -> List[NomenclatureKeySchema]:
-        rows = await self.get_all(sort_json=sort)
+    async def list_nomenclature_key(
+        self,
+        sort: Optional[str] = None,
+        q: Optional[str] = None,
+        limit: int = 20,
+    ) -> List[NomenclatureKeySchema]:
+        if q:
+            rows = await self.repository.search(q=q, limit=limit)
+        else:
+            rows = await self.get_all(sort_json=sort)
         return [self._to_schema(r) for r in rows]
 
     def _to_schema(self, row) -> NomenclatureKeySchema:

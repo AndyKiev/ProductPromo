@@ -24,6 +24,11 @@ export const fetchNomenclatureKeys = async (): Promise<NomenclatureKey[]> => {
     return res.data ?? [];
 };
 
+export const searchNomenclatureKeys = async (q: string, limit = 20): Promise<NomenclatureKey[]> => {
+    const res = await axiosInstance.get<NomenclatureKey[]>(BASE, { params: { q, limit } });
+    return res.data ?? [];
+};
+
 export const createNomenclatureKey = async (body: NomenclatureKeyCreate): Promise<MutationResponse<NomenclatureKey>> =>
     (await axiosInstance.post<MutationResponse<NomenclatureKey>>(BASE, body)).data;
 

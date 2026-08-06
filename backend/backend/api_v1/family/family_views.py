@@ -19,8 +19,10 @@ async def list_family(
     service: Annotated[FamilyService, Depends(get_family_service)],
     category_id: Optional[int] = None,
     sort: Optional[str] = Query(None),
+    q: Optional[str] = Query(None, description="Search by name or code (substring, case-insensitive)"),
+    limit: int = Query(20, ge=1, le=200),
 ):
-    return await service.list_family(category_id=category_id, sort=sort)
+    return await service.list_family(category_id=category_id, sort=sort, q=q, limit=limit)
 
 
 @router.get("/{item_id}", response_model=FamilySchema)

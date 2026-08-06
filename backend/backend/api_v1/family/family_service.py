@@ -29,8 +29,16 @@ class FamilyService(BaseService):
             raise await self._resolve_domain_error(FamilyNotFound(id))
         return self._to_schema(row)
 
-    async def list_family(self, category_id: Optional[int] = None, sort: Optional[str] = None) -> List[FamilySchema]:
-        if category_id is not None:
+    async def list_family(
+        self,
+        category_id: Optional[int] = None,
+        sort: Optional[str] = None,
+        q: Optional[str] = None,
+        limit: int = 20,
+    ) -> List[FamilySchema]:
+        if q:
+            rows = await self.repository.search(q=q, category_id=category_id, limit=limit)
+        elif category_id is not None:
             rows = await self.repository.by_parent(category_id)
         else:
             rows = await self.get_all(sort_json=sort)

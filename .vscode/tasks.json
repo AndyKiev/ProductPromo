@@ -1,9 +1,4 @@
 {
-  // ProductPromo dev stack — each role runs in its OWN dedicated VSCode integrated
-  // terminal (named after the task).
-  //   Ctrl+Alt+3 → "ProductPromo: start3"
-  // PostgreSQL is kept persistent (stop, not down) with named volume postgres_data.
-  // External port 5434 avoids conflicts with other local PostgreSQL instances.
   "version": "2.0.0",
   "options": {
     "cwd": "${workspaceFolder}",
@@ -21,36 +16,42 @@
   },
   "tasks": [
     {
-      "label": "PP-db",
+      "label": "ProductPromo-db",
       "type": "shell",
-      "command": "make db-up",
+      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' status 2>$null; if (-not $?) { & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -l 'C:\\Users\\andre\\PostgresData\\product_promo.log' -w -t 60 start }; & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe' -h 127.0.0.1 -p 5435",
       "isBackground": true,
       "problemMatcher": []
     },
     {
-      "label": "PP-backend",
+      "label": "ProductPromo-backend",
       "type": "shell",
-      "command": "make db-up; make init-db; make run-backend",
+      "command": "$pgr='C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe'; for ($i=0; $i -lt 90; $i++) { & $pgr -h 127.0.0.1 -p 5435 -q 2>$null; if ($?) { break }; Write-Host \"waiting for postgres on 5435... ($i)\"; Start-Sleep -Seconds 1 }; & $pgr -h 127.0.0.1 -p 5435; if (-not $?) { Write-Host 'Postgres never came up - start the ProductPromo-db task first.' -ForegroundColor Red } else { poetry run uvicorn backend.main:app --host 127.0.0.1 --port 8004 --reload }",
+      "options": {
+        "cwd": "${workspaceFolder}\\backend"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
     {
-      "label": "PP-frontend",
+      "label": "ProductPromo-frontend",
       "type": "shell",
-      "command": "$env:VITE_BACKEND_API_URL = 'http://127.0.0.1:8004'; make run-frontend",
+      "command": "npm run dev -- --host 127.0.0.1",
+      "options": {
+        "cwd": "${workspaceFolder}\\frontend"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
     {
-      "label": "ProductPromo: start3",
-      "dependsOn": ["PP-db", "PP-backend", "PP-frontend"],
+      "label": "ProductPromo: start",
+      "dependsOn": ["ProductPromo-db", "ProductPromo-backend", "ProductPromo-frontend"],
       "dependsOrder": "parallel",
       "problemMatcher": []
     },
     {
       "label": "ProductPromo: stop",
       "type": "shell",
-      "command": "docker compose stop",
+      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -m fast -w -t 60 stop",
       "problemMatcher": []
     }
   ]

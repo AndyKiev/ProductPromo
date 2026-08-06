@@ -7,6 +7,7 @@ import { fetchNomenclatures, type Nomenclature } from './nomenclatureApi';
 import { NOMENCLATURE_QK, useNomenclatureMutations } from './useNomenclatureMutations';
 import { useNomenclatureColumns } from './useNomenclatureColumns';
 import { NomenclatureForm } from './NomenclatureForm';
+import { NomenclatureKeySelector } from './NomenclatureKeySelector';
 import { DeleteConfirmDialog } from '../_shared/DeleteConfirmDialog';
 import { useDataGridLocale } from '../../../../hooks/useDataGridLocale';
 import useString from '../../../../hooks/useString';
@@ -51,6 +52,8 @@ export function NomenclatureCrud() {
 
             {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>}
             {!isLoading && error && <Alert severity="error" sx={{ m: 2 }}>{(error as Error).message}</Alert>}
+
+            <NomenclatureKeySelector />
 
             {!isLoading && !error && (
                 <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>

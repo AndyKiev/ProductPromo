@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import select, asc, desc
+from sqlalchemy import select, asc, desc, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -29,6 +29,24 @@ class BaseRepository:
             if hasattr(self.model, col):
                 column = getattr(self.model, col)
                 stmt = stmt.order_by(desc(column) if sort.startswith("-") else asc(column))
+        res = await self.session.execute(stmt)
+        return res.scalars().all()
+
+    async def search(
+        self,
+        q: str,
+        filters: Optional[dict] = None,
+        limit: int = 20,
+        search_cols: tuple = ("name",),
+    ):
+        """Case-insensitive substring search over `search_cols`, limited to `limit` rows."""
+        stmt = select(self.model)
+        if filters:
+            for key, value in filters.items():
+                stmt = stmt.where(getattr(self.model, key) == value)
+        like = f"%{q}%"
+        stmt = stmt.where(or_(*(getattr(self.model, c).ilike(like) for c in search_cols)))
+        stmt = stmt.limit(limit)
         res = await self.session.execute(stmt)
         return res.scalars().all()
 

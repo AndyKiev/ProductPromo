@@ -18,8 +18,10 @@ router = APIRouter(
 async def list_nomenclature_key(
     service: Annotated[NomenclatureKeyService, Depends(get_nomenclature_key_service)],
     sort: Optional[str] = Query(None),
+    q: Optional[str] = Query(None, description="Search by name (substring, case-insensitive)"),
+    limit: int = Query(20, ge=1, le=200),
 ):
-    return await service.list_nomenclature_key(sort=sort)
+    return await service.list_nomenclature_key(sort=sort, q=q, limit=limit)
 
 
 @router.get("/{item_id}", response_model=NomenclatureKeySchema)

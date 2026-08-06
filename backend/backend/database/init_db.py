@@ -32,6 +32,20 @@ async def seed_status_types() -> None:
                 ))
 
 
+async def seed_nom_key_link_status_types() -> None:
+    """Insert default key-link status types if the table is empty."""
+    async with db_helper.session_factory() as session:
+        async with session.begin():
+            count = await session.execute(text("SELECT COUNT(*) FROM nomkeylinkstatustype"))
+            if count.scalar() == 0:
+                await session.execute(text(
+                    "INSERT INTO nomkeylinkstatustype (\"Id\", \"NameR\", \"NameU\", \"NameE\", \"NameF\", \"UserID\", \"CreaDT\") VALUES "
+                    "(1, 'без ревижна', 'без ревіжна', 'no revision', 'no revision', 657, '2023-04-24 20:18:53'), "
+                    "(2, 'деактивирорван', 'деактивован', 'deactivated', 'deactivated', 657, '2023-04-24 20:18:53'), "
+                    "(3, 'ревижн завершен', 'ревіжна завершено', 'revision processed', 'revision processed', 657, '2023-04-24 20:18:53')"
+                ))
+
+
 async def bootstrap() -> None:
     """Create tables and seed, in a single event loop.
 
@@ -41,6 +55,7 @@ async def bootstrap() -> None:
     """
     await init_db()
     await seed_status_types()
+    await seed_nom_key_link_status_types()
 
 
 # Explicitly import every model so its table is registered in Base.metadata.
@@ -52,3 +67,7 @@ import backend.api_v1.category.category_model  # noqa: F401,E402
 import backend.api_v1.family.family_model  # noqa: F401,E402
 import backend.api_v1.nomenclature_key.nomenclature_key_model  # noqa: F401,E402
 import backend.api_v1.nomenclature.nomenclature_model  # noqa: F401,E402
+import backend.api_v1.nomenclature_key_link.nom_key_link_status_type_model  # noqa: F401,E402
+import backend.api_v1.nomenclature_key_link.key_link1_model  # noqa: F401,E402
+import backend.api_v1.nomenclature_key_link.key_link2_model  # noqa: F401,E402
+import backend.api_v1.nomenclature_key_link.key_link3_model  # noqa: F401,E402

@@ -16,6 +16,7 @@ const TABS = [
     { key: 'families', label: 'families' },
     { key: 'keys', label: 'keys' },
     { key: 'links', label: 'links' },
+    { key: 'key-links', label: 'keyLinks' },
 ] as const;
 
 function NomenclatureLayout() {

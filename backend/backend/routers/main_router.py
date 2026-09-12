@@ -10,6 +10,13 @@ from backend.api_v1.family.family_views import router as family_router
 from backend.api_v1.nomenclature_key.nomenclature_key_views import router as nomenclature_key_router
 from backend.api_v1.nomenclature.nomenclature_views import router as nomenclature_router
 from backend.api_v1.nomenclature_key_link.key_link_views import router as key_link_router
+from backend.api_v1.product_status.product_status_views import router as product_status_router
+from backend.api_v1.supplier_status.supplier_status_views import router as supplier_status_router
+from backend.api_v1.supplier_product_status.supplier_product_status_views import router as supplier_product_status_router
+from backend.api_v1.import_code.import_code_views import router as import_code_router
+from backend.api_v1.product.product_views import router as product_router
+from backend.api_v1.supplier.supplier_views import router as supplier_router
+from backend.api_v1.product_supplier.product_supplier_views import router as product_supplier_router
 
 router = APIRouter(prefix=settings.api_v1_prefix)
 
@@ -22,6 +29,13 @@ router.include_router(family_router)
 router.include_router(nomenclature_key_router)
 router.include_router(nomenclature_router)
 router.include_router(key_link_router)
+router.include_router(product_status_router)
+router.include_router(supplier_status_router)
+router.include_router(supplier_product_status_router)
+router.include_router(import_code_router)
+router.include_router(product_router)
+router.include_router(supplier_router)
+router.include_router(product_supplier_router)
 
 
 @router.get("/health", tags=["Health"])

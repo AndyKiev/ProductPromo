@@ -71,3 +71,10 @@ import backend.api_v1.nomenclature_key_link.nom_key_link_status_type_model  # no
 import backend.api_v1.nomenclature_key_link.key_link1_model  # noqa: F401,E402
 import backend.api_v1.nomenclature_key_link.key_link2_model  # noqa: F401,E402
 import backend.api_v1.nomenclature_key_link.key_link3_model  # noqa: F401,E402
+import backend.api_v1.product_status.product_status_model  # noqa: F401,E402
+import backend.api_v1.supplier_status.supplier_status_model  # noqa: F401,E402
+import backend.api_v1.supplier_product_status.supplier_product_status_model  # noqa: F401,E402
+import backend.api_v1.import_code.import_code_model  # noqa: F401,E402
+import backend.api_v1.supplier.supplier_model  # noqa: F401,E402
+import backend.api_v1.product.product_model  # noqa: F401,E402
+import backend.api_v1.product_supplier.product_supplier_model  # noqa: F401,E402

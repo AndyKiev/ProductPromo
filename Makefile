@@ -12,6 +12,9 @@ PGPORT     = 5435
 PGUSER     = admin
 PGDB       = product_promo
 
+# Source CSV for `make import-products` (override with `make import-products CSV=...`).
+CSV        = C:/Users/andre/Desktop/DataSamples/Article_METI_11.09.2026.csv
+
 # --- Host PostgreSQL ---------------------------------------------------------
 
 # start the host Postgres cluster (idempotent: no-op if already running)
@@ -65,6 +68,11 @@ install-frontend:
 # Create tables in the DB (idempotent). Needs APP_CONFIG__DB__* in backend/.env.
 init-db:
 	cd backend && poetry run python -c "import asyncio; from backend.database.init_db import bootstrap; asyncio.run(bootstrap())"
+
+# Bulk-import products/suppliers/associations from the METI article CSV (idempotent).
+# Creates the new tables if missing; add TRUNCATE=1 to reload from scratch.
+import-products:
+	cd backend && poetry run python -m scripts.import_products --csv "$(CSV)" $(if $(TRUNCATE),--truncate,)
 
 # FastAPI on :8004 → Swagger http://127.0.0.1:8004/docs (run from backend/)
 run-backend:

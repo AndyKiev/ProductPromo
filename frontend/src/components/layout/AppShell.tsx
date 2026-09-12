@@ -1,7 +1,7 @@
 import { type FC, type ReactNode } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { AppBar, Box, Toolbar, Typography, Button, Stack, Chip, Tooltip, IconButton } from '@mui/material';
-import { LogoutRounded, CategoryRounded } from '@mui/icons-material';
+import { LogoutRounded, CategoryRounded, Inventory2Rounded, LocalShippingRounded } from '@mui/icons-material';
 import { useTheme } from '../theme/useTheme';
 import { useAuthStore } from '../../store/authStore';
 import ThemeSwitch from '../theme/ThemeSwitch';
@@ -50,6 +50,8 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
 
           <Stack direction="row" spacing={0.5} flexGrow={1}>
             {navBtn('nomenclature', '/admin/nomenclature', <CategoryRounded sx={{ fontSize: 16 }} />)}
+            {navBtn('products', '/admin/products', <Inventory2Rounded sx={{ fontSize: 16 }} />)}
+            {navBtn('suppliers', '/admin/suppliers', <LocalShippingRounded sx={{ fontSize: 16 }} />)}
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={1.5}>

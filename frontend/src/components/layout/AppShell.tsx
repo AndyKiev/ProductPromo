@@ -5,6 +5,7 @@ import { LogoutRounded, CategoryRounded } from '@mui/icons-material';
 import { useTheme } from '../theme/useTheme';
 import { useAuthStore } from '../../store/authStore';
 import ThemeSwitch from '../theme/ThemeSwitch';
+import Logo from './Logo';
 import cfl from '../../utils/capitalizeFirstLetter';
 import useString from '../../hooks/useString';
 
@@ -41,9 +42,7 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
         sx={{ background: `${t.cardBg}f0`, backdropFilter: 'blur(12px)', borderBottom: `1px solid ${t.borderLight}`, color: t.text }}>
         <Toolbar sx={{ gap: 1, minHeight: '56px !important', px: { xs: 2, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} mr={3}>
-            <Box sx={{ width: 28, height: 28, borderRadius: '8px',
-              background: `linear-gradient(135deg, ${t.accent}, #2d5eed)`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>⚡</Box>
+            <Logo size={28} />
             <Typography fontWeight={700} fontSize={15} color={t.text} sx={{ userSelect: 'none' }}>
               ProductPromo
             </Typography>

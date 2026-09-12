@@ -1,10 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ProductPromo">
+  <title>ProductPromo</title>
+  <style>
+    .pp-stop-1 { stop-color: #3b82f6; }
+    .pp-stop-2 { stop-color: #1d4ed8; }
+    @media (prefers-color-scheme: dark) {
+      .pp-stop-1 { stop-color: #60a5fa; }
+      .pp-stop-2 { stop-color: #2563eb; }
+    }
+  </style>
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
-      <stop offset="0%" stop-color="#1565C0"/>
-      <stop offset="100%" stop-color="#42A5F5"/>
+    <linearGradient id="pp-bg" x1="0" y1="0" x2="32" y2="32">
+      <stop class="pp-stop-1" offset="0%" />
+      <stop class="pp-stop-2" offset="100%" />
+    </linearGradient>
+    <linearGradient id="pp-sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="6" fill="url(#g)"/>
-  <text x="16" y="23" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">P</text>
+
+  <rect width="32" height="32" rx="8" fill="url(#pp-bg)" />
+  <rect width="32" height="32" rx="8" fill="url(#pp-sheen)" />
+
+  <g fill="#ffffff">
+    <g transform="translate(3 5) scale(0.78)">
+      <path d="m21.41 11.58-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42M5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7" />
+    </g>
+    <path d="M24.5 3.5Q24.5 7.5 28.5 7.5Q24.5 7.5 24.5 11.5Q24.5 7.5 20.5 7.5Q24.5 7.5 24.5 3.5Z" />
+  </g>
 </svg>

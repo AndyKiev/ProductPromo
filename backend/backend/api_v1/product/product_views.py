@@ -30,7 +30,9 @@ async def list_products(
     nomenclature_id: Optional[int] = Query(None),
     status_id: Optional[int] = Query(None),
     import_code_id: Optional[int] = Query(None),
+    product_type_id: Optional[int] = Query(None),
     supplier_id: Optional[int] = Query(None),
+    ean: Optional[str] = Query(None),
     page: int = Query(0, ge=0),
     page_size: int = Query(25, ge=1, le=200),
     sort: Optional[str] = Query(None),
@@ -39,8 +41,8 @@ async def list_products(
     return await service.list_products(
         q=q, market_id=market_id, segment_id=segment_id, category_id=category_id,
         family_id=family_id, nomenclature_id=nomenclature_id, status_id=status_id,
-        import_code_id=import_code_id, supplier_id=supplier_id,
-        page=page, page_size=page_size, sort=sort, order=order,
+        import_code_id=import_code_id, product_type_id=product_type_id, supplier_id=supplier_id,
+        ean=ean, page=page, page_size=page_size, sort=sort, order=order,
     )
 
 

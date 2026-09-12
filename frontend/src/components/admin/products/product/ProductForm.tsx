@@ -19,6 +19,7 @@ import { fetchFamilies } from '../../nomenclature/family/familyApi';
 import { fetchNomenclatures } from '../../nomenclature/nomenclature/nomenclatureApi';
 import { fetchProductStatuses } from '../product_statuses/productStatusApi';
 import { fetchImportCodes } from '../import_codes/importCodeApi';
+import { fetchProductTypes } from '../product_types/productTypeApi';
 
 const NONE = 0;
 
@@ -31,6 +32,7 @@ const schema = z.object({
     family_id: z.number(),
     status_id: z.number(),
     import_code_id: z.number(),
+    product_type_id: z.number(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -48,7 +50,7 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
     const { control, handleSubmit, reset, watch, formState: { errors } } = useForm<FormValues>({
         resolver: zodResolver(schema),
         mode: 'onSubmit',
-        defaultValues: { code: '', name: '', market_id: 0, segment_id: 0, category_id: 0, family_id: 0, status_id: 0, import_code_id: 0 },
+        defaultValues: { code: '', name: '', market_id: 0, segment_id: 0, category_id: 0, family_id: 0, status_id: 0, import_code_id: 0, product_type_id: 0 },
     });
 
     const marketId = watch('market_id');
@@ -62,6 +64,7 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
     const { data: nomenclatures = [] } = useQuery({ queryKey: ['nomenclatures_all'], queryFn: fetchNomenclatures, staleTime: Infinity });
     const { data: statuses = [] } = useQuery({ queryKey: ['product_statuses'], queryFn: fetchProductStatuses, staleTime: Infinity });
     const { data: importCodes = [] } = useQuery({ queryKey: ['import_codes'], queryFn: fetchImportCodes, staleTime: Infinity });
+    const { data: productTypes = [] } = useQuery({ queryKey: ['product_types'], queryFn: fetchProductTypes, staleTime: Infinity });
 
     const nomById = useMemo(() => new Map(nomenclatures.map((n) => [n.id, n])), [nomenclatures]);
     const nomByTuple = useMemo(
@@ -92,6 +95,7 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
             family_id: nom?.family_id ?? 0,
             status_id: editing?.status_id ?? 0,
             import_code_id: editing?.import_code_id ?? 0,
+            product_type_id: editing?.product_type_id ?? 0,
         });
     }, [editing, open, reset, nomById]);
 
@@ -109,6 +113,7 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
             nomenclature_id: resolveNomenclatureId(values),
             status_id: values.status_id || null,
             import_code_id: values.import_code_id || null,
+            product_type_id: values.product_type_id || null,
         };
         if (editing) updateMutation.mutate({ id: editing.id, data: payload });
         else createMutation.mutate(payload);
@@ -152,6 +157,7 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
                             () => reset((p) => ({ ...p, family_id: 0 })))}
                         {select('family_id', 'family', families.map((f) => ({ id: f.id, label: f.name })), !categoryId)}
                         {select('status_id', 'productStatus', statuses.map((s) => ({ id: s.id, label: s.name || s.code })))}
+                        {select('product_type_id', 'productType', productTypes.map((t) => ({ id: t.id, label: t.name || t.code })))}
 
                         <Controller name="import_code_id" control={control} render={({ field }) => (
                             <AsyncAutocomplete

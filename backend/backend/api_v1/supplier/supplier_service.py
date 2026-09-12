@@ -33,7 +33,7 @@ class SupplierService(BaseService):
     # -- read ------------------------------------------------------------
     def _to_schema(self, row) -> SupplierSchema:
         s = SupplierSchema.model_validate(row)
-        s.status_name = row.status.name if row.status else None
+        s.status_name = (row.status.name or row.status.code) if row.status else None
         return s
 
     async def get_by_id(self, id: int) -> SupplierSchema:

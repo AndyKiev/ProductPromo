@@ -1,11 +1,13 @@
 from typing import Optional
 
-from sqlalchemy import select, func, or_, asc, desc
+from sqlalchemy import select, func, or_, asc, desc, cast, Integer
+from sqlalchemy.orm import contains_eager
 
 from backend.api_v1.base.base_repository import BaseRepository
 from backend.api_v1.supplier.supplier_model import Supplier
+from backend.api_v1.supplier_status.supplier_status_model import SupplierStatus
 
-_SORTABLE = {"id", "code", "name", "status_id"}
+_SORTABLE = {"id", "code", "name", "status", "status_id"}
 
 
 class SupplierRepository(BaseRepository):
@@ -35,7 +37,17 @@ class SupplierRepository(BaseRepository):
             select(func.count()).select_from(stmt.subquery())
         )).scalar_one()
 
-        column = getattr(Supplier, sort if sort in _SORTABLE else "id")
+        sort_field = sort if sort in _SORTABLE else "id"
+        if sort_field == "code":
+            # `code` is stored as text but is numeric: order it numerically.
+            column = cast(Supplier.code, Integer)
+        elif sort_field == "status":
+            stmt = stmt.join(SupplierStatus, Supplier.status_id == SupplierStatus.id).options(
+                contains_eager(Supplier.status)
+            )
+            column = func.coalesce(SupplierStatus.name, SupplierStatus.code)
+        else:
+            column = getattr(Supplier, sort_field)
         stmt = stmt.order_by(desc(column) if order == "desc" else asc(column))
         stmt = stmt.limit(page_size).offset(page * page_size)
         rows = (await self.session.execute(stmt)).scalars().unique().all()

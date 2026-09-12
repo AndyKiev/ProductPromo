@@ -8,6 +8,7 @@ import { PRODUCT_QK, useProductMutations } from './useProductMutations';
 import { useProductColumns } from './useProductColumns';
 import { ProductForm } from './ProductForm';
 import { ProductFilters } from './ProductFilters';
+import { ProductCardModal } from './ProductCardModal';
 import { DeleteConfirmDialog } from '../../nomenclature/_shared/DeleteConfirmDialog';
 import { useDataGridLocale } from '../../../../hooks/useDataGridLocale';
 import useString from '../../../../hooks/useString';
@@ -19,6 +20,7 @@ export function ProductCrud() {
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
     const [formOpen, setFormOpen] = useState(false);
     const [editing, setEditing] = useState<Product | null>(null);
+    const [cardProduct, setCardProduct] = useState<Product | null>(null);
     const [rowToDelete, setRowToDelete] = useState<Product | null>(null);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
     const [sortModel, setSortModel] = useState<GridSortModel>([]);
@@ -47,6 +49,7 @@ export function ProductCrud() {
     const localeText = useDataGridLocale();
     const columns = useProductColumns({
         getString,
+        onOpenCard: (row) => setCardProduct(row),
         onEdit: (row) => { setEditing(row); setFormOpen(true); },
         onDelete: (row) => setRowToDelete(row),
         actionsPending: updateMutation.isPending || deleteMutation.isPending,
@@ -97,6 +100,9 @@ export function ProductCrud() {
             <ProductForm open={formOpen} editing={editing}
                 onClose={() => { setFormOpen(false); setEditing(null); }}
                 createMutation={createMutation} updateMutation={updateMutation} />
+
+            <ProductCardModal open={!!cardProduct} product={cardProduct}
+                onClose={() => setCardProduct(null)} />
 
             <DeleteConfirmDialog open={!!rowToDelete} label={rowToDelete?.code}
                 isPending={deleteMutation.isPending}

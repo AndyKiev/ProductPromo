@@ -17,7 +17,7 @@ export function useSupplierColumns({ getString, onEdit, onDelete, actionsPending
     return [
         { field: 'code', headerName: cfl(getString('supplierCode')) || 'code', width: 150, minWidth: 120 },
         { field: 'name', headerName: cfl(getString('supplierName')) || 'name', flex: 1, minWidth: 240 },
-        { field: 'status_name', headerName: cfl(getString('status')) || 'status', width: 160, sortable: false, valueGetter: (_v, r: Supplier) => r.status_name ?? '' },
+        { field: 'status', headerName: cfl(getString('supplierStatus')) || 'status', width: 160, valueGetter: (_v, r: Supplier) => r.status_name ?? '' },
         {
             field: '_actions', headerName: '', width: 96, sortable: false, filterable: false, disableColumnMenu: true,
             renderCell: (p: GridRenderCellParams<Supplier>) => (

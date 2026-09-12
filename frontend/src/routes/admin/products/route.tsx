@@ -11,7 +11,11 @@ const BASE = '/admin/products';
 const TABS = [
     { key: 'list', label: 'products' },
     { key: 'product-statuses', label: 'productStatuses' },
+    { key: 'product-types', label: 'productTypes' },
     { key: 'import-codes', label: 'importCodes' },
+    { key: 'tax-types', label: 'taxTypes' },
+    { key: 'tax-rates', label: 'taxRates' },
+    { key: 'product-taxes', label: 'productTaxes' },
 ] as const;
 
 function ProductsLayout() {

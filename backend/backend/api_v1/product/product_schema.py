@@ -8,6 +8,7 @@ class ProductBase(BaseModel):
     nomenclature_id: Optional[int] = None
     status_id: Optional[int] = None
     import_code_id: Optional[int] = None
+    product_type_id: Optional[int] = None
 
 
 class ProductCreate(ProductBase):
@@ -20,6 +21,7 @@ class ProductUpdate(BaseModel):
     nomenclature_id: Optional[int] = None
     status_id: Optional[int] = None
     import_code_id: Optional[int] = None
+    product_type_id: Optional[int] = None
 
 
 class Product(ProductBase):
@@ -32,3 +34,5 @@ class Product(ProductBase):
     status_name: Optional[str] = None
     import_code: Optional[str] = None
     import_code_description: Optional[str] = None
+    product_type_code: Optional[str] = None
+    product_type_name: Optional[str] = None

@@ -22,7 +22,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import asyncpg  # noqa: E402
 
 from backend.config.config import settings  # noqa: E402
-from backend.database.init_db import init_db  # noqa: E402  (also registers all models)
+from backend.database.init_db import (  # noqa: E402  (also registers all models)
+    init_db,
+    ensure_schema_updates,
+    seed_taxes,
+)
 from backend.database.db_helper import db_helper  # noqa: E402
 
 DEFAULT_CSV = r"C:\Users\andre\Desktop\DataSamples\Article_METI_11.09.2026.csv"
@@ -41,6 +45,7 @@ C = {
     "product_status": 11,       # Статус артикула
     "supplier_status": 12,      # Статус постащика
     "supplier_product_status": 13,  # Cт арт у пост
+    "vat": 19,                  # Ставка НДС (0/7/14/20/26; 26 = 20% VAT + 5% excise)
 }
 
 STAGING_COLUMNS = list(C.keys())
@@ -118,6 +123,27 @@ DDL = [
     LEFT JOIN supplier_product_status sps ON sps.code = st.supplier_product_status
     ON CONFLICT (product_id, supplier_id) DO NOTHING;
     """,
+    # VAT (26 means 20% VAT + 5% excise)
+    """
+    INSERT INTO product_tax (product_id, tax_type_id, tax_rate_id)
+    SELECT p.id, tr.tax_type_id, tr.id
+    FROM staging_product_csv st
+    JOIN product p ON p.code = st.product_code
+    JOIN tax_rate tr ON tr.tax_type_id = 1
+        AND tr.rate = CASE WHEN st.vat = '26' THEN 20 ELSE st.vat::numeric END
+    WHERE st.product_code IS NOT NULL AND st.vat IS NOT NULL
+    ON CONFLICT (product_id, tax_type_id) DO NOTHING;
+    """,
+    # excise, only for the 26 (VAT 20 + excise 5) products
+    """
+    INSERT INTO product_tax (product_id, tax_type_id, tax_rate_id)
+    SELECT p.id, 2, tr.id
+    FROM staging_product_csv st
+    JOIN product p ON p.code = st.product_code
+    JOIN tax_rate tr ON tr.tax_type_id = 2 AND tr.rate = 5
+    WHERE st.product_code IS NOT NULL AND st.vat = '26'
+    ON CONFLICT (product_id, tax_type_id) DO NOTHING;
+    """,
     "DROP TABLE IF EXISTS staging_product_csv;",
     "ANALYZE product; ANALYZE supplier; ANALYZE product_supplier;",
     "CREATE EXTENSION IF NOT EXISTS pg_trgm;",
@@ -138,6 +164,8 @@ COUNTS = [
     ("supplier", "SELECT count(*) FROM supplier"),
     ("product", "SELECT count(*) FROM product"),
     ("product_supplier", "SELECT count(*) FROM product_supplier"),
+    ("product_tax", "SELECT count(*) FROM product_tax"),
+    ("product_tax (excise)", "SELECT count(*) FROM product_tax WHERE tax_type_id = 2"),
     ("products w/o nomenclature", "SELECT count(*) FROM product WHERE nomenclature_id IS NULL"),
 ]
 
@@ -149,6 +177,8 @@ async def run(csv_path: str, encoding: str, truncate: bool) -> None:
     started = time.perf_counter()
     print("creating tables (idempotent) ...", flush=True)
     await init_db()
+    await ensure_schema_updates()
+    await seed_taxes()
     await db_helper.dispose()
 
     conn = await asyncpg.connect(_dsn())

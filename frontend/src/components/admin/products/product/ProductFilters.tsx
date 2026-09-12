@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Box, Button, MenuItem, Paper, TextField } from '@mui/material';
+import { Box, Button, IconButton, InputAdornment, MenuItem, Paper, TextField } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import useString from '../../../../hooks/useString';
 import cfl from '../../../../utils/capitalizeFirstLetter';
 import catalogStrings from '../../catalogStrings';
@@ -11,6 +12,7 @@ import { fetchCategories } from '../../nomenclature/category/categoryApi';
 import { fetchFamilies } from '../../nomenclature/family/familyApi';
 import { fetchProductStatuses } from '../product_statuses/productStatusApi';
 import { fetchImportCodes } from '../import_codes/importCodeApi';
+import { fetchProductTypes } from '../product_types/productTypeApi';
 import { fetchSuppliers } from '../../suppliers/supplier/supplierApi';
 import type { ProductListParams } from './productApi';
 
@@ -28,10 +30,13 @@ export function ProductFilters({ onChange }: Props) {
     const [familyId, setFamilyId] = useState(NONE);
     const [statusId, setStatusId] = useState(NONE);
     const [importCodeId, setImportCodeId] = useState(NONE);
+    const [productTypeId, setProductTypeId] = useState(NONE);
     const [supplierId, setSupplierId] = useState(NONE);
     const [supplierLabel, setSupplierLabel] = useState<string | null>(null);
     const [q, setQ] = useState('');
     const [debouncedQ, setDebouncedQ] = useState('');
+    const [ean, setEan] = useState('');
+    const [debouncedEan, setDebouncedEan] = useState('');
 
     const { data: markets = [] } = useQuery({ queryKey: ['markets'], queryFn: fetchMarkets });
     const { data: segments = [] } = useQuery({ queryKey: ['segments', marketId], queryFn: () => fetchSegments(marketId), enabled: !!marketId });
@@ -39,6 +44,7 @@ export function ProductFilters({ onChange }: Props) {
     const { data: families = [] } = useQuery({ queryKey: ['families', categoryId], queryFn: () => fetchFamilies(categoryId), enabled: !!categoryId });
     const { data: statuses = [] } = useQuery({ queryKey: ['product_statuses'], queryFn: fetchProductStatuses, staleTime: Infinity });
     const { data: importCodes = [] } = useQuery({ queryKey: ['import_codes'], queryFn: fetchImportCodes, staleTime: Infinity });
+    const { data: productTypes = [] } = useQuery({ queryKey: ['product_types'], queryFn: fetchProductTypes, staleTime: Infinity });
 
     const importCodeLabel = useMemo(
         () => new Map(importCodes.map((c) => [c.id, c.description ? `${c.code} — ${c.description}` : c.code])),
@@ -51,22 +57,30 @@ export function ProductFilters({ onChange }: Props) {
     }, [q]);
 
     useEffect(() => {
+        const timer = setTimeout(() => setDebouncedEan(ean), 400);
+        return () => clearTimeout(timer);
+    }, [ean]);
+
+    useEffect(() => {
         onChange({
             q: debouncedQ || undefined,
+            ean: debouncedEan || undefined,
             market_id: marketId || undefined,
             segment_id: segmentId || undefined,
             category_id: categoryId || undefined,
             family_id: familyId || undefined,
             status_id: statusId || undefined,
             import_code_id: importCodeId || undefined,
+            product_type_id: productTypeId || undefined,
             supplier_id: supplierId || undefined,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [debouncedQ, marketId, segmentId, categoryId, familyId, statusId, importCodeId, supplierId]);
+    }, [debouncedQ, debouncedEan, marketId, segmentId, categoryId, familyId, statusId, importCodeId, productTypeId, supplierId]);
 
     const reset = () => {
         setMarketId(NONE); setSegmentId(NONE); setCategoryId(NONE); setFamilyId(NONE);
-        setStatusId(NONE); setImportCodeId(NONE); setSupplierId(NONE); setSupplierLabel(null); setQ('');
+        setStatusId(NONE); setImportCodeId(NONE); setProductTypeId(NONE);
+        setSupplierId(NONE); setSupplierLabel(null); setQ(''); setEan('');
     };
 
     const select = (labelKey: string, value: number, disabled: boolean, options: { id: number; label: string }[], onChange: (v: number) => void) => (
@@ -96,7 +110,23 @@ export function ProductFilters({ onChange }: Props) {
                 <TextField size="small" label={cfl(getString('search')) || 'search'} sx={{ minWidth: 240, flex: 2 }}
                     value={q} onChange={(e) => setQ(e.target.value)}
                     placeholder={`${getString('productCode')} / ${getString('productName')}`} />
+                <TextField size="small" label={cfl(getString('searchByEan')) || 'EAN'} sx={{ minWidth: 200, flex: 1 }}
+                    value={ean} onChange={(e) => setEan(e.target.value)}
+                    placeholder={getString('ean')}
+                    slotProps={{
+                        input: {
+                            endAdornment: ean ? (
+                                <InputAdornment position="end">
+                                    <IconButton size="small" onClick={() => setEan('')} edge="end"
+                                        aria-label={getString('clear')}>
+                                        <ClearIcon fontSize="small" />
+                                    </IconButton>
+                                </InputAdornment>
+                            ) : null,
+                        },
+                    }} />
                 {select('status', statusId, false, statuses.map((s) => ({ id: s.id, label: s.name || s.code })), setStatusId)}
+                {select('productType', productTypeId, false, productTypes.map((t) => ({ id: t.id, label: t.name || t.code })), setProductTypeId)}
                 <AsyncAutocomplete
                     label={cfl(getString('importCode')) || 'import code'}
                     valueId={importCodeId || null}

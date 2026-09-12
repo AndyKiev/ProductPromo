@@ -15,6 +15,9 @@ PGDB       = product_promo
 # Source CSV for `make import-products` (override with `make import-products CSV=...`).
 CSV        = C:/Users/andre/Desktop/DataSamples/Article_METI_11.09.2026.csv
 
+# Source xlsx for `make import-ean` (override with `make import-ean XLSX=...`).
+XLSX       = C:/Users/andre/Desktop/DataSamples/EAN_all_2026 09 11.xlsx
+
 # --- Host PostgreSQL ---------------------------------------------------------
 
 # start the host Postgres cluster (idempotent: no-op if already running)
@@ -73,6 +76,11 @@ init-db:
 # Creates the new tables if missing; add TRUNCATE=1 to reload from scratch.
 import-products:
 	cd backend && poetry run python -m scripts.import_products --csv "$(CSV)" $(if $(TRUNCATE),--truncate,)
+
+# Bulk-import EAN barcodes + product types from the EAN xlsx (idempotent).
+# Requires `make import-products` first (EANs resolve to product.id via product.code).
+import-ean:
+	cd backend && poetry run python -m scripts.import_ean --xlsx "$(XLSX)" $(if $(TRUNCATE),--truncate,)
 
 # FastAPI on :8004 → Swagger http://127.0.0.1:8004/docs (run from backend/)
 run-backend:

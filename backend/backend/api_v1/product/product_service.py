@@ -38,9 +38,11 @@ class ProductService(BaseService):
         s.segment_name = nom.segment.name if nom and nom.segment else None
         s.category_name = nom.category.name if nom and nom.category else None
         s.family_name = nom.family.name if nom and nom.family else None
-        s.status_name = row.status.name if row.status else None
+        s.status_name = (row.status.name or row.status.code) if row.status else None
         s.import_code = row.import_code_ref.code if row.import_code_ref else None
         s.import_code_description = row.import_code_ref.description if row.import_code_ref else None
+        s.product_type_code = row.product_type.code if row.product_type else None
+        s.product_type_name = row.product_type.name if row.product_type else None
         return s
 
     async def get_by_id(self, id: int) -> ProductSchema:
@@ -53,13 +55,14 @@ class ProductService(BaseService):
                             segment_id: Optional[int] = None, category_id: Optional[int] = None,
                             family_id: Optional[int] = None, nomenclature_id: Optional[int] = None,
                             status_id: Optional[int] = None, import_code_id: Optional[int] = None,
-                            supplier_id: Optional[int] = None, page: int = 0, page_size: int = 25,
+                            product_type_id: Optional[int] = None, supplier_id: Optional[int] = None,
+                            ean: Optional[str] = None, page: int = 0, page_size: int = 25,
                             sort: Optional[str] = None, order: str = "asc") -> Page[ProductSchema]:
         rows, total = await self.repository.list_paged(
             q=q, market_id=market_id, segment_id=segment_id, category_id=category_id,
             family_id=family_id, nomenclature_id=nomenclature_id, status_id=status_id,
-            import_code_id=import_code_id, supplier_id=supplier_id,
-            page=page, page_size=page_size, sort=sort, order=order,
+            import_code_id=import_code_id, product_type_id=product_type_id, supplier_id=supplier_id,
+            ean=ean, page=page, page_size=page_size, sort=sort, order=order,
         )
         return Page[ProductSchema](items=[self._to_schema(r) for r in rows], total=total)
 

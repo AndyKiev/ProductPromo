@@ -33,7 +33,7 @@ class ProductSupplierService(BaseService):
         s.product_name = row.product.name if row.product else None
         s.supplier_code = row.supplier.code if row.supplier else None
         s.supplier_name = row.supplier.name if row.supplier else None
-        s.status_name = row.status.name if row.status else None
+        s.status_name = (row.status.name or row.status.code) if row.status else None
         return s
 
     async def get_by_id(self, id: int) -> ProductSupplierSchema:

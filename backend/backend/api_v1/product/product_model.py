@@ -18,7 +18,11 @@ class Product(Base):
     import_code_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("import_code.id"), nullable=True, index=True
     )
+    product_type_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("product_type.id"), nullable=True, index=True
+    )
 
     nomenclature = relationship("Nomenclature", lazy="joined")
     status = relationship("ProductStatus", lazy="joined")
     import_code_ref = relationship("ImportCode", lazy="joined")
+    product_type = relationship("ProductType", lazy="joined")

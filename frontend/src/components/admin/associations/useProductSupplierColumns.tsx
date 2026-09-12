@@ -16,12 +16,12 @@ interface Params {
 
 export function useProductSupplierColumns({ getString, statuses, onStatusChange, onDelete, actionsPending }: Params): GridColDef[] {
     return [
-        { field: 'product_code', headerName: cfl(getString('productCode')) || 'code', width: 130, sortable: false, valueGetter: (_v, r: ProductSupplier) => r.product_code ?? '' },
+        { field: 'product_code', headerName: cfl(getString('productCode')) || 'code', width: 130, valueGetter: (_v, r: ProductSupplier) => r.product_code ?? '' },
         { field: 'product_name', headerName: cfl(getString('productName')) || 'name', flex: 1, minWidth: 220, sortable: false, valueGetter: (_v, r: ProductSupplier) => r.product_name ?? '' },
         { field: 'supplier_code', headerName: cfl(getString('supplierCode')) || 'supplier', width: 140, sortable: false, valueGetter: (_v, r: ProductSupplier) => r.supplier_code ?? '' },
         { field: 'supplier_name', headerName: cfl(getString('supplierName')) || 'supplier name', flex: 1, minWidth: 200, sortable: false, valueGetter: (_v, r: ProductSupplier) => r.supplier_name ?? '' },
         {
-            field: 'status_id', headerName: cfl(getString('supplierProductStatus')) || 'status', width: 180, sortable: false,
+            field: 'status_id', headerName: cfl(getString('supplierProductStatus')) || 'status', width: 180, sortable: true,
             renderCell: (p: GridRenderCellParams<ProductSupplier>) => (
                 <TextField select size="small" variant="standard" value={p.row.status_id ?? 0}
                     disabled={actionsPending}

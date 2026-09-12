@@ -12,6 +12,7 @@ export interface Product {
     nomenclature_id: number | null;
     status_id: number | null;
     import_code_id: number | null;
+    product_type_id: number | null;
     market_name: string | null;
     segment_name: string | null;
     category_name: string | null;
@@ -19,6 +20,8 @@ export interface Product {
     status_name: string | null;
     import_code: string | null;
     import_code_description: string | null;
+    product_type_code: string | null;
+    product_type_name: string | null;
 }
 
 export interface ProductCreate {
@@ -27,6 +30,7 @@ export interface ProductCreate {
     nomenclature_id?: number | null;
     status_id?: number | null;
     import_code_id?: number | null;
+    product_type_id?: number | null;
 }
 
 export type ProductUpdate = Partial<ProductCreate>;
@@ -39,7 +43,9 @@ export interface ProductListParams {
     family_id?: number;
     status_id?: number;
     import_code_id?: number;
+    product_type_id?: number;
     supplier_id?: number;
+    ean?: string;
     page?: number;
     page_size?: number;
     sort?: string;

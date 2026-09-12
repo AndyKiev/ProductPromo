@@ -80,6 +80,9 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
                     MuiDataGrid: {
                         defaultProps: { columnHeaderHeight: 44 },
                         styleOverrides: {
+                            // One ink colour for the whole header: title, menu icons and
+                            // the sort arrow must all be identical (they previously
+                            // disagreed in dark mode: black text, white arrow).
                             columnHeader: ({ theme }) => ({
                                 backgroundColor: theme.palette.primary.light,
                                 color: mode === "dark" ? "#000" : "#fff",
@@ -87,7 +90,18 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
                             columnHeaderTitle: { fontWeight: "bold", color: mode === "dark" ? "#000" : "#fff" },
                             iconButtonContainer: { "& button": { color: mode === "dark" ? "#000" : "#fff" } },
                             menuIcon: { "& button": { color: mode === "dark" ? "#000" : "#fff" } },
-                            sortIcon: { color: mode === "dark" ? "#fff" : "#000", opacity: 0.9 },
+                            sortIcon: { color: mode === "dark" ? "#000" : "#fff", opacity: 1 },
+                            // Built-in filter panel: keep the three fields on one baseline
+                            // and stop the floating labels crowding the inputs.
+                            filterForm: {
+                                alignItems: "center",
+                                columnGap: 12,
+                                rowGap: 12,
+                                paddingTop: 12,
+                                paddingBottom: 12,
+                                "& .MuiFormControl-root": { margin: 0 },
+                                "& .MuiInputLabel-root": { transform: "translate(0, -6px) scale(1)" },
+                            },
                         },
                     },
                 },

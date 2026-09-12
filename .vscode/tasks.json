@@ -18,7 +18,7 @@
     {
       "label": "ProductPromo-db",
       "type": "shell",
-      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' status 2>$null; if (-not $?) { & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -l 'C:\\Users\\andre\\PostgresData\\product_promo.log' -w -t 60 start }; & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe' -h 127.0.0.1 -p 5435",
+      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' status 2>$null; if (-not $?) { & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -l 'C:\\Users\\andre\\PostgresData\\product_promo.log' -o '-p 5435' -w -t 60 start }; & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe' -h 127.0.0.1 -p 5435",
       "isBackground": true,
       "problemMatcher": []
     },

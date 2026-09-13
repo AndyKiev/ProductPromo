@@ -42,7 +42,7 @@ export function NomenclatureCrud() {
     });
 
     return (
-        <Box>
+        <Box className="admin-crud">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>{cfl(getString('links'))}</Typography>
                 <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setEditing(null); setFormOpen(true); }}>
@@ -56,7 +56,7 @@ export function NomenclatureCrud() {
             <NomenclatureKeySelector />
 
             {!isLoading && !error && (
-                <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+                <Paper className="admin-data-grid-paper" elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
                     <DataGrid rows={rows} columns={columns}
                         paginationModel={paginationModel} onPaginationModelChange={setPaginationModel}
                         pageSizeOptions={[5, 10, 25, 50]} disableRowSelectionOnClick getRowId={(r) => r.id}

@@ -37,8 +37,8 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', background: t.bg }}>
-      <AppBar position="sticky" elevation={0}
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: t.bg }}>
+      <AppBar position="static" elevation={0}
         sx={{ background: `${t.cardBg}f0`, backdropFilter: 'blur(12px)', borderBottom: `1px solid ${t.borderLight}`, color: t.text }}>
         <Toolbar sx={{ gap: 1, minHeight: '56px !important', px: { xs: 2, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} mr={3}>
@@ -68,7 +68,7 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
           </Stack>
         </Toolbar>
       </AppBar>
-      {children}
+      <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>{children}</Box>
     </Box>
   );
 };

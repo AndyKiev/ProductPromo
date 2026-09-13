@@ -41,7 +41,7 @@ export function SegmentCrud() {
     });
 
     return (
-        <Box>
+        <Box className="admin-crud">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                     {cfl(getString('segments'))}
@@ -55,7 +55,7 @@ export function SegmentCrud() {
             {!isLoading && error && <Alert severity="error" sx={{ m: 2 }}>{(error as Error).message}</Alert>}
 
             {!isLoading && !error && (
-                <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+                <Paper className="admin-data-grid-paper" elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
                     <DataGrid rows={rows} columns={columns}
                         paginationModel={paginationModel} onPaginationModelChange={setPaginationModel}
                         pageSizeOptions={[5, 10, 25, 50]} disableRowSelectionOnClick getRowId={(r) => r.id}

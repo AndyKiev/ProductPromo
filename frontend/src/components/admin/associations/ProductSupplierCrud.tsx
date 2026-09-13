@@ -72,7 +72,7 @@ export function ProductSupplierCrud() {
     });
 
     return (
-        <Box>
+        <Box className="admin-crud">
             <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
                 {cfl(getString('associations'))}
                 {data ? ` (${data.total.toLocaleString()})` : ''}
@@ -102,7 +102,7 @@ export function ProductSupplierCrud() {
 
             {error && <Alert severity="error" sx={{ mb: 2 }}>{(error as Error).message}</Alert>}
 
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+            <Paper className="admin-data-grid-paper" elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
                 <DataGrid
                     rows={data?.items ?? []}
                     columns={columns}
@@ -119,7 +119,7 @@ export function ProductSupplierCrud() {
                     getRowId={(r) => r.id}
                     localeText={localeText}
                     hideFooterSelectedRowCount
-                    sx={{ minHeight: 420 }}
+                    sx={{ minHeight: 0 }}
                 />
             </Paper>
 

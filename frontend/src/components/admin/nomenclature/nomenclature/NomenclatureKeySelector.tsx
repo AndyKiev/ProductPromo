@@ -40,13 +40,25 @@ function CascadingSelect({ label, value, disabled, placeholder, options, onChang
     );
 }
 
-export function NomenclatureKeySelector() {
+// 0 means "not selected" at that level.
+export interface HierarchyFilter {
+    marketId: number;
+    segmentId: number;
+    categoryId: number;
+    familyId: number;
+}
+
+export const EMPTY_HIERARCHY: HierarchyFilter = { marketId: NONE, segmentId: NONE, categoryId: NONE, familyId: NONE };
+
+interface NomenclatureKeySelectorProps {
+    value: HierarchyFilter;
+    onChange: (value: HierarchyFilter) => void;
+}
+
+export function NomenclatureKeySelector({ value, onChange }: NomenclatureKeySelectorProps) {
     const getString = useString({ str: nomenclatureStrings });
 
-    const [marketId, setMarketId] = useState(NONE);
-    const [segmentId, setSegmentId] = useState(NONE);
-    const [categoryId, setCategoryId] = useState(NONE);
-    const [familyId, setFamilyId] = useState(NONE);
+    const { marketId, segmentId, categoryId, familyId } = value;
     const [link1Id, setLink1Id] = useState(NONE);
     const [link2Id, setLink2Id] = useState(NONE);
     const [link3Id, setLink3Id] = useState(NONE);
@@ -79,20 +91,18 @@ export function NomenclatureKeySelector() {
 
     const keyOptions = (links: KeyLink[]) => links.map((l) => ({ id: l.id, label: l.key_name || `ID ${l.key_id}` }));
 
+    const resetKeys = () => { setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE); };
     const onMarketChange = (v: number) => {
-        setMarketId(v); setSegmentId(NONE); setCategoryId(NONE); setFamilyId(NONE);
-        setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE);
+        onChange({ marketId: v, segmentId: NONE, categoryId: NONE, familyId: NONE }); resetKeys();
     };
     const onSegmentChange = (v: number) => {
-        setSegmentId(v); setCategoryId(NONE); setFamilyId(NONE);
-        setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE);
+        onChange({ ...value, segmentId: v, categoryId: NONE, familyId: NONE }); resetKeys();
     };
     const onCategoryChange = (v: number) => {
-        setCategoryId(v); setFamilyId(NONE);
-        setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE);
+        onChange({ ...value, categoryId: v, familyId: NONE }); resetKeys();
     };
     const onFamilyChange = (v: number) => {
-        setFamilyId(v); setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE);
+        onChange({ ...value, familyId: v }); resetKeys();
     };
     const onKey1Change = (v: number) => { setLink1Id(v); setLink2Id(NONE); setLink3Id(NONE); };
     const onKey2Change = (v: number) => { setLink2Id(v); setLink3Id(NONE); };

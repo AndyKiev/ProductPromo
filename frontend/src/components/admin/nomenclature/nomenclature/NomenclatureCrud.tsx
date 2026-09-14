@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Button, CircularProgress, Paper, Snackbar, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,7 +7,7 @@ import { fetchNomenclatures, type Nomenclature } from './nomenclatureApi';
 import { NOMENCLATURE_QK, useNomenclatureMutations } from './useNomenclatureMutations';
 import { useNomenclatureColumns } from './useNomenclatureColumns';
 import { NomenclatureForm } from './NomenclatureForm';
-import { NomenclatureKeySelector } from './NomenclatureKeySelector';
+import { EMPTY_HIERARCHY, NomenclatureKeySelector, type HierarchyFilter } from './NomenclatureKeySelector';
 import { DeleteConfirmDialog } from '../_shared/DeleteConfirmDialog';
 import { useDataGridLocale } from '../../../../hooks/useDataGridLocale';
 import useString from '../../../../hooks/useString';
@@ -22,9 +22,23 @@ export function NomenclatureCrud() {
     const [rowToDelete, setRowToDelete] = useState<Nomenclature | null>(null);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
+    const [filter, setFilter] = useState<HierarchyFilter>(EMPTY_HIERARCHY);
+
     const { data: rows = [], isLoading, error } = useQuery({
         queryKey: NOMENCLATURE_QK, queryFn: () => fetchNomenclatures(), staleTime: 2 * 60 * 1000,
     });
+
+    // The endpoint returns every link (~5k rows) in one call, so the selector filters client-side.
+    const filteredRows = useMemo(() => rows.filter((r) =>
+        (!filter.marketId || r.market_id === filter.marketId)
+        && (!filter.segmentId || r.segment_id === filter.segmentId)
+        && (!filter.categoryId || r.category_id === filter.categoryId)
+        && (!filter.familyId || r.family_id === filter.familyId)), [rows, filter]);
+
+    const onFilterChange = (next: HierarchyFilter) => {
+        setFilter(next);
+        setPaginationModel((p) => ({ ...p, page: 0 }));
+    };
 
     const { createMutation, updateMutation, deleteMutation } = useNomenclatureMutations({
         setSnackbar,
@@ -53,11 +67,11 @@ export function NomenclatureCrud() {
             {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>}
             {!isLoading && error && <Alert severity="error" sx={{ m: 2 }}>{(error as Error).message}</Alert>}
 
-            <NomenclatureKeySelector />
+            <NomenclatureKeySelector value={filter} onChange={onFilterChange} />
 
             {!isLoading && !error && (
                 <Paper className="admin-data-grid-paper" elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-                    <DataGrid rows={rows} columns={columns}
+                    <DataGrid rows={filteredRows} columns={columns}
                         paginationModel={paginationModel} onPaginationModelChange={setPaginationModel}
                         pageSizeOptions={[5, 10, 25, 50]} disableRowSelectionOnClick getRowId={(r) => r.id}
                         localeText={localeText} hideFooterSelectedRowCount />

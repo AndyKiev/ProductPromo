@@ -1,28 +1,33 @@
+from backend.api_v1.supplier_product_status.supplier_product_status_messages import (
+    SUPPLIER_PRODUCT_STATUS_CREATE_SUCCESS,
+    SUPPLIER_PRODUCT_STATUS_UPDATE_SUCCESS,
+    SUPPLIER_PRODUCT_STATUS_DELETE_SUCCESS,
+)
 from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class SupplierProductStatusCreateSuccess(CreateSuccess):
-    message_key = "supplierProductStatusCreateSuccess"
+    message_key = SUPPLIER_PRODUCT_STATUS_CREATE_SUCCESS["message_key"]
 
     def __init__(self, code: str) -> None:
         self.template_vars = {"code": code}
-        self.fallback = f"Supplier product status '{code}' successfully created"
+        self.fallback = SUPPLIER_PRODUCT_STATUS_CREATE_SUCCESS["fallback"]
         DomainSuccess.__init__(self, self.fallback)
 
 
 class SupplierProductStatusUpdateSuccess(UpdateSuccess):
-    message_key = "supplierProductStatusUpdateSuccess"
+    message_key = SUPPLIER_PRODUCT_STATUS_UPDATE_SUCCESS["message_key"]
 
     def __init__(self, code: str) -> None:
         self.template_vars = {"code": code}
-        self.fallback = f"Supplier product status '{code}' successfully updated"
+        self.fallback = SUPPLIER_PRODUCT_STATUS_UPDATE_SUCCESS["fallback"]
         DomainSuccess.__init__(self, self.fallback)
 
 
 class SupplierProductStatusDeleteSuccess(DeleteSuccess):
-    message_key = "supplierProductStatusDeleteSuccess"
+    message_key = SUPPLIER_PRODUCT_STATUS_DELETE_SUCCESS["message_key"]
 
     def __init__(self, name: str) -> None:
         self.template_vars = {"name": name}
-        self.fallback = f"Supplier product status '{name}' successfully deleted"
+        self.fallback = SUPPLIER_PRODUCT_STATUS_DELETE_SUCCESS["fallback"]
         DomainSuccess.__init__(self, self.fallback)

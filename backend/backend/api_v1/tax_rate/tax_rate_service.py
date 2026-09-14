@@ -62,7 +62,7 @@ class TaxRateService(BaseService):
         created = await self.create(body)
         schema = self._to_schema(await self.repository.get_by_id(created.id))
         detail = await self._resolve_domain_success(TaxRateCreateSuccess(self._label(schema)))
-        return MutationResponse(detail=detail, data=schema)
+        return MutationResponse(**detail, data=schema)
 
     async def update_tax_rate(self, id: int, body: TaxRateUpdate) -> MutationResponse[TaxRateSchema]:
         orm = await self.repository.get_by_id(id)
@@ -73,7 +73,7 @@ class TaxRateService(BaseService):
         updated = await self.update(orm, body, partial=True)
         schema = self._to_schema(await self.repository.get_by_id(updated.id))
         detail = await self._resolve_domain_success(TaxRateUpdateSuccess(self._label(schema)))
-        return MutationResponse(detail=detail, data=schema)
+        return MutationResponse(**detail, data=schema)
 
     async def delete_tax_rate(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -86,4 +86,4 @@ class TaxRateService(BaseService):
             delete_success_exc=TaxRateDeleteSuccess,
         )
         detail = await self._resolve_domain_success(TaxRateDeleteSuccess(self._label(obj)))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

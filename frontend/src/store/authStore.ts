@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { UserProfile } from '../i18n/types';
 
 interface AuthState {
   access_token: string | null;
   refresh_token: string | null;
   isAuthenticated: boolean;
+  user: UserProfile | null;
+  setUser: (user: UserProfile) => void;
 
   setTokens: (accessToken: string, refreshToken: string) => void;
   setAccessToken: (accessToken: string) => void;
@@ -17,6 +20,8 @@ export const useAuthStore = create<AuthState>()(
       access_token: null,
       refresh_token: null,
       isAuthenticated: false,
+      user: null,
+      setUser: (user) => set({ user }),
 
       setTokens: (accessToken, refreshToken) =>
         set({ access_token: accessToken, refresh_token: refreshToken, isAuthenticated: true }),
@@ -25,7 +30,7 @@ export const useAuthStore = create<AuthState>()(
         set({ access_token: accessToken, isAuthenticated: true }),
 
       logout: () =>
-        set({ access_token: null, refresh_token: null, isAuthenticated: false }),
+        set({ access_token: null, refresh_token: null, isAuthenticated: false, user: null }),
     }),
     {
       name: 'productpromo-auth',

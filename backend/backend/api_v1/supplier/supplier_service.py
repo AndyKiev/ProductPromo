@@ -65,7 +65,7 @@ class SupplierService(BaseService):
                 raise await self._resolve_domain_error(SupplierCodeTaken(body.code))
             raise
         detail = await self._resolve_domain_success(SupplierCreateSuccess(body.code))
-        return MutationResponse(detail=detail, data=self._to_schema(await self.repository.get_by_id(created.id)))
+        return MutationResponse(**detail, data=self._to_schema(await self.repository.get_by_id(created.id)))
 
     async def update_supplier(self, id: int, body: SupplierUpdate) -> MutationResponse[SupplierSchema]:
         orm = await self.repository.get_by_id(id)
@@ -80,7 +80,7 @@ class SupplierService(BaseService):
                 raise await self._resolve_domain_error(SupplierCodeTaken(body.code or ""))
             raise
         detail = await self._resolve_domain_success(SupplierUpdateSuccess(updated.code))
-        return MutationResponse(detail=detail, data=self._to_schema(await self.repository.get_by_id(updated.id)))
+        return MutationResponse(**detail, data=self._to_schema(await self.repository.get_by_id(updated.id)))
 
     async def delete_supplier(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -93,4 +93,4 @@ class SupplierService(BaseService):
             delete_success_exc=SupplierDeleteSuccess,
         )
         detail = await self._resolve_domain_success(SupplierDeleteSuccess(obj.code))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

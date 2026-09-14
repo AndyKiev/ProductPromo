@@ -1,39 +1,26 @@
-import { useMemo } from 'react';
-import { defaultLangShortName } from '../utils/eNums';
-import { useTranslationsStore } from '../store/useTranslationsStore';
-import { useAuthStore } from '../store/authStore';
+import { useCallback } from 'react';
+import { useTranslationsStore, type StringResource } from '../store/useTranslationsStore';
+import fallbackStrings from '../i18n/ui.json';
 
-export interface StringResource {
-  [key: string]: { [language: string]: string };
+export type { StringResource } from '../store/useTranslationsStore';
+interface UseStringParams { exrStr?: StringResource; str?: StringResource }
+const defaults: StringResource = fallbackStrings;
+
+export function translate(stringKey: string, variables: Record<string, unknown> = {}, resources?: StringResource): string {
+  if (!stringKey) return '';
+  const { selected, languages, bundles } = useTranslationsStore.getState();
+  const code = selected?.short_name ?? 'eng';
+  const english = languages.find((l) => l.short_name === 'eng');
+  const text = (selected && bundles[selected.id]?.messages[stringKey])
+    || resources?.[stringKey]?.[code] || defaults[stringKey]?.[code]
+    || (english && bundles[english.id]?.messages[stringKey])
+    || resources?.[stringKey]?.eng || defaults[stringKey]?.eng || stringKey;
+  return text.replace(/\$\{(\w+)\}/g, (match, name) => variables[name] == null ? match : String(variables[name]));
 }
-
-interface UseStringParams {
-  exrStr?: StringResource;
-  str?: StringResource;
+export function useString({ exrStr, str }: UseStringParams = {}) {
+  const selected = useTranslationsStore((s) => s.selected);
+  const bundles = useTranslationsStore((s) => s.bundles);
+  return useCallback((key: string, variables?: Record<string, unknown>) =>
+    translate(key, variables, exrStr ?? str), [selected, bundles, exrStr, str]);
 }
-
-type UseStringReturn = (stringKey: string, variables?: Record<string, unknown>) => string;
-
-export const useString = ({ exrStr, str }: UseStringParams = {}): UseStringReturn => {
-  const user = useAuthStore((s) => s.user);
-  const userLang = user?.lang?.short_name || defaultLangShortName;
-  const { strings } = useTranslationsStore();
-
-  return useMemo(() => {
-    return (stringKey: string, variables: Record<string, unknown> = {}): string => {
-      if (typeof stringKey !== 'string' || stringKey.length === 0) return '';
-      let base: string | undefined;
-      if (strings?.[stringKey]) base = strings[stringKey][userLang] || strings[stringKey][defaultLangShortName];
-      if (!base && exrStr?.[stringKey]) base = exrStr[stringKey][userLang] || exrStr[stringKey][defaultLangShortName];
-      if (!base && str?.[stringKey]) base = str[stringKey][userLang] || str[stringKey][defaultLangShortName];
-      if (!base) return stringKey;
-      if (Object.keys(variables).length === 0) return base;
-      return base.replace(/\$\{(\w+)\}/g, (m, name) => {
-        const v = variables[name];
-        return v === undefined || v === null ? m : String(v);
-      });
-    };
-  }, [userLang, exrStr, str, strings]);
-};
-
 export default useString;

@@ -30,7 +30,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: productpromo-backend
-    restart: unless-stopped
+    # Dev stack: no auto-start after a reboot — the file watchers poll (and cost
+    # CPU) even when nobody is working on this project. Start it by hand with
+    # `docker compose up -d`; pause with `docker compose stop`.
+    restart: "no"
     env_file:
       - stack.env
     # 127.0.0.1 inside a container is the container, not the host, so the
@@ -49,9 +52,12 @@ services:
       APP_CONFIG__RUN__PORT: "8004"
       # Auto-reload on host edits (the bind mount below). Windows bind mounts
       # deliver no inotify events, so watchfiles has to poll — without
-      # FORCE_POLLING the watcher silently never fires.
+      # FORCE_POLLING the watcher silently never fires. Polling runs around the
+      # clock, so the delay is raised from the 300 ms default to keep idle CPU
+      # down; a reload lands up to 2 s after a save.
       APP_CONFIG__RUN__RELOAD: "true"
       WATCHFILES_FORCE_POLLING: "true"
+      WATCHFILES_POLL_DELAY_MS: "2000"
     ports:
       # 8012 on the host, not 8004: talent publishes 8005 and anee_data 8006,
       # and 8004 / 8009 are already taken by native dev servers here. Inside
@@ -77,7 +83,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: productpromo-frontend
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       - backend
     ports:

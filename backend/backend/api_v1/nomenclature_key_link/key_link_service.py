@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api_v1.base.base_service import BaseService
+from backend.api_v1.base.i18n import localized_name, lang_suffix_for
 from backend.api_v1.base.base_repository import BaseRepository
 from backend.api_v1.base.mutation_response import MutationResponse
 from backend.api_v1.nomenclature_key_link.key_link_schema import KeyLinkCreate, KeyLinkUpdate, KeyLink as KeyLinkSchema
@@ -32,11 +33,10 @@ class KeyLinkService(BaseService):
         rows = await self.repository.get_all(filters=filters)
         return [self._to_schema(r) for r in rows]
 
-    @staticmethod
-    def _to_schema(row) -> KeyLinkSchema:
+    def _to_schema(self, row) -> KeyLinkSchema:
         s = KeyLinkSchema.model_validate(row)
         if hasattr(row, "status") and row.status:
-            s.status_name = row.status.name_u or row.status.name_e
+            s.status_name = localized_name(row.status, lang_suffix_for(self.user))
         if hasattr(row, "key") and row.key:
             s.key_name = row.key.name
         if hasattr(row, "parent"):
@@ -52,7 +52,7 @@ class KeyLinkService(BaseService):
             created = await self.create(body)
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(KeyLinkCreateSuccess(self.level))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError:
             raise
 
@@ -64,7 +64,7 @@ class KeyLinkService(BaseService):
             updated = await self.update(orm, body, partial=True)
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(KeyLinkUpdateSuccess(self.level))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError:
             raise
 
@@ -78,4 +78,4 @@ class KeyLinkService(BaseService):
             delete_error_exc=KeyLinkDeleteError,
         )
         detail = await self._resolve_domain_success(KeyLinkDeleteSuccess(self.level))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

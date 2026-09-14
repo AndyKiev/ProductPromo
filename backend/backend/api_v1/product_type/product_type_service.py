@@ -55,7 +55,7 @@ class ProductTypeService(BaseService):
                 raise await self._resolve_domain_error(ProductTypeTaken(body.code))
             raise
         detail = await self._resolve_domain_success(ProductTypeCreateSuccess(body.code))
-        return MutationResponse(detail=detail, data=ProductTypeSchema.model_validate(created))
+        return MutationResponse(**detail, data=ProductTypeSchema.model_validate(created))
 
     async def update_product_type(self, id: int, body: ProductTypeUpdate) -> MutationResponse[ProductTypeSchema]:
         orm = await self.repository.get_by_id(id)
@@ -70,7 +70,7 @@ class ProductTypeService(BaseService):
                 raise await self._resolve_domain_error(ProductTypeTaken(body.code or ""))
             raise
         detail = await self._resolve_domain_success(ProductTypeUpdateSuccess(updated.code))
-        return MutationResponse(detail=detail, data=ProductTypeSchema.model_validate(updated))
+        return MutationResponse(**detail, data=ProductTypeSchema.model_validate(updated))
 
     async def delete_product_type(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -83,4 +83,4 @@ class ProductTypeService(BaseService):
             delete_success_exc=ProductTypeDeleteSuccess,
         )
         detail = await self._resolve_domain_success(ProductTypeDeleteSuccess(obj.code))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

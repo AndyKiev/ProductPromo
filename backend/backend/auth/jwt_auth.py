@@ -6,11 +6,16 @@ changes: POST /jwt/login (form-encoded username+password), returns
 """
 import os
 
-from fastapi import APIRouter, Depends, Form, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
 from backend.auth import auth_utils
+from backend.api_v1.user_preference.user_preference_service import UserPreferenceService
+from backend.api_v1.user_preference.user_preference_dependencies import get_preference_service
+from backend.api_v1.user_preference.user_preference_schema import UserProfile, LanguageUpdate
+from backend.api_v1.msg.catalog import catalog_cache
+from backend.api_v1.employee.employee_schema import LangSchema
 
 router = APIRouter(prefix="/jwt", tags=["JWT"])
 
@@ -59,7 +64,9 @@ from backend.api_v1.employee.employee_schema import EmployeeSchema
 
 
 async def get_current_active_auth_user(
+    request: Request,
     payload: dict = Depends(get_current_token_payload),
+    service: UserPreferenceService = Depends(get_preference_service),
 ) -> EmployeeSchema:
     code = payload.get("sub")
     if code != AUTH_USER_CODE:
@@ -67,7 +74,12 @@ async def get_current_active_auth_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unknown user",
         )
-    return EmployeeSchema(id=1, name=code, lang_acronym="eng")
+    catalog = await catalog_cache.get()
+    profile = await service.profile(code, catalog.default_id)
+    request.state.lang_id = profile.lang_id
+    return EmployeeSchema(id=1, name=code, lang_id=profile.lang_id,
+                          lang_acronym=profile.lang.short_name,
+                          lang=LangSchema(**profile.lang.model_dump()))
 
 
 @router.post("/login", response_model=AuthResponse)
@@ -96,6 +108,15 @@ async def refresh(body: RefreshRequest):
     return AuthResponse(access_token=access_token, refresh_token=refresh_token)
 
 
-@router.get("/users/me")
-async def me(user: CurrentUser = Depends(get_current_user)):
-    return {"code": user.code}
+@router.get("/users/me", response_model=UserProfile)
+async def me(user: EmployeeSchema = Depends(get_current_active_auth_user)):
+    return UserProfile(code=user.name, name=user.name, lang_id=user.lang_id, lang=user.lang.model_dump())
+
+
+@router.patch("/users/me/language", response_model=UserProfile)
+async def set_language(body: LanguageUpdate, request: Request,
+                       user: EmployeeSchema = Depends(get_current_active_auth_user),
+                       service: UserPreferenceService = Depends(get_preference_service)):
+    profile = await service.set_language(user.name, body.lang_id)
+    request.state.lang_id = profile.lang_id
+    return profile

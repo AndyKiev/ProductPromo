@@ -1,0 +1,1102 @@
+{
+  "products": {
+    "eng": "products",
+    "rus": "товары"
+  },
+  "product": {
+    "eng": "product",
+    "rus": "товар"
+  },
+  "suppliers": {
+    "eng": "suppliers",
+    "rus": "поставщики"
+  },
+  "supplier": {
+    "eng": "supplier",
+    "rus": "поставщик"
+  },
+  "productStatuses": {
+    "eng": "product statuses",
+    "rus": "статусы товара"
+  },
+  "productStatus": {
+    "eng": "product status",
+    "rus": "статус товара"
+  },
+  "supplierStatuses": {
+    "eng": "supplier statuses",
+    "rus": "статусы поставщика"
+  },
+  "supplierStatus": {
+    "eng": "supplier status",
+    "rus": "статус поставщика"
+  },
+  "supplierProductStatuses": {
+    "eng": "supplier product statuses",
+    "rus": "статусы товара у поставщика"
+  },
+  "supplierProductStatus": {
+    "eng": "supplier product status",
+    "rus": "статус товара у поставщика"
+  },
+  "importCodes": {
+    "eng": "import codes",
+    "rus": "коды импорта"
+  },
+  "importCode": {
+    "eng": "import code",
+    "rus": "код импорта"
+  },
+  "productTypes": {
+    "eng": "product types",
+    "rus": "типы товара"
+  },
+  "productType": {
+    "eng": "product type",
+    "rus": "тип товара"
+  },
+  "taxTypes": {
+    "eng": "tax types",
+    "rus": "типы налогов"
+  },
+  "taxType": {
+    "eng": "tax type",
+    "rus": "тип налога"
+  },
+  "taxRates": {
+    "eng": "tax rates",
+    "rus": "ставки налогов"
+  },
+  "taxRate": {
+    "eng": "tax rate",
+    "rus": "ставка налога"
+  },
+  "productTaxes": {
+    "eng": "product taxes",
+    "rus": "налоги товаров"
+  },
+  "productTax": {
+    "eng": "product tax",
+    "rus": "налог товара"
+  },
+  "rate": {
+    "eng": "rate",
+    "rus": "ставка"
+  },
+  "effectiveFrom": {
+    "eng": "effective from",
+    "rus": "действует с"
+  },
+  "effectiveTill": {
+    "eng": "effective till",
+    "rus": "действует до"
+  },
+  "ean": {
+    "eng": "EAN",
+    "rus": "штрихкод"
+  },
+  "eans": {
+    "eng": "EANs",
+    "rus": "штрихкоды"
+  },
+  "noEans": {
+    "eng": "No EANs",
+    "rus": "Нет штрихкодов"
+  },
+  "searchByEan": {
+    "eng": "search by EAN",
+    "rus": "поиск по штрихкоду"
+  },
+  "productCard": {
+    "eng": "product card",
+    "rus": "карточка товара"
+  },
+  "copy": {
+    "eng": "copy",
+    "rus": "копировать"
+  },
+  "copied": {
+    "eng": "copied",
+    "rus": "скопировано"
+  },
+  "clear": {
+    "eng": "clear",
+    "rus": "очистить"
+  },
+  "associations": {
+    "eng": "product–supplier links",
+    "rus": "связи товаров с поставщиками"
+  },
+  "market": {
+    "eng": "market",
+    "rus": "рынок"
+  },
+  "segment": {
+    "eng": "segment",
+    "rus": "сегмент"
+  },
+  "category": {
+    "eng": "category",
+    "rus": "категория"
+  },
+  "family": {
+    "eng": "family",
+    "rus": "семья"
+  },
+  "nomenclature": {
+    "eng": "nomenclature",
+    "rus": "номенклатура"
+  },
+  "status": {
+    "eng": "status",
+    "rus": "статус"
+  },
+  "code": {
+    "eng": "code",
+    "rus": "код"
+  },
+  "name": {
+    "eng": "name",
+    "rus": "название"
+  },
+  "description": {
+    "eng": "description",
+    "rus": "описание"
+  },
+  "search": {
+    "eng": "search",
+    "rus": "поиск"
+  },
+  "filters": {
+    "eng": "filters",
+    "rus": "фильтры"
+  },
+  "resetFilters": {
+    "eng": "reset filters",
+    "rus": "сбросить фильтры"
+  },
+  "any": {
+    "eng": "any",
+    "rus": "любой"
+  },
+  "productCode": {
+    "eng": "product code",
+    "rus": "код товара"
+  },
+  "productName": {
+    "eng": "product name",
+    "rus": "название товара"
+  },
+  "supplierCode": {
+    "eng": "supplier code",
+    "rus": "код поставщика"
+  },
+  "supplierName": {
+    "eng": "supplier name",
+    "rus": "название поставщика"
+  },
+  "add": {
+    "eng": "add",
+    "rus": "добавить"
+  },
+  "edit": {
+    "eng": "edit",
+    "rus": "редактировать"
+  },
+  "delete": {
+    "eng": "delete",
+    "rus": "удалить"
+  },
+  "create": {
+    "eng": "create",
+    "rus": "создать"
+  },
+  "save": {
+    "eng": "save",
+    "rus": "сохранить"
+  },
+  "cancel": {
+    "eng": "cancel",
+    "rus": "отмена"
+  },
+  "confirmDelete": {
+    "eng": "confirm delete",
+    "rus": "подтвердить удаление"
+  },
+  "deletePrompt": {
+    "eng": "Delete this record?",
+    "rus": "Удалить эту запись?"
+  },
+  "required": {
+    "eng": "required",
+    "rus": "обязательное поле"
+  },
+  "max_length": {
+    "eng": "max length exceeded",
+    "rus": "превышена максимальная длина"
+  },
+  "selectPlaceholder": {
+    "eng": "select…",
+    "rus": "выберите…"
+  },
+  "admin": {
+    "eng": "admin",
+    "rus": "администрирование"
+  },
+  "noNomenclature": {
+    "eng": "no nomenclature",
+    "rus": "без номенклатуры"
+  },
+  "chooseTheme": {
+    "eng": "choose theme",
+    "rus": "выбрать тему"
+  },
+  "familyGraphite": {
+    "eng": "Graphite",
+    "rus": "Графитовая"
+  },
+  "familyNeutral": {
+    "eng": "Neutral",
+    "rus": "Нейтральная"
+  },
+  "familyBlue": {
+    "eng": "Blue",
+    "rus": "Голубая"
+  },
+  "familySand": {
+    "eng": "Sand",
+    "rus": "Песочная"
+  },
+  "familyForest": {
+    "eng": "Forest",
+    "rus": "Лесная"
+  },
+  "familyRose": {
+    "eng": "Rose",
+    "rus": "Розовая"
+  },
+  "familyCyan": {
+    "eng": "Cyan",
+    "rus": "Бирюзовая"
+  },
+  "light": {
+    "eng": "light",
+    "rus": "светлая"
+  },
+  "dark": {
+    "eng": "dark",
+    "rus": "тёмная"
+  },
+  "themeGraphiteLight": {
+    "eng": "graphite light",
+    "rus": "светло-графитовая"
+  },
+  "themeGraphite": {
+    "eng": "graphite",
+    "rus": "графитовая"
+  },
+  "themeBlueLight": {
+    "eng": "blue light",
+    "rus": "светло-голубая"
+  },
+  "themeBlueDark": {
+    "eng": "blue dark",
+    "rus": "тёмно-голубая"
+  },
+  "themeSand": {
+    "eng": "sand",
+    "rus": "песочная"
+  },
+  "themeSandDark": {
+    "eng": "sand dark",
+    "rus": "тёмно-песочная"
+  },
+  "themeForest": {
+    "eng": "forest",
+    "rus": "лесная"
+  },
+  "themeForestDark": {
+    "eng": "forest dark",
+    "rus": "тёмно-лесная"
+  },
+  "themeRose": {
+    "eng": "rose",
+    "rus": "розовая"
+  },
+  "themeRoseDark": {
+    "eng": "rose dark",
+    "rus": "тёмно-розовая"
+  },
+  "themeCyan": {
+    "eng": "cyan dark",
+    "rus": "тёмно-бирюзовая"
+  },
+  "themeCyanLight": {
+    "eng": "cyan light",
+    "rus": "светло-бирюзовая"
+  },
+  "markets": {
+    "eng": "markets",
+    "rus": "рынки"
+  },
+  "segments": {
+    "eng": "segments",
+    "rus": "сегменты"
+  },
+  "categories": {
+    "eng": "categories",
+    "rus": "категории"
+  },
+  "families": {
+    "eng": "families",
+    "rus": "семьи"
+  },
+  "keys": {
+    "eng": "keys",
+    "rus": "ключи"
+  },
+  "key_name": {
+    "eng": "key name",
+    "rus": "название ключа"
+  },
+  "links": {
+    "eng": "links",
+    "rus": "связи"
+  },
+  "keyLinks": {
+    "eng": "key links",
+    "rus": "связи ключей"
+  },
+  "key_link_level": {
+    "eng": "key link level",
+    "rus": "уровень ключа"
+  },
+  "key_tree": {
+    "eng": "key tree",
+    "rus": "дерево ключей"
+  },
+  "key_level_1": {
+    "eng": "level 1 keys",
+    "rus": "ключи уровня 1"
+  },
+  "key_level_2": {
+    "eng": "level 2 keys",
+    "rus": "ключи уровня 2"
+  },
+  "key_level_3": {
+    "eng": "level 3 keys",
+    "rus": "ключи уровня 3"
+  },
+  "select_family_to_view_keys": {
+    "eng": "Select a family to view its key tree",
+    "rus": "Выберите семью, чтобы увидеть дерево ключей"
+  },
+  "no_level1_keys": {
+    "eng": "No level 1 keys",
+    "rus": "Нет ключей уровня 1"
+  },
+  "no_children": {
+    "eng": "no children",
+    "rus": "нет дочерних ключей"
+  },
+  "createdAt": {
+    "eng": "created",
+    "rus": "создано"
+  },
+  "account": {
+    "eng": "account",
+    "rus": "аккаунт"
+  },
+  "language": {
+    "eng": "language",
+    "rus": "язык"
+  },
+  "languageSaved": {
+    "eng": "Language saved",
+    "rus": "Язык сохранён"
+  },
+  "languageNotFound": {
+    "eng": "Language not found",
+    "rus": "Язык не найден"
+  },
+  "signOut": {
+    "eng": "sign out",
+    "rus": "выйти"
+  },
+  "signIn": {
+    "eng": "sign in",
+    "rus": "войти"
+  },
+  "signInPrompt": {
+    "eng": "Sign in to continue",
+    "rus": "Войдите, чтобы продолжить"
+  },
+  "username": {
+    "eng": "Username",
+    "rus": "Имя пользователя"
+  },
+  "password": {
+    "eng": "Password",
+    "rus": "Пароль"
+  },
+  "devLogin": {
+    "eng": "Login: UKR7101004 / 111",
+    "rus": "Вход: UKR7101004 / 111"
+  },
+  "loginFailed": {
+    "eng": "Login failed",
+    "rus": "Не удалось войти"
+  },
+  "invalidCredentials": {
+    "eng": "Invalid username or password",
+    "rus": "Неверное имя пользователя или пароль"
+  },
+  "unknownUser": {
+    "eng": "Unknown user",
+    "rus": "Неизвестный пользователь"
+  },
+  "invalidToken": {
+    "eng": "Invalid or expired token",
+    "rus": "Недействительный или просроченный токен"
+  },
+  "invalidTokenType": {
+    "eng": "Invalid token type",
+    "rus": "Неверный тип токена"
+  },
+  "notAuthenticated": {
+    "eng": "Sign in required",
+    "rus": "Необходимо войти"
+  },
+  "validationFailed": {
+    "eng": "Validation failed",
+    "rus": "Ошибка проверки данных"
+  },
+  "requestFailed": {
+    "eng": "Request failed",
+    "rus": "Не удалось выполнить запрос"
+  },
+  "networkError": {
+    "eng": "Unable to connect to the server",
+    "rus": "Не удалось подключиться к серверу"
+  },
+  "requestTimeout": {
+    "eng": "The server did not respond in time",
+    "rus": "Сервер не ответил вовремя"
+  },
+  "loading": {
+    "eng": "Loading…",
+    "rus": "Загрузка…"
+  },
+  "noOptions": {
+    "eng": "No options",
+    "rus": "Нет вариантов"
+  },
+  "open": {
+    "eng": "Open",
+    "rus": "Открыть"
+  },
+  "close": {
+    "eng": "Close",
+    "rus": "Закрыть"
+  },
+  "retry": {
+    "eng": "Retry",
+    "rus": "Повторить"
+  },
+  "profileLoadFailed": {
+    "eng": "Unable to load your account",
+    "rus": "Не удалось загрузить аккаунт"
+  },
+  "notFound": {
+    "eng": "Not found",
+    "rus": "Не найдено"
+  },
+  "methodNotAllowed": {
+    "eng": "Method not allowed",
+    "rus": "Метод не поддерживается"
+  },
+  "integrityError": {
+    "eng": "The record conflicts with existing data or references a missing record",
+    "rus": "Запись конфликтует с существующими данными или ссылается на отсутствующую запись"
+  },
+  "serverError": {
+    "eng": "An unexpected server error occurred",
+    "rus": "Произошла непредвиденная ошибка сервера"
+  },
+  "fieldRequired": {
+    "eng": "Required field",
+    "rus": "Обязательное поле"
+  },
+  "stringTooLong": {
+    "eng": "Use at most ${max_length} characters",
+    "rus": "Допустимо не более ${max_length} символов"
+  },
+  "stringTooShort": {
+    "eng": "Use at least ${min_length} characters",
+    "rus": "Необходимо не менее ${min_length} символов"
+  },
+  "invalidInteger": {
+    "eng": "Enter an integer",
+    "rus": "Введите целое число"
+  },
+  "invalidNumber": {
+    "eng": "Enter a number",
+    "rus": "Введите число"
+  },
+  "invalidDate": {
+    "eng": "Enter a valid date",
+    "rus": "Введите корректную дату"
+  },
+  "greaterThan": {
+    "eng": "Value must be greater than ${gt}",
+    "rus": "Значение должно быть больше ${gt}"
+  },
+  "greaterThanEqual": {
+    "eng": "Value must be at least ${ge}",
+    "rus": "Значение должно быть не меньше ${ge}"
+  },
+  "lessThan": {
+    "eng": "Value must be less than ${lt}",
+    "rus": "Значение должно быть меньше ${lt}"
+  },
+  "lessThanEqual": {
+    "eng": "Value must be at most ${le}",
+    "rus": "Значение должно быть не больше ${le}"
+  },
+  "invalidValue": {
+    "eng": "Invalid value",
+    "rus": "Некорректное значение"
+  },
+  "active": {
+    "eng": "Active",
+    "rus": "Активный"
+  },
+  "inactive": {
+    "eng": "Inactive",
+    "rus": "Неактивный"
+  },
+  "grid.noRowsLabel": {
+    "eng": "No rows",
+    "rus": "Нет строк"
+  },
+  "grid.noResultsOverlayLabel": {
+    "eng": "No results found.",
+    "rus": "Данные не найдены."
+  },
+  "grid.toolbarDensity": {
+    "eng": "Density",
+    "rus": "Высота строки"
+  },
+  "grid.toolbarDensityLabel": {
+    "eng": "Density",
+    "rus": "Высота строки"
+  },
+  "grid.toolbarDensityCompact": {
+    "eng": "Compact",
+    "rus": "Компактная"
+  },
+  "grid.toolbarDensityStandard": {
+    "eng": "Standard",
+    "rus": "Стандартная"
+  },
+  "grid.toolbarDensityComfortable": {
+    "eng": "Comfortable",
+    "rus": "Комфортная"
+  },
+  "grid.toolbarColumns": {
+    "eng": "Columns",
+    "rus": "Столбцы"
+  },
+  "grid.toolbarColumnsLabel": {
+    "eng": "Select columns",
+    "rus": "Выделите столбцы"
+  },
+  "grid.toolbarFilters": {
+    "eng": "Filters",
+    "rus": "Фильтры"
+  },
+  "grid.toolbarFiltersLabel": {
+    "eng": "Show filters",
+    "rus": "Показать фильтры"
+  },
+  "grid.toolbarFiltersTooltipHide": {
+    "eng": "Hide filters",
+    "rus": "Скрыть фильтры"
+  },
+  "grid.toolbarFiltersTooltipShow": {
+    "eng": "Show filters",
+    "rus": "Показать фильтры"
+  },
+  "grid.toolbarQuickFilterPlaceholder": {
+    "eng": "Search…",
+    "rus": "Поиск…"
+  },
+  "grid.toolbarQuickFilterLabel": {
+    "eng": "Search",
+    "rus": "Поиск"
+  },
+  "grid.toolbarQuickFilterDeleteIconLabel": {
+    "eng": "Clear",
+    "rus": "Очистить"
+  },
+  "grid.toolbarExport": {
+    "eng": "Export",
+    "rus": "Экспорт"
+  },
+  "grid.toolbarExportLabel": {
+    "eng": "Export",
+    "rus": "Экспорт"
+  },
+  "grid.toolbarExportCSV": {
+    "eng": "Download as CSV",
+    "rus": "Скачать в формате CSV"
+  },
+  "grid.toolbarExportPrint": {
+    "eng": "Print",
+    "rus": "Печать"
+  },
+  "grid.toolbarExportExcel": {
+    "eng": "Download as Excel",
+    "rus": "Скачать в формате Excel"
+  },
+  "grid.columnsManagementSearchTitle": {
+    "eng": "Search",
+    "rus": "Поиск"
+  },
+  "grid.columnsManagementNoColumns": {
+    "eng": "No columns",
+    "rus": "Нет столбцов"
+  },
+  "grid.columnsManagementShowHideAllText": {
+    "eng": "Show/Hide All",
+    "rus": "Показать/Скрыть Всё"
+  },
+  "grid.columnsManagementReset": {
+    "eng": "Reset",
+    "rus": "Сбросить"
+  },
+  "grid.columnsManagementDeleteIconLabel": {
+    "eng": "Clear",
+    "rus": "Очистить"
+  },
+  "grid.filterPanelAddFilter": {
+    "eng": "Add filter",
+    "rus": "Добавить фильтр"
+  },
+  "grid.filterPanelRemoveAll": {
+    "eng": "Remove all",
+    "rus": "Очистить фильтр"
+  },
+  "grid.filterPanelDeleteIconLabel": {
+    "eng": "Delete",
+    "rus": "Удалить"
+  },
+  "grid.filterPanelLogicOperator": {
+    "eng": "Logic operator",
+    "rus": "Логические операторы"
+  },
+  "grid.filterPanelOperator": {
+    "eng": "Operator",
+    "rus": "Операторы"
+  },
+  "grid.filterPanelOperatorAnd": {
+    "eng": "And",
+    "rus": "И"
+  },
+  "grid.filterPanelOperatorOr": {
+    "eng": "Or",
+    "rus": "Или"
+  },
+  "grid.filterPanelColumns": {
+    "eng": "Columns",
+    "rus": "Столбцы"
+  },
+  "grid.filterPanelInputLabel": {
+    "eng": "Value",
+    "rus": "Значение"
+  },
+  "grid.filterPanelInputPlaceholder": {
+    "eng": "Filter value",
+    "rus": "Значение фильтра"
+  },
+  "grid.filterOperatorContains": {
+    "eng": "contains",
+    "rus": "содержит"
+  },
+  "grid.filterOperatorDoesNotContain": {
+    "eng": "does not contain",
+    "rus": "не содержит"
+  },
+  "grid.filterOperatorEquals": {
+    "eng": "equals",
+    "rus": "равен"
+  },
+  "grid.filterOperatorDoesNotEqual": {
+    "eng": "does not equal",
+    "rus": "не равен"
+  },
+  "grid.filterOperatorStartsWith": {
+    "eng": "starts with",
+    "rus": "начинается с"
+  },
+  "grid.filterOperatorEndsWith": {
+    "eng": "ends with",
+    "rus": "заканчивается на"
+  },
+  "grid.filterOperatorIs": {
+    "eng": "is",
+    "rus": "равен"
+  },
+  "grid.filterOperatorNot": {
+    "eng": "is not",
+    "rus": "не равен"
+  },
+  "grid.filterOperatorAfter": {
+    "eng": "is after",
+    "rus": "больше чем"
+  },
+  "grid.filterOperatorOnOrAfter": {
+    "eng": "is on or after",
+    "rus": "больше или равно"
+  },
+  "grid.filterOperatorBefore": {
+    "eng": "is before",
+    "rus": "меньше чем"
+  },
+  "grid.filterOperatorOnOrBefore": {
+    "eng": "is on or before",
+    "rus": "меньше или равно"
+  },
+  "grid.filterOperatorIsEmpty": {
+    "eng": "is empty",
+    "rus": "пустой"
+  },
+  "grid.filterOperatorIsNotEmpty": {
+    "eng": "is not empty",
+    "rus": "не пустой"
+  },
+  "grid.filterOperatorIsAnyOf": {
+    "eng": "is any of",
+    "rus": "любой из"
+  },
+  "grid.filterOperator=": {
+    "eng": "=",
+    "rus": "="
+  },
+  "grid.filterOperator!=": {
+    "eng": "!=",
+    "rus": "!="
+  },
+  "grid.filterOperator>": {
+    "eng": ">",
+    "rus": ">"
+  },
+  "grid.filterOperator>=": {
+    "eng": ">=",
+    "rus": ">="
+  },
+  "grid.filterOperator<": {
+    "eng": "<",
+    "rus": "<"
+  },
+  "grid.filterOperator<=": {
+    "eng": "<=",
+    "rus": "<="
+  },
+  "grid.headerFilterOperatorContains": {
+    "eng": "Contains",
+    "rus": "содержит"
+  },
+  "grid.headerFilterOperatorDoesNotContain": {
+    "eng": "Does not contain",
+    "rus": "не содержит"
+  },
+  "grid.headerFilterOperatorEquals": {
+    "eng": "Equals",
+    "rus": "равен"
+  },
+  "grid.headerFilterOperatorDoesNotEqual": {
+    "eng": "Does not equal",
+    "rus": "не равен"
+  },
+  "grid.headerFilterOperatorStartsWith": {
+    "eng": "Starts with",
+    "rus": "начинается с"
+  },
+  "grid.headerFilterOperatorEndsWith": {
+    "eng": "Ends with",
+    "rus": "заканчивается на"
+  },
+  "grid.headerFilterOperatorIs": {
+    "eng": "Is",
+    "rus": "равен"
+  },
+  "grid.headerFilterOperatorNot": {
+    "eng": "Is not",
+    "rus": "не равен"
+  },
+  "grid.headerFilterOperatorAfter": {
+    "eng": "Is after",
+    "rus": "больше чем"
+  },
+  "grid.headerFilterOperatorOnOrAfter": {
+    "eng": "Is on or after",
+    "rus": "больше или равно"
+  },
+  "grid.headerFilterOperatorBefore": {
+    "eng": "Is before",
+    "rus": "меньше чем"
+  },
+  "grid.headerFilterOperatorOnOrBefore": {
+    "eng": "Is on or before",
+    "rus": "меньше или равно"
+  },
+  "grid.headerFilterOperatorIsEmpty": {
+    "eng": "Is empty",
+    "rus": "пустой"
+  },
+  "grid.headerFilterOperatorIsNotEmpty": {
+    "eng": "Is not empty",
+    "rus": "не пустой"
+  },
+  "grid.headerFilterOperatorIsAnyOf": {
+    "eng": "Is any of",
+    "rus": "любой из"
+  },
+  "grid.headerFilterOperator=": {
+    "eng": "Equals",
+    "rus": "содержит"
+  },
+  "grid.headerFilterOperator!=": {
+    "eng": "Not equals",
+    "rus": "не содержит"
+  },
+  "grid.headerFilterOperator>": {
+    "eng": "Greater than",
+    "rus": "больше чем"
+  },
+  "grid.headerFilterOperator>=": {
+    "eng": "Greater than or equal to",
+    "rus": "больше или равно"
+  },
+  "grid.headerFilterOperator<": {
+    "eng": "Less than",
+    "rus": "меньше чем"
+  },
+  "grid.headerFilterOperator<=": {
+    "eng": "Less than or equal to",
+    "rus": "меньше или равно"
+  },
+  "grid.filterValueAny": {
+    "eng": "any",
+    "rus": "любой"
+  },
+  "grid.filterValueTrue": {
+    "eng": "true",
+    "rus": "истина"
+  },
+  "grid.filterValueFalse": {
+    "eng": "false",
+    "rus": "ложь"
+  },
+  "grid.columnMenuLabel": {
+    "eng": "Menu",
+    "rus": "Меню"
+  },
+  "grid.columnMenuShowColumns": {
+    "eng": "Show columns",
+    "rus": "Показать столбцы"
+  },
+  "grid.columnMenuManageColumns": {
+    "eng": "Manage columns",
+    "rus": "Управление колонками"
+  },
+  "grid.columnMenuFilter": {
+    "eng": "Filter",
+    "rus": "Фильтр"
+  },
+  "grid.columnMenuHideColumn": {
+    "eng": "Hide column",
+    "rus": "Скрыть"
+  },
+  "grid.columnMenuUnsort": {
+    "eng": "Unsort",
+    "rus": "Отменить сортировку"
+  },
+  "grid.columnMenuSortAsc": {
+    "eng": "Sort by ASC",
+    "rus": "Сортировать по возрастанию"
+  },
+  "grid.columnMenuSortDesc": {
+    "eng": "Sort by DESC",
+    "rus": "Сортировать по убыванию"
+  },
+  "grid.columnHeaderFiltersLabel": {
+    "eng": "Show filters",
+    "rus": "Показать фильтры"
+  },
+  "grid.columnHeaderSortIconLabel": {
+    "eng": "Sort",
+    "rus": "Сортировать"
+  },
+  "grid.footerTotalRows": {
+    "eng": "Total Rows:",
+    "rus": "Всего строк:"
+  },
+  "grid.checkboxSelectionHeaderName": {
+    "eng": "Checkbox selection",
+    "rus": "Выбор флажка"
+  },
+  "grid.checkboxSelectionSelectAllRows": {
+    "eng": "Select all rows",
+    "rus": "Выбрать все строки"
+  },
+  "grid.checkboxSelectionUnselectAllRows": {
+    "eng": "Unselect all rows",
+    "rus": "Отменить выбор всех строк"
+  },
+  "grid.checkboxSelectionSelectRow": {
+    "eng": "Select row",
+    "rus": "Выбрать строку"
+  },
+  "grid.checkboxSelectionUnselectRow": {
+    "eng": "Unselect row",
+    "rus": "Отменить выбор строки"
+  },
+  "grid.booleanCellTrueLabel": {
+    "eng": "yes",
+    "rus": "истина"
+  },
+  "grid.booleanCellFalseLabel": {
+    "eng": "no",
+    "rus": "ложь"
+  },
+  "grid.actionsCellMore": {
+    "eng": "more",
+    "rus": "ещё"
+  },
+  "grid.pinToLeft": {
+    "eng": "Pin to left",
+    "rus": "Закрепить слева"
+  },
+  "grid.pinToRight": {
+    "eng": "Pin to right",
+    "rus": "Закрепить справа"
+  },
+  "grid.unpin": {
+    "eng": "Unpin",
+    "rus": "Открепить"
+  },
+  "grid.treeDataGroupingHeaderName": {
+    "eng": "Group",
+    "rus": "Группа"
+  },
+  "grid.treeDataExpand": {
+    "eng": "see children",
+    "rus": "показать дочерние элементы"
+  },
+  "grid.treeDataCollapse": {
+    "eng": "hide children",
+    "rus": "скрыть дочерние элементы"
+  },
+  "grid.groupingColumnHeaderName": {
+    "eng": "Group",
+    "rus": "Группа"
+  },
+  "grid.detailPanelToggle": {
+    "eng": "Detail panel toggle",
+    "rus": "Детали"
+  },
+  "grid.expandDetailPanel": {
+    "eng": "Expand",
+    "rus": "Развернуть"
+  },
+  "grid.collapseDetailPanel": {
+    "eng": "Collapse",
+    "rus": "Свернуть"
+  },
+  "grid.rowReorderingHeaderName": {
+    "eng": "Row reordering",
+    "rus": "Изменение порядка строк"
+  },
+  "grid.aggregationMenuItemHeader": {
+    "eng": "Aggregation",
+    "rus": "Объединение данных"
+  },
+  "grid.aggregationFunctionLabelSum": {
+    "eng": "sum",
+    "rus": "сумм"
+  },
+  "grid.aggregationFunctionLabelAvg": {
+    "eng": "avg",
+    "rus": "срзнач"
+  },
+  "grid.aggregationFunctionLabelMin": {
+    "eng": "min",
+    "rus": "мин"
+  },
+  "grid.aggregationFunctionLabelMax": {
+    "eng": "max",
+    "rus": "макс"
+  },
+  "grid.aggregationFunctionLabelSize": {
+    "eng": "size",
+    "rus": "счет"
+  },
+  "grid.activeFilters": {
+    "eng": "Active filters: ${count}",
+    "rus": "Активных фильтров: ${count}"
+  },
+  "grid.selectedRows": {
+    "eng": "Selected rows: ${count}",
+    "rus": "Выбрано строк: ${count}"
+  },
+  "grid.visibleRows": {
+    "eng": "${visible} of ${total}",
+    "rus": "${visible} из ${total}"
+  },
+  "grid.columnMenu": {
+    "eng": "${name} column menu",
+    "rus": "Меню столбца ${name}"
+  },
+  "grid.groupColumn": {
+    "eng": "Group by ${name}",
+    "rus": "Сгруппировать по ${name}"
+  },
+  "grid.unGroupColumn": {
+    "eng": "Stop grouping by ${name}",
+    "rus": "Разгруппировать по ${name}"
+  },
+  "grid.rowsPerPage": {
+    "eng": "Rows per page:",
+    "rus": "Строк на странице:"
+  },
+  "grid.displayedRows": {
+    "eng": "${from}–${to} of ${count}",
+    "rus": "${from}–${to} из ${count}"
+  },
+  "grid.moreThan": {
+    "eng": "more than ${to}",
+    "rus": "более ${to}"
+  },
+  "grid.first": {
+    "eng": "Go to first page",
+    "rus": "Перейти на первую страницу"
+  },
+  "grid.last": {
+    "eng": "Go to last page",
+    "rus": "Перейти на последнюю страницу"
+  },
+  "grid.next": {
+    "eng": "Go to next page",
+    "rus": "Перейти на следующую страницу"
+  },
+  "grid.previous": {
+    "eng": "Go to previous page",
+    "rus": "Перейти на предыдущую страницу"
+  },
+  "expandBreadcrumbs": {
+    "eng": "Show path",
+    "rus": "Показать полный путь"
+  }
+}

@@ -15,6 +15,9 @@ from backend.api_v1.nomenclature_key_link.key_link_service import KeyLinkService
 
 from backend.api_v1.nomenclature_key_link.nom_key_link_status_type_model import NomKeyLinkStatusType
 from backend.database.db_helper import db_helper
+from backend.auth.jwt_auth import get_current_active_auth_user
+from backend.api_v1.employee.employee_schema import EmployeeSchema
+from backend.api_v1.base.i18n import localized_name, lang_suffix_for
 
 router = APIRouter(
     prefix="/nomenclature/key-links",
@@ -24,10 +27,12 @@ router = APIRouter(
 
 
 @router.get("/status-types", response_model=List[dict])
-async def list_key_link_status_types(session: AsyncSession = Depends(db_helper.session_getter)):
+async def list_key_link_status_types(session: AsyncSession = Depends(db_helper.session_getter),
+                                     user: EmployeeSchema = Depends(get_current_active_auth_user)):
     from sqlalchemy import select
     rows = (await session.execute(select(NomKeyLinkStatusType))).scalars().all()
-    return [{"id": r.id, "name_u": r.name_u, "name_e": r.name_e} for r in rows]
+    return [{"id": r.id, "name": localized_name(r, lang_suffix_for(user)),
+             "name_u": r.name_u, "name_e": r.name_e} for r in rows]
 
 
 def _parent_param(parent_id: Optional[int] = Query(None, description="Filter by parent ID")):

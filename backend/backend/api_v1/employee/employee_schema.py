@@ -6,6 +6,8 @@ class LangSchema(BaseModel):
     id: Optional[int] = None
     short_name: Optional[str] = None
     acronym: Optional[str] = None
+    name: str = ""
+    locale: str = "en"
 
 
 class EmployeeSchema(BaseModel):

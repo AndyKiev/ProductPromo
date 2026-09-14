@@ -53,7 +53,7 @@ class TaxTypeService(BaseService):
                 raise await self._resolve_domain_error(TaxTypeCodeTaken(body.code))
             raise
         detail = await self._resolve_domain_success(TaxTypeCreateSuccess(body.code))
-        return MutationResponse(detail=detail, data=TaxTypeSchema.model_validate(created))
+        return MutationResponse(**detail, data=TaxTypeSchema.model_validate(created))
 
     async def update_tax_type(self, id: int, body: TaxTypeUpdate) -> MutationResponse[TaxTypeSchema]:
         orm = await self.repository.get_by_id(id)
@@ -68,7 +68,7 @@ class TaxTypeService(BaseService):
                 raise await self._resolve_domain_error(TaxTypeCodeTaken(body.code or ""))
             raise
         detail = await self._resolve_domain_success(TaxTypeUpdateSuccess(updated.code))
-        return MutationResponse(detail=detail, data=TaxTypeSchema.model_validate(updated))
+        return MutationResponse(**detail, data=TaxTypeSchema.model_validate(updated))
 
     async def delete_tax_type(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -81,4 +81,4 @@ class TaxTypeService(BaseService):
             delete_success_exc=TaxTypeDeleteSuccess,
         )
         detail = await self._resolve_domain_success(TaxTypeDeleteSuccess(obj.code))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

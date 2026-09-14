@@ -1,28 +1,33 @@
+from backend.api_v1.product_status.product_status_messages import (
+    PRODUCT_STATUS_NOT_FOUND,
+    PRODUCT_STATUS_CODE_TAKEN,
+    PRODUCT_STATUS_DELETE_ERROR,
+)
 from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class ProductStatusNotFound(NotFoundError):
-    message_key = "productStatusNotFound"
+    message_key = PRODUCT_STATUS_NOT_FOUND["message_key"]
 
     def __init__(self, id_: int) -> None:
         self.template_vars = {"id": id_}
-        self.fallback = f"Product status with ID {id_} not found"
+        self.fallback = PRODUCT_STATUS_NOT_FOUND["fallback"]
         super().__init__("Product status", "id", id_)
 
 
 class ProductStatusCodeTaken(AlreadyExistsError):
-    message_key = "productStatusCodeTaken"
+    message_key = PRODUCT_STATUS_CODE_TAKEN["message_key"]
 
     def __init__(self, code: str) -> None:
         self.template_vars = {"code": code}
-        self.fallback = f"Product status with code '{code}' already exists"
+        self.fallback = PRODUCT_STATUS_CODE_TAKEN["fallback"]
         super().__init__("Product status", "code", code)
 
 
 class ProductStatusDeleteError(DeleteError):
-    message_key = "productStatusDeleteError"
+    message_key = PRODUCT_STATUS_DELETE_ERROR["message_key"]
 
     def __init__(self, name: str) -> None:
         self.template_vars = {"name": name}
-        self.fallback = f"Product status '{name}' cannot be deleted because it is referenced by other records"
+        self.fallback = PRODUCT_STATUS_DELETE_ERROR["fallback"]
         DomainError.__init__(self, self.fallback)

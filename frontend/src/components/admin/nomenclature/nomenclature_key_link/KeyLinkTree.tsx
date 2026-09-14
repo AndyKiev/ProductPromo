@@ -29,7 +29,7 @@ import nomenclatureStrings from '../_shared/nomenclatureStrings';
 
 const fetchStatusTypes = async () => {
   const res = await axiosInstance.get(`${BASE_URL}/nomenclature/key-links/status-types`);
-  return (res.data ?? []) as { id: number; name_u: string; name_e: string }[];
+  return (res.data ?? []) as { id: number; name: string; name_u: string; name_e: string }[];
 };
 
 interface TreeNodeProps {
@@ -212,7 +212,7 @@ export function KeyLinkTree() {
 
   const statusOptions = statusTypes.map((s) => ({
     id: s.id,
-    label: s.name_u || s.name_e || String(s.id),
+    label: s.name || String(s.id),
   }));
 
   const loading = statusLoading;

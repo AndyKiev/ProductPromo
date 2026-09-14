@@ -9,9 +9,7 @@ class BaseService:
     create / update / get_all(sort_json=) / exists_by_name / delete_by_id /
     _resolve_domain_error / _resolve_domain_success.
 
-    NOTE: messages use each domain exception's English `fallback`. The DB-backed
-    translation layer (msg / msg_key by employee language) is a documented port
-    from the talent project — wire it into _resolve_* when ready.
+    Messages resolve through the DB catalog using the authenticated user's lang_id.
     """
 
     # PostgreSQL unique violation code
@@ -62,13 +60,23 @@ class BaseService:
             raise
         return None
 
-    # ---- message resolution (fallback only for now) ----
+    # ---- message resolution from a separate cached DB snapshot ----
     async def _resolve_domain_error(self, exc):
-        exc.resolved_message = getattr(exc, "fallback", None) or str(exc)
+        from backend.api_v1.msg.catalog import catalog_cache
+        catalog = await catalog_cache.get()
+        exc.lang_id = getattr(self.user, "lang_id", None) or catalog.default_id
+        exc.resolved_message = catalog.text(getattr(exc, "message_key", "invalidValue"), exc.lang_id,
+                                           getattr(exc, "template_vars", None), getattr(exc, "fallback", str(exc)))
         return exc
 
-    async def _resolve_domain_success(self, success) -> str:
-        return getattr(success, "fallback", None) or getattr(success, "message", None) or "OK"
+    async def _resolve_domain_success(self, success) -> dict:
+        from backend.api_v1.msg.catalog import catalog_cache
+        catalog = await catalog_cache.get()
+        key = success.message_key
+        lang_id = getattr(self.user, "lang_id", None) or catalog.default_id
+        params = getattr(success, "template_vars", {})
+        return {"detail": catalog.text(key, lang_id, params, success.fallback),
+                "message_key": key, "params": params, "lang_id": lang_id}
 
     @staticmethod
     def _is_unique_violation(exc: IntegrityError) -> bool:

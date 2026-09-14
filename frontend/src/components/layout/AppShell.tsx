@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { AppBar, Box, Toolbar, Typography, Button, Stack, Chip, Tooltip, IconButton } from '@mui/material';
+import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip, IconButton } from '@mui/material';
 import { LogoutRounded, CategoryRounded, Inventory2Rounded, LocalShippingRounded } from '@mui/icons-material';
 import { useTheme } from '../theme/useTheme';
 import { useAuthStore } from '../../store/authStore';
@@ -8,16 +8,20 @@ import ThemeSwitch from '../theme/ThemeSwitch';
 import Logo from './Logo';
 import cfl from '../../utils/capitalizeFirstLetter';
 import useString from '../../hooks/useString';
+import AccountMenu from '../account/AccountMenu';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
-  const { t, mode } = useTheme();
+  const { t } = useTheme();
   const getString = useString();
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const qc = useQueryClient();
+  const { logout } = useAuthStore();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
 
   const handleLogout = async () => {
     logout();
+    qc.removeQueries({ queryKey: ['profile'] });
     await navigate({ to: '/auth/login' });
   };
 
@@ -56,12 +60,9 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
 
           <Stack direction="row" alignItems="center" spacing={1.5}>
             <ThemeSwitch />
-            {user && (
-              <Chip label={user.name} size="small"
-                sx={{ fontSize: 12, fontWeight: 600, height: 28, background: `${t.accent}14`, color: t.accent, border: 'none', display: { xs: 'none', sm: 'flex' } }} />
-            )}
-            <Tooltip title="Sign out">
-              <IconButton size="small" onClick={handleLogout} sx={{ color: t.textMuted, borderRadius: '8px' }}>
+            <AccountMenu />
+            <Tooltip title={cfl(getString('signOut'))}>
+              <IconButton aria-label={cfl(getString('signOut'))} size="small" onClick={handleLogout} sx={{ color: t.textMuted, borderRadius: '8px' }}>
                 <LogoutRounded fontSize="small" />
               </IconButton>
             </Tooltip>

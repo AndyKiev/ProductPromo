@@ -56,7 +56,7 @@ class ProductTaxService(BaseService):
         updated = await self.update(orm, body, partial=True)
         schema = self._to_schema(await self.repository.get_by_id(updated.id))
         detail = await self._resolve_domain_success(ProductTaxUpdateSuccess(str(updated.id)))
-        return MutationResponse(detail=detail, data=schema)
+        return MutationResponse(**detail, data=schema)
 
     async def delete_product_tax(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -69,4 +69,4 @@ class ProductTaxService(BaseService):
             delete_success_exc=ProductTaxDeleteSuccess,
         )
         detail = await self._resolve_domain_success(ProductTaxDeleteSuccess(str(id)))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

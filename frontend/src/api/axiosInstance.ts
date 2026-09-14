@@ -1,6 +1,14 @@
 import axios from "axios";
 import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { useAuthStore } from "../store/authStore";
+import { useTranslationsStore } from '../store/useTranslationsStore';
+import { translate } from '../hooks/useString';
+
+export class ApiError extends Error {
+  constructor(message: string, public message_key?: string, public params?: Record<string, unknown>, public lang_id?: number) {
+    super(message); this.name = 'ApiError';
+  }
+}
 
 const getAuthToken = (): string | null => useAuthStore.getState().access_token;
 const getRefreshToken = (): string | null => useAuthStore.getState().refresh_token;
@@ -34,11 +42,13 @@ const flushQueue = (error: unknown, token: string | null): void => {
 
 const refreshAccessToken = async (): Promise<string> => {
   const refreshToken = getRefreshToken();
-  if (!refreshToken) throw new Error("No refresh token");
+  if (!refreshToken) throw new ApiError(translate('notAuthenticated'), 'notAuthenticated');
   const { data } = await refreshClient.post<{
     access_token: string;
     refresh_token: string;
-  }>("/api/v1/jwt/refresh", { refresh_token: refreshToken });
+  }>("/api/v1/jwt/refresh", { refresh_token: refreshToken }, {
+    headers: { 'X-Lang-Id': useTranslationsStore.getState().selected?.id },
+  });
   useAuthStore.getState().setTokens(data.access_token, data.refresh_token);
   return data.access_token;
 };
@@ -54,6 +64,8 @@ instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAuthToken();
     if (token) config.headers.Authorization = `Bearer ${token}`;
+    const langId = useTranslationsStore.getState().selected?.id;
+    if (langId) config.headers['X-Lang-Id'] = langId;
     return config;
   },
   (error: AxiosError) => Promise.reject(error),
@@ -105,7 +117,12 @@ instance.interceptors.response.use(
       }
     }
 
-    const detail = (error.response?.data as { detail?: unknown })?.detail;
+    const body = error.response?.data as { detail?: unknown; message_key?: string; params?: Record<string, unknown>; lang_id?: number; errors?: { msg: string }[] } | undefined;
+    const detail = body?.detail;
+    if (body?.message_key) {
+      const text = body.errors?.map((e) => e.msg).join('; ') || (typeof detail === 'string' ? detail : translate(body.message_key, body.params));
+      return Promise.reject(new ApiError(text, body.message_key, body.params, body.lang_id));
+    }
     if (detail) {
       if (typeof detail === "string") {
         return Promise.reject(new Error(detail));
@@ -115,11 +132,11 @@ instance.interceptors.response.use(
           .map((d: { msg?: string }) => d.msg)
           .filter(Boolean)
           .join("; ");
-        return Promise.reject(new Error(messages || "Validation failed"));
+        return Promise.reject(new ApiError(messages || translate('validationFailed')));
       }
       return Promise.reject(new Error(String(detail)));
     }
-    return Promise.reject(error);
+    return Promise.reject(new ApiError(translate(error.code === 'ECONNABORTED' ? 'requestTimeout' : 'networkError')));
   },
 );
 

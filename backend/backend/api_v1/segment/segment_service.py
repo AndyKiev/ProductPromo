@@ -50,7 +50,7 @@ class SegmentService(BaseService):
             created = await self.create(body)
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(SegmentCreateSuccess(body.name))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError as e:
             if self._is_unique_violation(e):
                 raise await self._resolve_domain_error(SegmentNameTaken(body.name))
@@ -66,7 +66,7 @@ class SegmentService(BaseService):
             updated = await self.update(orm, body, partial=True)
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(SegmentUpdateSuccess(schema.name))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError as e:
             if self._is_unique_violation(e):
                 raise await self._resolve_domain_error(SegmentNameTaken(body.name))
@@ -83,4 +83,4 @@ class SegmentService(BaseService):
             delete_success_exc=SegmentDeleteSuccess,
         )
         detail = await self._resolve_domain_success(SegmentDeleteSuccess(obj.name))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

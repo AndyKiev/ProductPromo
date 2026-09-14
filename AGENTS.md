@@ -33,7 +33,11 @@ make docker-down    # Stop containers
 - API prefix: `/api/v1`. Responses: `{ detail: string, data: T | null }`
 - Frontend API helpers: `src/components/admin/nomenclature/<entity>/<entity>Api.ts`
 - Mutations use TanStack Query `useMutation` with `qc.invalidateQueries` on success
-- i18n: static string tables per feature, `useString({ str })` hook
+- i18n: DB tables `langs`, `msg_keys`, `msgs`; persisted account `lang_id` (never hardcode IDs).
+  English/Russian UI seeds: `backend/backend/api_v1/msg/ui.json`; sync frontend fallback with
+  `node scripts/sync_i18n.mjs`, seed using `make init-db`. Components use `useString()`.
+  Domain keys + fallback + Russian seed live in `<domain>_messages.py`; use `${name}` parameters.
+  Success resolver returns fields for `MutationResponse(**detail, data=...)`. See `docs/TRANSLATIONS.md`.
 - Button labels use lowercase English: `getString('create')` → `"create"`, `getString('save')` → `"save"`
 - Nomenclature hierarchy: Market → Segment → Category → Family → Link (4-way join)
 

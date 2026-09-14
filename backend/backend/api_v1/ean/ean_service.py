@@ -55,7 +55,7 @@ class EanService(BaseService):
                 raise await self._resolve_domain_error(EanTaken(body.ean))
             raise
         detail = await self._resolve_domain_success(EanCreateSuccess(body.ean))
-        return MutationResponse(detail=detail, data=EanSchema.model_validate(created))
+        return MutationResponse(**detail, data=EanSchema.model_validate(created))
 
     async def update_ean(self, id: int, body: EanUpdate) -> MutationResponse[EanSchema]:
         orm = await self.repository.get_by_id(id)
@@ -70,7 +70,7 @@ class EanService(BaseService):
                 raise await self._resolve_domain_error(EanTaken(body.ean or ""))
             raise
         detail = await self._resolve_domain_success(EanUpdateSuccess(updated.ean))
-        return MutationResponse(detail=detail, data=EanSchema.model_validate(updated))
+        return MutationResponse(**detail, data=EanSchema.model_validate(updated))
 
     async def delete_ean(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -83,4 +83,4 @@ class EanService(BaseService):
             delete_success_exc=EanDeleteSuccess,
         )
         detail = await self._resolve_domain_success(EanDeleteSuccess(obj.ean))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

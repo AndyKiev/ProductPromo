@@ -53,7 +53,7 @@ class NomenclatureKeyService(BaseService):
             created = await self.create(body)
             schema = self._to_schema(await self.repository.get_by_id(created.id))
             detail = await self._resolve_domain_success(NomenclatureKeyCreateSuccess(body.name))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError as e:
             if self._is_unique_violation(e):
                 raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
@@ -69,7 +69,7 @@ class NomenclatureKeyService(BaseService):
             updated = await self.update(orm, body, partial=True)
             schema = self._to_schema(await self.repository.get_by_id(updated.id))
             detail = await self._resolve_domain_success(NomenclatureKeyUpdateSuccess(schema.name))
-            return MutationResponse(detail=detail, data=schema)
+            return MutationResponse(**detail, data=schema)
         except IntegrityError as e:
             if self._is_unique_violation(e):
                 raise await self._resolve_domain_error(NomenclatureKeyNameTaken(body.name))
@@ -86,4 +86,4 @@ class NomenclatureKeyService(BaseService):
             delete_success_exc=NomenclatureKeyDeleteSuccess,
         )
         detail = await self._resolve_domain_success(NomenclatureKeyDeleteSuccess(obj.name))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

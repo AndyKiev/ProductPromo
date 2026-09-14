@@ -59,7 +59,7 @@ class ProductSupplierService(BaseService):
             raise await self._resolve_domain_error(ProductSupplierNotFound(id))
         updated = await self.update(orm, body, partial=True)
         detail = await self._resolve_domain_success(ProductSupplierUpdateSuccess(str(updated.id)))
-        return MutationResponse(detail=detail, data=self._to_schema(await self.repository.get_by_id(updated.id)))
+        return MutationResponse(**detail, data=self._to_schema(await self.repository.get_by_id(updated.id)))
 
     async def delete_link(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -72,4 +72,4 @@ class ProductSupplierService(BaseService):
             delete_success_exc=ProductSupplierDeleteSuccess,
         )
         detail = await self._resolve_domain_success(ProductSupplierDeleteSuccess(str(id)))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

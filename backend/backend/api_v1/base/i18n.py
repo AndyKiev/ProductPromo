@@ -1,11 +1,11 @@
 """Resolve the user's display language to a reference-table Name* suffix.
 
-Reference tables carry NameR / NameU / NameE / NameF. We keep only ukr/eng,
-so the user's language maps to `name_u` (Ukrainian) or `name_e` (English),
-with English as the safe fallback. Point `lang_suffix_for` at whatever field
-on your employee/person card carries the language acronym ("ukr"/"eng").
+Reference tables carry NameR / NameU / NameE / NameF. The profile's dynamic
+lang_id resolves to a language record; its short_name selects the legacy
+name column. Application status labels use the translation catalog.
 """
 _UKR = {"ukr", "ua", "uk", "u"}
+_RUS = {"rus", "ru", "r"}
 
 
 def lang_suffix_for(user) -> str:
@@ -15,13 +15,20 @@ def lang_suffix_for(user) -> str:
         or getattr(getattr(user, "lang", None), "acronym", None)
         or ""
     )
-    return "u" if str(acronym).lower() in _UKR else "e"
+    code = str(acronym).lower()
+    return "r" if code in _RUS else "u" if code in _UKR else "e"
 
 
 def localized_name(obj, suffix: str):
     """Pick name_<suffix> off a reference row, falling back to English then Ukr."""
     if obj is None:
         return None
+    if getattr(obj, "code", None) in {"active", "inactive"}:
+        from backend.api_v1.msg.catalog import catalog_cache
+        catalog = catalog_cache.snapshot
+        code = {"r": "rus", "u": "ukr", "e": "eng"}.get(suffix, "eng")
+        lang_id = next((id_ for id_, lang in catalog.languages.items() if lang.short_name == code), catalog.default_id)
+        return catalog.text(obj.code, lang_id)
     return (
         getattr(obj, f"name_{suffix}", None)
         or getattr(obj, "name_e", None)

@@ -50,7 +50,7 @@ class NomenclatureService(BaseService):
         created = await self.repository.create(instance)
         schema = self._to_schema(await self.repository.get_by_id(created.id))
         detail = await self._resolve_domain_success(NomenclatureCreateSuccess(str(created.id)))
-        return MutationResponse(detail=detail, data=schema)
+        return MutationResponse(**detail, data=schema)
 
     async def update_nomenclature(self, id: int, body: NomenclatureUpdate) -> MutationResponse[NomenclatureSchema]:
         orm = await self.repository.get_by_id(id)
@@ -59,7 +59,7 @@ class NomenclatureService(BaseService):
         updated = await self.update(orm, body, partial=True)
         schema = self._to_schema(await self.repository.get_by_id(updated.id))
         detail = await self._resolve_domain_success(NomenclatureUpdateSuccess(str(orm.id)))
-        return MutationResponse(detail=detail, data=schema)
+        return MutationResponse(**detail, data=schema)
 
     async def delete_nomenclature(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -72,4 +72,4 @@ class NomenclatureService(BaseService):
             delete_success_exc=NomenclatureDeleteSuccess,
         )
         detail = await self._resolve_domain_success(NomenclatureDeleteSuccess(str(obj.id)))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

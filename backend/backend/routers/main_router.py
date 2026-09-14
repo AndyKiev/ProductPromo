@@ -46,6 +46,10 @@ router.include_router(product_supplier_router)
 router.include_router(tax_type_router)
 router.include_router(tax_rate_router)
 router.include_router(product_tax_router)
+from backend.api_v1.lang.lang_views import router as lang_router
+from backend.api_v1.msg.msg_views import router as msg_router
+router.include_router(lang_router)
+router.include_router(msg_router)
 
 
 @router.get("/health", tags=["Health"])

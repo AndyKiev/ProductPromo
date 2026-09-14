@@ -55,7 +55,7 @@ class ImportCodeService(BaseService):
                 raise await self._resolve_domain_error(ImportCodeTaken(body.code))
             raise
         detail = await self._resolve_domain_success(ImportCodeCreateSuccess(body.code))
-        return MutationResponse(detail=detail, data=ImportCodeSchema.model_validate(created))
+        return MutationResponse(**detail, data=ImportCodeSchema.model_validate(created))
 
     async def update_import_code(self, id: int, body: ImportCodeUpdate) -> MutationResponse[ImportCodeSchema]:
         orm = await self.repository.get_by_id(id)
@@ -70,7 +70,7 @@ class ImportCodeService(BaseService):
                 raise await self._resolve_domain_error(ImportCodeTaken(body.code or ""))
             raise
         detail = await self._resolve_domain_success(ImportCodeUpdateSuccess(updated.code))
-        return MutationResponse(detail=detail, data=ImportCodeSchema.model_validate(updated))
+        return MutationResponse(**detail, data=ImportCodeSchema.model_validate(updated))
 
     async def delete_import_code(self, id: int) -> MutationResponse[None]:
         obj = await self.repository.get_by_id(id)
@@ -83,4 +83,4 @@ class ImportCodeService(BaseService):
             delete_success_exc=ImportCodeDeleteSuccess,
         )
         detail = await self._resolve_domain_success(ImportCodeDeleteSuccess(obj.code))
-        return MutationResponse(detail=detail, data=None)
+        return MutationResponse(**detail, data=None)

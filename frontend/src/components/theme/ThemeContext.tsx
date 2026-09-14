@@ -13,6 +13,7 @@ import {
     type ThemeKey,
 } from "./themes";
 import { ThemeContext } from "./useTheme";
+import useString from '../../hooks/useString';
 
 const STORAGE_KEY = "productpromo.theme";
 
@@ -24,6 +25,7 @@ function readStored(): ThemeKey {
 }
 
 export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const getString = useString();
     const [themeKey, setThemeKeyState] = useState<ThemeKey>(readStored);
     const t = themes[themeKey] ?? themes[DEFAULT_THEME];
     const mode: "light" | "dark" = t.isDark ? "dark" : "light";
@@ -48,7 +50,12 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 shape: { borderRadius: 10 },
                 components: {
                     MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
-                    MuiAutocomplete: { defaultProps: { handleHomeEndKeys: false } },
+                    MuiAutocomplete: { defaultProps: { handleHomeEndKeys: false,
+                        clearText: getString('clear'), closeText: getString('close'),
+                        openText: getString('open'), loadingText: getString('loading'), noOptionsText: getString('noOptions'),
+                    } },
+                    MuiAlert: { defaultProps: { closeText: getString('close') } },
+                    MuiBreadcrumbs: { defaultProps: { expandText: getString('expandBreadcrumbs') } },
                     MuiButton: { styleOverrides: { root: { textTransform: "none", fontWeight: 600 } } },
                     MuiTab: { styleOverrides: { root: { textTransform: "none", fontWeight: 500, minHeight: 48 } } },
                     MuiOutlinedInput: {
@@ -106,7 +113,7 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
                     },
                 },
             }),
-        [mode, t],
+        [mode, t, getString],
     );
 
     return (

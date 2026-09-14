@@ -1,10 +1,13 @@
 {
   "version": "2.0.0",
+  // Runs from the WSL2 copy (~/projects/ProductPromo). Postgres stays a native
+  // Windows cluster (scripts/dev/pg.sh drives it through WSL interop); the app
+  // runs in Docker. Ctrl+Alt+5 is bound to "ProductPromo: start".
   "options": {
     "cwd": "${workspaceFolder}",
     "shell": {
-      "executable": "powershell.exe",
-      "args": ["-NoProfile", "-NoExit", "-Command"]
+      "executable": "bash",
+      "args": ["-c"]
     }
   },
   "presentation": {
@@ -18,40 +21,26 @@
     {
       "label": "ProductPromo-db",
       "type": "shell",
-      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' status 2>$null; if (-not $?) { & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -l 'C:\\Users\\andre\\PostgresData\\product_promo.log' -o '-p 5435' -w -t 60 start }; & 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe' -h 127.0.0.1 -p 5435",
-      "isBackground": true,
+      "command": "scripts/dev/pg.sh start",
       "problemMatcher": []
     },
     {
-      "label": "ProductPromo-backend",
+      "label": "ProductPromo-stack",
       "type": "shell",
-      "command": "$pgr='C:\\Program Files\\PostgreSQL\\18\\bin\\pg_isready.exe'; for ($i=0; $i -lt 90; $i++) { & $pgr -h 127.0.0.1 -p 5435 -q 2>$null; if ($?) { break }; Write-Host \"waiting for postgres on 5435... ($i)\"; Start-Sleep -Seconds 1 }; & $pgr -h 127.0.0.1 -p 5435; if (-not $?) { Write-Host 'Postgres never came up - start the ProductPromo-db task first.' -ForegroundColor Red } else { poetry run uvicorn backend.main:app --host 127.0.0.1 --port 8004 --reload }",
-      "options": {
-        "cwd": "${workspaceFolder}\\backend"
-      },
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "ProductPromo-frontend",
-      "type": "shell",
-      "command": "npm run dev -- --host 127.0.0.1",
-      "options": {
-        "cwd": "${workspaceFolder}\\frontend"
-      },
+      "command": "docker compose up -d && docker compose logs -f --tail 20",
       "isBackground": true,
       "problemMatcher": []
     },
     {
       "label": "ProductPromo: start",
-      "dependsOn": ["ProductPromo-db", "ProductPromo-backend", "ProductPromo-frontend"],
-      "dependsOrder": "parallel",
+      "dependsOn": ["ProductPromo-db", "ProductPromo-stack"],
+      "dependsOrder": "sequence",
       "problemMatcher": []
     },
     {
       "label": "ProductPromo: stop",
       "type": "shell",
-      "command": "& 'C:\\Program Files\\PostgreSQL\\18\\bin\\pg_ctl.exe' -D 'C:\\Users\\andre\\PostgresData\\product_promo' -m fast -w -t 60 stop",
+      "command": "docker compose stop; scripts/dev/pg.sh stop",
       "problemMatcher": []
     }
   ]

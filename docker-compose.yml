@@ -50,14 +50,10 @@ services:
       # Bind all interfaces so the published port is reachable.
       APP_CONFIG__RUN__HOST: 0.0.0.0
       APP_CONFIG__RUN__PORT: "8004"
-      # Auto-reload on host edits (the bind mount below). Windows bind mounts
-      # deliver no inotify events, so watchfiles has to poll — without
-      # FORCE_POLLING the watcher silently never fires. Polling runs around the
-      # clock, so the delay is raised from the 300 ms default to keep idle CPU
-      # down; a reload lands up to 2 s after a save.
+      # Auto-reload on edits (the bind mount below). The source lives on the
+      # WSL2 filesystem, so inotify events reach the container and watchfiles
+      # needs no polling — do not add WATCHFILES_FORCE_POLLING back.
       APP_CONFIG__RUN__RELOAD: "true"
-      WATCHFILES_FORCE_POLLING: "true"
-      WATCHFILES_POLL_DELAY_MS: "2000"
     ports:
       # 8012 on the host, not 8004: talent publishes 8005 and anee_data 8006,
       # and 8004 / 8009 are already taken by native dev servers here. Inside
@@ -100,6 +96,6 @@ services:
       # Origin only, no /api/v1 — the client appends that itself
       # (src/utils/eNums.ts, src/api/axiosInstance.ts).
       VITE_BACKEND_API_URL: http://127.0.0.1:8012
-      # Turns on watch polling + the HMR client port in vite.config.ts.
+      # Sets the HMR client port in vite.config.ts.
       VITE_IN_DOCKER: "true"
     networks: [productpromo]

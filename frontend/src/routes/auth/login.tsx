@@ -7,7 +7,6 @@ import { Box, Paper, TextField, Button, Typography, Alert, CircularProgress } fr
 import { axiosInstance } from '../../api/axiosInstance';
 import { useAuthStore } from '../../store/authStore';
 import useString from '../../hooks/useString';
-import LanguageSelect from '../../components/account/LanguageSelect';
 import cfl from '../../utils/capitalizeFirstLetter';
 
 const schema = z.object({
@@ -50,7 +49,6 @@ function LoginPage() {
       <Paper elevation={0} sx={{ p: 4, width: 360, border: '1px solid', borderColor: 'divider' }}>
         <Typography variant="h6" fontWeight={700} mb={1}>ProductPromo</Typography>
         <Typography variant="body2" color="text.secondary" mb={3}>{getString('signInPrompt')}</Typography>
-        <Box mb={2}><LanguageSelect /></Box>
         {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

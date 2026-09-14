@@ -48,6 +48,15 @@ db-backup:
 docker-up:
 	docker compose up --build -d
 
+# rebuild the frontend after package.json changes; -V drops the old
+# node_modules anonymous volume so the new install is used
+docker-rebuild-frontend:
+	docker compose up -d --build -V frontend
+
+# rebuild the backend after pyproject.toml / Dockerfile changes
+docker-rebuild-backend:
+	docker compose up -d --build backend
+
 # start without rebuilding
 docker-start:
 	docker compose up -d

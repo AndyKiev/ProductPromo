@@ -34,7 +34,8 @@ test('account language persists, translates all sections and API messages, and r
     await page.reload();
     await expect(page.getByRole('tab', { name: 'Рынки', exact: true })).toBeVisible();
     await expect(page.getByText('Строк на странице:', { exact: true })).toBeVisible();
-    await page.getByRole('button', { name: 'Выйти', exact: true }).click();
+    await page.getByRole('button', { name: 'Аккаунт', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Выйти', exact: true }).click();
     await expect(page.getByLabel('Имя пользователя', { exact: true })).toBeVisible();
     await page.getByLabel('Имя пользователя', { exact: true }).fill('UKR7101004');
     await page.getByLabel('Пароль', { exact: true }).fill('111');

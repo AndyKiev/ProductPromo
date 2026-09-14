@@ -12,6 +12,7 @@ import useString from '../../../../hooks/useString';
 import cfl from '../../../../utils/capitalizeFirstLetter';
 import catalogStrings from '../../catalogStrings';
 import { AsyncAutocomplete, type AsyncOption } from '../../nomenclature/_shared/AsyncAutocomplete';
+import { entityLabel } from '../../nomenclature/_shared/EntitySelect';
 import { fetchMarkets } from '../../nomenclature/market/marketApi';
 import { fetchSegments } from '../../nomenclature/segment/segmentApi';
 import { fetchCategories } from '../../nomenclature/category/categoryApi';
@@ -151,11 +152,11 @@ export function ProductForm({ open, editing, onClose, createMutation, updateMuta
 
                         {select('market_id', 'market', markets.map((m) => ({ id: m.id, label: m.name })), false,
                             () => reset((p) => ({ ...p, segment_id: 0, category_id: 0, family_id: 0 })))}
-                        {select('segment_id', 'segment', segments.map((s) => ({ id: s.id, label: s.name })), !marketId,
+                        {select('segment_id', 'segment', segments.map((s) => ({ id: s.id, label: entityLabel(s) })), !marketId,
                             () => reset((p) => ({ ...p, category_id: 0, family_id: 0 })))}
-                        {select('category_id', 'category', categories.map((c) => ({ id: c.id, label: c.name })), !segmentId,
+                        {select('category_id', 'category', categories.map((c) => ({ id: c.id, label: entityLabel(c) })), !segmentId,
                             () => reset((p) => ({ ...p, family_id: 0 })))}
-                        {select('family_id', 'family', families.map((f) => ({ id: f.id, label: f.name })), !categoryId)}
+                        {select('family_id', 'family', families.map((f) => ({ id: f.id, label: entityLabel(f) })), !categoryId)}
                         {select('status_id', 'productStatus', statuses.map((s) => ({ id: s.id, label: s.name || s.code })))}
                         {select('product_type_id', 'productType', productTypes.map((t) => ({ id: t.id, label: t.name || t.code })))}
 

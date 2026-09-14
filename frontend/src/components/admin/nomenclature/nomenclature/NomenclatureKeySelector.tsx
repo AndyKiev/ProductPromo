@@ -1,44 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Box, Paper, TextField, MenuItem, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { fetchMarkets } from '../market/marketApi';
 import { fetchSegments } from '../segment/segmentApi';
 import { fetchCategories } from '../category/categoryApi';
 import { fetchFamilies } from '../family/familyApi';
 import { fetchKeyLinks1, fetchKeyLinks2, fetchKeyLinks3, type KeyLink } from '../nomenclature_key_link/keyLinkApi';
+import { EntitySelect } from '../_shared/EntitySelect';
 import useString from '../../../../hooks/useString';
 import cfl from '../../../../utils/capitalizeFirstLetter';
 import nomenclatureStrings from '../_shared/nomenclatureStrings';
 
 const NONE = 0;
-
-interface SelectProps {
-    label: string;
-    value: number;
-    disabled: boolean;
-    placeholder: string;
-    options: { id: number; label: string }[];
-    onChange: (value: number) => void;
-}
-
-function CascadingSelect({ label, value, disabled, placeholder, options, onChange }: SelectProps) {
-    return (
-        <TextField
-            select
-            size="small"
-            label={label}
-            sx={{ minWidth: 200, flex: 1 }}
-            value={value}
-            disabled={disabled}
-            onChange={(e) => onChange(Number(e.target.value))}
-        >
-            <MenuItem value={NONE}>{placeholder}</MenuItem>
-            {options.map((o) => (
-                <MenuItem key={o.id} value={o.id}>{o.label}</MenuItem>
-            ))}
-        </TextField>
-    );
-}
 
 // 0 means "not selected" at that level.
 export interface HierarchyFilter {
@@ -89,7 +62,7 @@ export function NomenclatureKeySelector({ value, onChange }: NomenclatureKeySele
         staleTime: 2 * 60 * 1000,
     });
 
-    const keyOptions = (links: KeyLink[]) => links.map((l) => ({ id: l.id, label: l.key_name || `ID ${l.key_id}` }));
+    const keyOptions = (links: KeyLink[]) => links.map((l) => ({ id: l.id, name: l.key_name || `ID ${l.key_id}` }));
 
     const resetKeys = () => { setLink1Id(NONE); setLink2Id(NONE); setLink3Id(NONE); };
     const onMarketChange = (v: number) => {
@@ -117,27 +90,30 @@ export function NomenclatureKeySelector({ value, onChange }: NomenclatureKeySele
             </Typography>
 
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 1.5 }}>
-                <CascadingSelect label={cfl(getString('market')) || 'market'} value={marketId} disabled={false}
-                    placeholder={placeholder} options={markets.map((m) => ({ id: m.id, label: m.name }))}
-                    onChange={onMarketChange} />
-                <CascadingSelect label={cfl(getString('segment')) || 'segment'} value={segmentId} disabled={!marketId}
-                    placeholder={placeholder} options={segments.map((s) => ({ id: s.id, label: s.name }))}
-                    onChange={onSegmentChange} />
-                <CascadingSelect label={cfl(getString('category')) || 'category'} value={categoryId} disabled={!segmentId}
-                    placeholder={placeholder} options={categories.map((c) => ({ id: c.id, label: c.name }))}
-                    onChange={onCategoryChange} />
-                <CascadingSelect label={cfl(getString('family')) || 'family'} value={familyId} disabled={!categoryId}
-                    placeholder={placeholder} options={families.map((f) => ({ id: f.id, label: f.name }))}
-                    onChange={onFamilyChange} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('market')) || 'market'}
+                    value={marketId} placeholder={placeholder} disabled={false}
+                    options={markets.map((m) => ({ id: m.id, name: m.name }))} onChange={onMarketChange} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('segment')) || 'segment'}
+                    value={segmentId} placeholder={placeholder} disabled={!marketId}
+                    options={segments.map((s) => ({ id: s.id, name: s.name, code: s.code }))} onChange={onSegmentChange} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('category')) || 'category'}
+                    value={categoryId} placeholder={placeholder} disabled={!segmentId}
+                    options={categories.map((c) => ({ id: c.id, name: c.name, code: c.code }))} onChange={onCategoryChange} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('family')) || 'family'}
+                    value={familyId} placeholder={placeholder} disabled={!categoryId}
+                    options={families.map((f) => ({ id: f.id, name: f.name, code: f.code }))} onChange={onFamilyChange} />
             </Box>
 
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                <CascadingSelect label={cfl(getString('key_level_1')) || 'level 1 keys'} value={link1Id} disabled={!familyId}
-                    placeholder={placeholder} options={keyOptions(keys1)} onChange={onKey1Change} />
-                <CascadingSelect label={cfl(getString('key_level_2')) || 'level 2 keys'} value={link2Id} disabled={!link1Id}
-                    placeholder={placeholder} options={keyOptions(keys2)} onChange={onKey2Change} />
-                <CascadingSelect label={cfl(getString('key_level_3')) || 'level 3 keys'} value={link3Id} disabled={!link2Id}
-                    placeholder={placeholder} options={keyOptions(keys3)} onChange={onKey3Change} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('key_level_1')) || 'level 1 keys'}
+                    value={link1Id} placeholder={placeholder} disabled={!familyId}
+                    options={keyOptions(keys1)} onChange={onKey1Change} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('key_level_2')) || 'level 2 keys'}
+                    value={link2Id} placeholder={placeholder} disabled={!link1Id}
+                    options={keyOptions(keys2)} onChange={onKey2Change} />
+                <EntitySelect sx={{ minWidth: 200, flex: 1 }} label={cfl(getString('key_level_3')) || 'level 3 keys'}
+                    value={link3Id} placeholder={placeholder} disabled={!link2Id}
+                    options={keyOptions(keys3)} onChange={onKey3Change} />
             </Box>
         </Paper>
     );

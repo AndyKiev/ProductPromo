@@ -7,8 +7,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  MenuItem,
   Button,
   Box,
   CircularProgress,
@@ -23,6 +21,7 @@ import { fetchMarkets } from '../market/marketApi';
 import { fetchSegments } from '../segment/segmentApi';
 import { fetchCategories } from '../category/categoryApi';
 import { fetchFamilies } from '../family/familyApi';
+import { EntitySelect } from '../_shared/EntitySelect';
 
 const schema = z.object({
   market_id: z.number({ message: 'required' }).min(1, 'required'),
@@ -74,6 +73,7 @@ export function NomenclatureForm({ open, editing, onClose, createMutation, updat
   }, [editing, open, reset]);
 
   const pending = createMutation.isPending || updateMutation.isPending;
+  const placeholder = cfl(getString('selectPlaceholder') || 'select…');
 
   const onSubmit = (values: FormValues) => {
     if (editing) updateMutation.mutate({ id: editing.id, data: values });
@@ -92,75 +92,67 @@ export function NomenclatureForm({ open, editing, onClose, createMutation, updat
               name="market_id"
               control={control}
               render={({ field }) => (
-                <TextField
-                  select
+                <EntitySelect
+                  fullWidth
                   label={cfl(getString('market')) || 'market'}
-                  fullWidth size="small"
-                  {...field}
                   value={field.value ?? 0}
+                  placeholder={placeholder}
+                  options={markets.map((o) => ({ id: o.id, name: o.name }))}
+                  onChange={(id) => { field.onChange(id); reset((prev) => ({ ...prev, segment_id: 0, category_id: 0, family_id: 0 })); }}
                   error={!!errors.market_id}
                   helperText={errors.market_id?.message ? getString(errors.market_id.message as any) : undefined}
-                  onChange={(e) => { field.onChange(Number(e.target.value)); reset((prev) => ({ ...prev, segment_id: 0, category_id: 0, family_id: 0 })); }}
-                >
-                  {markets.map((o) => <MenuItem key={o.id} value={o.id}>{o.name}</MenuItem>)}
-                </TextField>
+                />
               )}
             />
             <Controller
               name="segment_id"
               control={control}
               render={({ field }) => (
-                <TextField
-                  select
-                  label={cfl(getString('segment')) || 'segment'}
-                  fullWidth size="small"
+                <EntitySelect
+                  fullWidth
                   disabled={!marketId}
-                  {...field}
+                  label={cfl(getString('segment')) || 'segment'}
                   value={field.value ?? 0}
+                  placeholder={placeholder}
+                  options={segments.map((o) => ({ id: o.id, name: o.name, code: o.code }))}
+                  onChange={(id) => { field.onChange(id); reset((prev) => ({ ...prev, category_id: 0, family_id: 0 })); }}
                   error={!!errors.segment_id}
                   helperText={errors.segment_id?.message ? getString(errors.segment_id.message as any) : undefined}
-                  onChange={(e) => { field.onChange(Number(e.target.value)); reset((prev) => ({ ...prev, category_id: 0, family_id: 0 })); }}
-                >
-                  {segments.map((o) => <MenuItem key={o.id} value={o.id}>{o.name}</MenuItem>)}
-                </TextField>
+                />
               )}
             />
             <Controller
               name="category_id"
               control={control}
               render={({ field }) => (
-                <TextField
-                  select
-                  label={cfl(getString('category')) || 'category'}
-                  fullWidth size="small"
+                <EntitySelect
+                  fullWidth
                   disabled={!segmentId}
-                  {...field}
+                  label={cfl(getString('category')) || 'category'}
                   value={field.value ?? 0}
+                  placeholder={placeholder}
+                  options={categories.map((o) => ({ id: o.id, name: o.name, code: o.code }))}
+                  onChange={(id) => { field.onChange(id); reset((prev) => ({ ...prev, family_id: 0 })); }}
                   error={!!errors.category_id}
                   helperText={errors.category_id?.message ? getString(errors.category_id.message as any) : undefined}
-                  onChange={(e) => { field.onChange(Number(e.target.value)); reset((prev) => ({ ...prev, family_id: 0 })); }}
-                >
-                  {categories.map((o) => <MenuItem key={o.id} value={o.id}>{o.name}</MenuItem>)}
-                </TextField>
+                />
               )}
             />
             <Controller
               name="family_id"
               control={control}
               render={({ field }) => (
-                <TextField
-                  select
-                  label={cfl(getString('family')) || 'family'}
-                  fullWidth size="small"
+                <EntitySelect
+                  fullWidth
                   disabled={!categoryId}
-                  {...field}
+                  label={cfl(getString('family')) || 'family'}
                   value={field.value ?? 0}
+                  placeholder={placeholder}
+                  options={families.map((o) => ({ id: o.id, name: o.name, code: o.code }))}
+                  onChange={(id) => field.onChange(id)}
                   error={!!errors.family_id}
                   helperText={errors.family_id?.message ? getString(errors.family_id.message as any) : undefined}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                >
-                  {families.map((o) => <MenuItem key={o.id} value={o.id}>{o.name}</MenuItem>)}
-                </TextField>
+                />
               )}
             />
           </Box>

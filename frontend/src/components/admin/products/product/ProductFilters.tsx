@@ -6,6 +6,7 @@ import useString from '../../../../hooks/useString';
 import cfl from '../../../../utils/capitalizeFirstLetter';
 import catalogStrings from '../../catalogStrings';
 import { AsyncAutocomplete, type AsyncOption } from '../../nomenclature/_shared/AsyncAutocomplete';
+import { entityLabel } from '../../nomenclature/_shared/EntitySelect';
 import { fetchMarkets } from '../../nomenclature/market/marketApi';
 import { fetchSegments } from '../../nomenclature/segment/segmentApi';
 import { fetchCategories } from '../../nomenclature/category/categoryApi';
@@ -148,9 +149,9 @@ export function ProductFilters({ onChange }: Props) {
             </Box>
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                 {select('market', marketId, false, markets.map((m) => ({ id: m.id, label: m.name })), (v) => { setMarketId(v); setSegmentId(NONE); setCategoryId(NONE); setFamilyId(NONE); })}
-                {select('segment', segmentId, !marketId, segments.map((s) => ({ id: s.id, label: s.name })), (v) => { setSegmentId(v); setCategoryId(NONE); setFamilyId(NONE); })}
-                {select('category', categoryId, !segmentId, categories.map((c) => ({ id: c.id, label: c.name })), (v) => { setCategoryId(v); setFamilyId(NONE); })}
-                {select('family', familyId, !categoryId, families.map((f) => ({ id: f.id, label: f.name })), setFamilyId)}
+                {select('segment', segmentId, !marketId, segments.map((s) => ({ id: s.id, label: entityLabel(s) })), (v) => { setSegmentId(v); setCategoryId(NONE); setFamilyId(NONE); })}
+                {select('category', categoryId, !segmentId, categories.map((c) => ({ id: c.id, label: entityLabel(c) })), (v) => { setCategoryId(v); setFamilyId(NONE); })}
+                {select('family', familyId, !categoryId, families.map((f) => ({ id: f.id, label: entityLabel(f) })), setFamilyId)}
                 <Button variant="text" onClick={reset} sx={{ flex: 0 }}>{getString('resetFilters')}</Button>
             </Box>
         </Paper>

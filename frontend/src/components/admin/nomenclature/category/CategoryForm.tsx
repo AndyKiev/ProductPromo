@@ -21,6 +21,7 @@ import cfl from '../../../../utils/capitalizeFirstLetter';
 import nomenclatureStrings from '../_shared/nomenclatureStrings';
 import { fetchSegments } from '../segment/segmentApi';
 import { fetchStatusTypes } from '../status_type/statusTypeApi';
+import { entityLabel } from '../_shared/EntitySelect';
 
 const schema = z.object({
   code: z.string().min(1, 'required').max(8, 'max_length'),
@@ -117,7 +118,7 @@ export function CategoryForm({ open, editing, onClose, createMutation, updateMut
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 >
                   {segments.map((o: any) => (
-                    <MenuItem key={o.id} value={o.id}>{o.name ?? o.code ?? o.id}</MenuItem>
+                    <MenuItem key={o.id} value={o.id}>{entityLabel(o)}</MenuItem>
                   ))}
                 </TextField>
               )}

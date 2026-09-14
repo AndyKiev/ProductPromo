@@ -21,6 +21,7 @@ import {
 import { KeyLinkForm } from './KeyLinkForm';
 import { DeleteConfirmDialog } from '../_shared/DeleteConfirmDialog';
 import { AsyncAutocomplete, type AsyncOption } from '../_shared/AsyncAutocomplete';
+import { entityLabel } from '../_shared/EntitySelect';
 import { axiosInstance } from '../../../../api/axiosInstance';
 import { BASE_URL } from '../../../../utils/eNums';
 import useString from '../../../../hooks/useString';
@@ -155,7 +156,7 @@ export function KeyLinkTree() {
   });
 
   const searchFamilyOptions = async (q: string): Promise<AsyncOption[]> =>
-    (await searchFamilies(q)).map((f) => ({ id: f.id, label: f.name }));
+    (await searchFamilies(q)).map((f) => ({ id: f.id, label: entityLabel(f) }));
 
   const searchKeyOptions = async (q: string): Promise<AsyncOption[]> =>
     (await searchNomenclatureKeys(q)).map((k) => ({ id: k.id, label: k.name }));

@@ -13,7 +13,10 @@ RUN pip install --no-cache-dir "poetry>=2.0,<3.0"
 
 WORKDIR /app/backend
 
-COPY pyproject.toml ./
+# poetry.lock MUST be copied too: without it poetry re-resolves dependencies
+# from the network on every build, and the result drifts (a fresh resolve
+# dropped greenlet, which sqlalchemy's asyncio mode needs -> backend crash).
+COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --without dev || poetry install --no-root
 
 COPY . /app/backend

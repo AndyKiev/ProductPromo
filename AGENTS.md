@@ -4,7 +4,7 @@
 
 - **Backend**: FastAPI (Python 3.11+, Poetry), SQLAlchemy 2.0 async, PostgreSQL 18 via asyncpg, JWT auth (RS256)
 - **Frontend**: React 18, Vite 5, TypeScript 5.6, TanStack Router + Query, MUI 6, Zustand, react-hook-form + zod
-- **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker). Start with `make db-up`.
+- **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker), data `D:\PostgresData\product_promo`. Once `scripts/register_postgres_service.ps1` has run (once, as Administrator) it is the Windows service `postgresql-productpromo`: Windows starts it at boot and stops it cleanly at shutdown. `make db-*` and the VS Code tasks go through `scripts/dev/pg.sh`, which never starts a console copy next to the service. Run `make` in WSL bash.
 - **Docker**: Compose with `backend` (8012) and `frontend` (8013) containers. DB is on the host.
 
 ## Architecture

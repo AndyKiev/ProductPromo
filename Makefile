@@ -6,11 +6,10 @@
 # first, both for native dev and before `make docker-up`.
 # See docs/DB_MIGRATION.md.
 
-PGDATA_DIR = C:/Users/andre/PostgresData/product_promo
-PGLOG      = C:/Users/andre/PostgresData/product_promo.log
 PGPORT     = 5435
 PGUSER     = admin
 PGDB       = product_promo
+PSQL       = /mnt/c/Program Files/PostgreSQL/18/bin/psql.exe
 
 # Source CSV for `make import-products` (override with `make import-products CSV=...`).
 CSV        = C:/Users/andre/Desktop/DataSamples/Article_METI_11.09.2026.csv
@@ -22,19 +21,19 @@ XLSX       = C:/Users/andre/Desktop/DataSamples/EAN_all_2026 09 11.xlsx
 
 # start the host Postgres cluster (idempotent: no-op if already running)
 db-up:
-	pg_ctl -D "$(PGDATA_DIR)" status >nul 2>&1 || pg_ctl -D "$(PGDATA_DIR)" -l "$(PGLOG)" -o "-p $(PGPORT)" start
+	scripts/dev/pg.sh start
 
 # stop it
 db-down:
-	pg_ctl -D "$(PGDATA_DIR)" stop
+	scripts/dev/pg.sh stop
 
 # is it running?
 db-status:
-	pg_ctl -D "$(PGDATA_DIR)" status
+	scripts/dev/pg.sh status
 
 # open a psql shell on the product_promo database
 db-shell:
-	psql -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB)
+	"$(PSQL)" -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB)
 
 # timestamped -Fc dump (see docs/DB_MIGRATION.md)
 db-backup:

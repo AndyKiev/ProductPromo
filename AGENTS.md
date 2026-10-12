@@ -27,6 +27,8 @@ make docker-up      # Build & start containers
 make docker-down    # Stop containers
 ```
 
+**Dev shortcuts page** — `C:\Users\andre\Desktop\Dev shortcuts.html` (WSL: `/mnt/c/Users/andre/Desktop/Dev shortcuts.html`) is Andrey's one list of every project's desktop icon, start/stop key and ports. If you change a port, a start/stop task in `.vscode/tasks.json` or a VS Code key binding, update this project's row there in the same change. Why: vault page `Dev Shortcuts Page`.
+
 ## Conventions
 
 - Backend uses **PascalCase** column names (e.g. `MarketName`, `StatusId`)

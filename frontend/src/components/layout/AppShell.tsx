@@ -1,7 +1,7 @@
 import { type FC, type ReactNode } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { AppBar, Box, Toolbar, Typography, Button, Stack } from '@mui/material';
-import { CategoryRounded, Inventory2Rounded, LocalShippingRounded } from '@mui/icons-material';
+import { CategoryRounded, Inventory2Rounded, LocalOfferRounded, LocalShippingRounded } from '@mui/icons-material';
 import { useTheme } from '../theme/useTheme';
 import Logo from './Logo';
 import cfl from '../../utils/capitalizeFirstLetter';
@@ -45,6 +45,7 @@ const AppShell: FC<{ children: ReactNode }> = ({ children }) => {
             {navBtn('nomenclature', '/admin/nomenclature', <CategoryRounded sx={{ fontSize: 16 }} />)}
             {navBtn('products', '/admin/products', <Inventory2Rounded sx={{ fontSize: 16 }} />)}
             {navBtn('suppliers', '/admin/suppliers', <LocalShippingRounded sx={{ fontSize: 16 }} />)}
+            {navBtn('promo', '/admin/promo', <LocalOfferRounded sx={{ fontSize: 16 }} />)}
           </Stack>
 
           <AccountMenu />

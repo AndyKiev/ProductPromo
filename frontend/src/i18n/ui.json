@@ -1098,5 +1098,21 @@
   "expandBreadcrumbs": {
     "eng": "Show path",
     "rus": "Показать полный путь"
+  },
+  "promo": {
+    "eng": "promo",
+    "rus": "промо"
+  },
+  "promoTypes": {
+    "eng": "promo types",
+    "rus": "типы промо"
+  },
+  "promoType": {
+    "eng": "promo type",
+    "rus": "тип промо"
+  },
+  "invalid_format": {
+    "eng": "invalid format",
+    "rus": "неверный формат"
   }
 }

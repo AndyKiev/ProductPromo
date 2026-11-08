@@ -42,6 +42,12 @@ make docker-down    # Stop containers
   Success resolver returns fields for `MutationResponse(**detail, data=...)`. See `docs/TRANSLATIONS.md`.
 - Button labels use lowercase English: `getString('create')` → `"create"`, `getString('save')` → `"save"`
 - Nomenclature hierarchy: Market → Segment → Category → Family → Link (4-way join)
+- API types: `cd frontend && npm run gen:api` regenerates `src/api/schema.gen.ts` (openapi-typescript) from the
+  running backend (`OPENAPI_URL`, default Docker :8012). Rerun after any backend schema change; typed calls go
+  through `src/api/typedApi.ts` (wraps `axiosInstance`, so auth refresh and translated errors still apply).
+- Simple lookups: add one line `directory('/api/v1/<resource>')` to a section config (e.g.
+  `components/admin/promo/promoDirectories.ts`). `DirectoryCrud` derives columns, form fields, required,
+  maxLength and editability from `/openapi.json` at runtime — put constraints on the Pydantic `Field`, not the UI.
 
 ## Nomenclature entities
 

@@ -8,8 +8,9 @@ Since 2026-11-08 the product is split into repos under `~/projects`:
 
 | Repo | What | Port |
 |---|---|---|
-| `ProductPromo` (this) | catalog API; issues tokens and owns translations until an auth service exists | 8012 |
-| `promo` | promo service (own DB `promo`, Alembic) | 8016 |
+| `ProductPromo` (this) | catalog API; issues tokens, publishes its signing key and languages over RabbitMQ | 8012 |
+| `promo` | promo service (own Postgres :5441, Alembic) | 8016 |
+| `broker` | RabbitMQ, the only link between backends | 5674 |
 | `web` | React SPA | 8013 |
 | `common` | `pp-common` shared Python base | – |
 
@@ -52,8 +53,8 @@ cp stack.env.example stack.env      # already filled in for the host cluster
 make docker-up                      # build + start the catalog backend
 ```
 - Backend / Swagger → <http://127.0.0.1:8012/docs>
-- The whole product (DB, catalog, promo, web) starts with Ctrl+Alt+5 in VS Code;
-  the app is then at <http://127.0.0.1:8013> (login `UKR7101004` / `111`).
+- Ctrl+Alt+5 in VS Code starts this project (DB + backend) only. Each project is separate:
+  promo Ctrl+Alt+6, web Ctrl+Alt+8 (<http://127.0.0.1:8013>, login `UKR7101004` / `111`), broker Ctrl+Alt+9.
 
 Host port 8012 because talent (8005) and anee_data (8006, 5173) are already
 running; inside the container the app still listens on 8004.

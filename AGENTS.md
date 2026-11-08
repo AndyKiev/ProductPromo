@@ -1,24 +1,30 @@
 # ProductPromo — project guide for AI coding agents
 
 **ProductPromo is the catalog (master data) service**: nomenclature, products, EAN, taxes,
-suppliers and product-supplier links. It also issues JWTs and owns translations until the auth
-service exists. Sibling repos under `~/projects`:
+suppliers and product-supplier links. It also issues JWTs (and publishes its signing key and languages
+over RabbitMQ) until an auth service exists. Sibling repos under `~/projects`, each a **separate
+project launched on its own**; backends talk **only through RabbitMQ** (`../broker`):
 
 | Repo | Role | Port |
 |---|---|---|
 | `ProductPromo` | this service (catalog) | 8012 |
 | `promo` | promo service: promo types/subtypes, sessions, buyer entry, Excel upload | 8016 |
-| `web` | React SPA calling each service | 8013 |
+| `web` | React app calling each service over HTTP | 8013 |
+| `broker` | RabbitMQ; its AGENTS.md is the contract between backends | 5674 / 15674 |
 | `common` | `pp-common`, the shared Python base (tagged git dependency) | – |
 
-**No promo code here.** Promo features go in `../promo`; UI work goes in `../web`.
+**No promo code here.** Promo features go in `../promo`; UI work goes in `../web`. Never call another
+service over HTTP, share its network/DB/files, or start it from here: publish or consume events instead.
 
 ## Stack
 
 - **Backend**: FastAPI (Python 3.11+, Poetry), SQLAlchemy 2.0 async, PostgreSQL 18 via asyncpg, JWT auth (RS256)
 - **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker), data `D:\PostgresData\product_promo`. Once `scripts/register_postgres_service.ps1` has run (once, as Administrator) it is the Windows service `postgresql-productpromo`: Windows starts it at boot and stops it cleanly at shutdown. `make db-*` and the VS Code tasks go through `scripts/dev/pg.sh`, which never starts a console copy next to the service. Run `make` in WSL bash.
-- **Docker**: Compose with `backend` (8012), on the fixed network `productpromo` that the promo stack joins. DB is on the host.
-- **VS Code**: Ctrl+Alt+5 (`ProductPromo: start`) starts DB → catalog → promo → web; `ProductPromo: stop` stops them all.
+- **Docker**: Compose with `backend` (8012) on its own private network. DB is on the host.
+- **VS Code**: Ctrl+Alt+5 (`ProductPromo: start`) starts DB + this service only; Ctrl+Alt+Shift+5 stops them.
+  promo (6), web (8) and broker (9) have their own keys.
+- **RabbitMQ**: `backend/messaging/identity.py` publishes the signing key (`kid`) and languages on exchange
+  `identity` on every (re)connect and on `identity.sync.requested`. The broker is optional at startup.
 
 ## Architecture
 
@@ -75,7 +81,8 @@ make docker-down    # Stop containers
 - Dev stub JWT (RS256), single user: `UKR7101004` / `111`
 - Login: POST `/api/v1/jwt/login` (form-encoded `username` + `password`)
 - Refresh: POST `/api/v1/jwt/refresh` (JSON `{ refresh_token }`)
-- Keys: `backend/backend/auth/keys/` (generated once, kept). The promo service mounts `jwt-public.pem` read-only to verify tokens.
+- Keys: `backend/backend/auth/keys/` (generated once, kept). Tokens carry `kid`; other services get the public key
+  only from the `identity.signing_key.published` event, never from this folder.
 
 ## Env files
 

@@ -3,7 +3,7 @@ from backend.api_v1.segment.segment_messages import (
     SEGMENT_UPDATE_SUCCESS,
     SEGMENT_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class SegmentCreateSuccess(CreateSuccess):

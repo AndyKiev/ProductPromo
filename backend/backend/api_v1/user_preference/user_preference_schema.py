@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from backend.api_v1.lang.lang_schema import LangRead
+from pp_common.i18n import LangRead
 
 
 class LanguageUpdate(BaseModel):

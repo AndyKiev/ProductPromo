@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api_v1.market.market_schema import Market as MarketSchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 from backend.api_v1.market.market_repository import MarketRepository
 from backend.api_v1.market.market_service import MarketService
 from backend.database.db_helper import db_helper

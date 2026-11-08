@@ -3,7 +3,7 @@ from backend.api_v1.tax_rate.tax_rate_messages import (
     TAX_RATE_UPDATE_SUCCESS,
     TAX_RATE_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class TaxRateCreateSuccess(CreateSuccess):

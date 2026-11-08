@@ -3,7 +3,7 @@ from backend.api_v1.market.market_messages import (
     MARKET_NAME_TAKEN,
     MARKET_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class MarketNotFound(NotFoundError):

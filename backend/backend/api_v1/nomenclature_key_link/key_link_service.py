@@ -2,16 +2,16 @@ from typing import List, Optional, Type
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
+from pp_common.crud import BaseService
 from backend.api_v1.base.i18n import localized_name, lang_suffix_for
-from backend.api_v1.base.base_repository import BaseRepository
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseRepository
+from pp_common.crud import MutationResponse
 from backend.api_v1.nomenclature_key_link.key_link_schema import KeyLinkCreate, KeyLinkUpdate, KeyLink as KeyLinkSchema
 from backend.api_v1.nomenclature_key_link.key_link_errors import KeyLinkNotFound, KeyLinkDeleteError
 from backend.api_v1.nomenclature_key_link.key_link_success import (
     KeyLinkCreateSuccess, KeyLinkUpdateSuccess, KeyLinkDeleteSuccess,
 )
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class KeyLinkService(BaseService):

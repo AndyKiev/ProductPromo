@@ -7,7 +7,7 @@ from backend.api_v1.nomenclature_key_link.key_link_repository import KeyLink1Rep
 from backend.api_v1.nomenclature_key_link.key_link2_repository import KeyLink2Repository
 from backend.api_v1.nomenclature_key_link.key_link3_repository import KeyLink3Repository
 from backend.api_v1.nomenclature_key_link.key_link_service import KeyLinkService
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 from backend.database.db_helper import db_helper
 from backend.auth.jwt_auth import get_current_active_auth_user
 

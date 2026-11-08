@@ -3,7 +3,7 @@ from backend.api_v1.product.product_messages import (
     PRODUCT_UPDATE_SUCCESS,
     PRODUCT_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class ProductCreateSuccess(CreateSuccess):

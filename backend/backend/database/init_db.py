@@ -96,33 +96,6 @@ async def seed_taxes() -> None:
                 ))
 
 
-async def seed_promo_types() -> None:
-    """Seed legacy promo types and subtypes when their tables are empty."""
-    async with db_helper.session_factory() as session:
-        async with session.begin():
-            count = await session.execute(text("SELECT COUNT(*) FROM promo_type"))
-            if count.scalar() == 0:
-                await session.execute(text(
-                    "INSERT INTO promo_type (id, code, name) VALUES "
-                    "(1, 'BB', 'take more'), "
-                    "(2, 'TG', 'TG')"
-                ))
-                await session.execute(text(
-                    "SELECT setval(pg_get_serial_sequence('promo_type', 'id'), (SELECT max(id) FROM promo_type))"
-                ))
-            # Legacy aula.promosubtype ids 1, 2; ArticleStatusControl regular=1, plateau=0.
-            count = await session.execute(text("SELECT COUNT(*) FROM promo_subtype"))
-            if count.scalar() == 0:
-                await session.execute(text(
-                    "INSERT INTO promo_subtype (id, code, name, article_status_control) VALUES "
-                    "(1, 'REG', 'regular', true), "
-                    "(2, 'PLT', 'plateau', false)"
-                ))
-                await session.execute(text(
-                    "SELECT setval(pg_get_serial_sequence('promo_subtype', 'id'), (SELECT max(id) FROM promo_subtype))"
-                ))
-
-
 async def bootstrap() -> None:
     """Create tables and seed, in a single event loop.
 
@@ -135,7 +108,6 @@ async def bootstrap() -> None:
     await seed_status_types()
     await seed_nom_key_link_status_types()
     await seed_taxes()
-    await seed_promo_types()
     from backend.api_v1.msg.msg_seed import seed_translations
     await seed_translations()
 
@@ -165,9 +137,6 @@ import backend.api_v1.product_supplier.product_supplier_model  # noqa: F401,E402
 import backend.api_v1.tax_type.tax_type_model  # noqa: F401,E402
 import backend.api_v1.tax_rate.tax_rate_model  # noqa: F401,E402
 import backend.api_v1.product_tax.product_tax_model  # noqa: F401,E402
-import backend.api_v1.promo_type.promo_type_model  # noqa: F401,E402
-import backend.api_v1.promo_subtype.promo_subtype_model  # noqa: F401,E402
-import backend.api_v1.promo_type_subtype.promo_type_subtype_model  # noqa: F401,E402
 import backend.api_v1.lang.lang_model  # noqa: F401,E402
 import backend.api_v1.msg_key.msg_key_model  # noqa: F401,E402
 import backend.api_v1.msg.msg_model  # noqa: F401,E402

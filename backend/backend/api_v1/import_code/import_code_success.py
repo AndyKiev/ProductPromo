@@ -3,7 +3,7 @@ from backend.api_v1.import_code.import_code_messages import (
     IMPORT_CODE_UPDATE_SUCCESS,
     IMPORT_CODE_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class ImportCodeCreateSuccess(CreateSuccess):

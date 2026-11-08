@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.security import HTTPBearer
 from typing import Annotated, Optional, List
 
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import MutationResponse
 from backend.api_v1.category.category_schema import Category as CategorySchema, CategoryCreate, CategoryUpdate
 from backend.api_v1.category.category_dependencies import get_category_service, category_by_id
 from backend.api_v1.category.category_service import CategoryService

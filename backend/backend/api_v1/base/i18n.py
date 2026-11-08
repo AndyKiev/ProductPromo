@@ -24,8 +24,8 @@ def localized_name(obj, suffix: str):
     if obj is None:
         return None
     if getattr(obj, "code", None) in {"active", "inactive"}:
-        from backend.api_v1.msg.catalog import catalog_cache
-        catalog = catalog_cache.snapshot
+        from pp_common.i18n import get_catalog_cache
+        catalog = get_catalog_cache().snapshot
         code = {"r": "rus", "u": "ukr", "e": "eng"}.get(suffix, "eng")
         lang_id = next((id_ for id_, lang in catalog.languages.items() if lang.short_name == code), catalog.default_id)
         return catalog.text(obj.code, lang_id)

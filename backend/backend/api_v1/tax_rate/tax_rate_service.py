@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
 from backend.api_v1.tax_rate.tax_rate_repository import TaxRateRepository
 from backend.api_v1.tax_rate.tax_rate_schema import (
     TaxRate as TaxRateSchema,
@@ -18,7 +18,7 @@ from backend.api_v1.tax_rate.tax_rate_success import (
 )
 from backend.api_v1.tax_type.tax_type_model import TaxType
 from backend.api_v1.tax_type.tax_type_errors import TaxTypeNotFound
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class TaxRateService(BaseService):

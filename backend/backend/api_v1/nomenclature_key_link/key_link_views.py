@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, Optional, List
 
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import MutationResponse
 from backend.api_v1.nomenclature_key_link.key_link_schema import (
     KeyLinkCreate, KeyLinkUpdate, KeyLink as KeyLinkSchema,
 )
@@ -16,7 +16,7 @@ from backend.api_v1.nomenclature_key_link.key_link_service import KeyLinkService
 from backend.api_v1.nomenclature_key_link.nom_key_link_status_type_model import NomKeyLinkStatusType
 from backend.database.db_helper import db_helper
 from backend.auth.jwt_auth import get_current_active_auth_user
-from backend.api_v1.employee.employee_schema import EmployeeSchema
+from pp_common.auth import CurrentUser as EmployeeSchema
 from backend.api_v1.base.i18n import localized_name, lang_suffix_for
 
 router = APIRouter(

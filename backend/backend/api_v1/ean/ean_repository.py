@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy import select
 
-from backend.api_v1.base.base_repository import BaseRepository
+from pp_common.crud import BaseRepository
 from backend.api_v1.ean.ean_model import Ean
 
 

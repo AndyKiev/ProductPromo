@@ -2,7 +2,7 @@ from backend.api_v1.product_tax.product_tax_messages import (
     PRODUCT_TAX_UPDATE_SUCCESS,
     PRODUCT_TAX_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, UpdateSuccess
 
 
 class ProductTaxUpdateSuccess(UpdateSuccess):

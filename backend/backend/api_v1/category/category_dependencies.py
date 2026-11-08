@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api_v1.category.category_schema import Category as CategorySchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 from backend.api_v1.category.category_repository import CategoryRepository
 from backend.api_v1.category.category_service import CategoryService
 from backend.database.db_helper import db_helper

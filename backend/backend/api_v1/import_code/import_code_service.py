@@ -3,8 +3,8 @@ from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
 from backend.api_v1.import_code.import_code_repository import ImportCodeRepository
 from backend.api_v1.import_code.import_code_schema import (
     ImportCode as ImportCodeSchema,
@@ -21,7 +21,7 @@ from backend.api_v1.import_code.import_code_success import (
     ImportCodeUpdateSuccess,
     ImportCodeDeleteSuccess,
 )
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class ImportCodeService(BaseService):

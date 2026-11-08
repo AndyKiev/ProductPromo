@@ -3,7 +3,7 @@ from backend.api_v1.nomenclature.nomenclature_messages import (
     NOMENCLATURE_UPDATE_SUCCESS,
     NOMENCLATURE_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class NomenclatureCreateSuccess(CreateSuccess):

@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api_v1.product_tax.product_tax_schema import ProductTax as ProductTaxSchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 from backend.api_v1.product_tax.product_tax_repository import ProductTaxRepository
 from backend.api_v1.product_tax.product_tax_service import ProductTaxService
 from backend.database.db_helper import db_helper

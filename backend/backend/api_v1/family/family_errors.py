@@ -3,7 +3,7 @@ from backend.api_v1.family.family_messages import (
     FAMILY_NAME_TAKEN,
     FAMILY_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class FamilyNotFound(NotFoundError):

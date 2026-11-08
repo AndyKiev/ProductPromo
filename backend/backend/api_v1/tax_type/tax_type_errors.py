@@ -3,7 +3,7 @@ from backend.api_v1.tax_type.tax_type_messages import (
     TAX_TYPE_CODE_TAKEN,
     TAX_TYPE_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class TaxTypeNotFound(NotFoundError):

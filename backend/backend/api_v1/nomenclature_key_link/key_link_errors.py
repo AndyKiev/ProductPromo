@@ -2,7 +2,7 @@ from backend.api_v1.nomenclature_key_link.nomenclature_key_link_messages import 
     KEY_LINK_NOT_FOUND,
     KEY_LINK_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, DeleteError, DomainError
 
 
 class KeyLinkNotFound(NotFoundError):

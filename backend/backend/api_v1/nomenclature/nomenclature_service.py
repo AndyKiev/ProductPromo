@@ -3,8 +3,8 @@ from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
 from backend.api_v1.base.i18n import lang_suffix_for, localized_name
 from backend.api_v1.nomenclature.nomenclature_repository import NomenclatureRepository
 from backend.api_v1.nomenclature.nomenclature_schema import Nomenclature as NomenclatureSchema, NomenclatureCreate, NomenclatureUpdate
@@ -15,7 +15,7 @@ from backend.api_v1.nomenclature.nomenclature_success import (
     NomenclatureDeleteSuccess,
 )
 from backend.api_v1.nomenclature.nomenclature_model import Nomenclature
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class NomenclatureService(BaseService):

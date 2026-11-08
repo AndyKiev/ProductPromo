@@ -2,7 +2,7 @@ from backend.api_v1.tax_rate.tax_rate_messages import (
     TAX_RATE_NOT_FOUND,
     TAX_RATE_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, DeleteError, DomainError
 
 
 class TaxRateNotFound(NotFoundError):

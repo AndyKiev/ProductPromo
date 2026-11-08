@@ -1,5 +1,5 @@
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.lang.lang_schema import LangRead
+from pp_common.crud import BaseService
+from pp_common.i18n import LangRead
 
 
 class LangService(BaseService):

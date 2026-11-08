@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.security import HTTPBearer
 from typing import Annotated, Optional, List
 
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import MutationResponse
 from backend.api_v1.family.family_schema import Family as FamilySchema, FamilyCreate, FamilyUpdate
 from backend.api_v1.family.family_dependencies import get_family_service, family_by_id
 from backend.api_v1.family.family_service import FamilyService

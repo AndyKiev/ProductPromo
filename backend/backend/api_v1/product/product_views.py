@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.security import HTTPBearer
 from typing import Annotated, Optional
 
-from backend.api_v1.base.mutation_response import MutationResponse
-from backend.api_v1.base.page import Page
+from pp_common.crud import MutationResponse
+from pp_common.crud import Page
 from backend.api_v1.product.product_schema import (
     Product as ProductSchema,
     ProductCreate,

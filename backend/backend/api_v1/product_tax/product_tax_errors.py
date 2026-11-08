@@ -2,7 +2,7 @@ from backend.api_v1.product_tax.product_tax_messages import (
     PRODUCT_TAX_NOT_FOUND,
     PRODUCT_TAX_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, DeleteError, DomainError
 
 
 class ProductTaxNotFound(NotFoundError):

@@ -3,7 +3,7 @@ from backend.api_v1.product_type.product_type_messages import (
     PRODUCT_TYPE_TAKEN,
     PRODUCT_TYPE_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class ProductTypeNotFound(NotFoundError):

@@ -3,7 +3,7 @@ from backend.api_v1.nomenclature_key_link.nomenclature_key_link_messages import 
     KEY_LINK_UPDATE_SUCCESS,
     KEY_LINK_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class KeyLinkCreateSuccess(CreateSuccess):

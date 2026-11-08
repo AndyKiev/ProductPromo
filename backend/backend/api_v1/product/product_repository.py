@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import select, func, or_, asc, desc, cast, Integer
 from sqlalchemy.orm import contains_eager
 
-from backend.api_v1.base.base_repository import BaseRepository
+from pp_common.crud import BaseRepository
 from backend.api_v1.product.product_model import Product
 from backend.api_v1.product_status.product_status_model import ProductStatus
 from backend.api_v1.nomenclature.nomenclature_model import Nomenclature

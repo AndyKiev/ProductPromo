@@ -3,8 +3,8 @@ from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
 from backend.api_v1.supplier_status.supplier_status_repository import SupplierStatusRepository
 from backend.api_v1.supplier_status.supplier_status_schema import (
     SupplierStatus as SupplierStatusSchema,
@@ -21,7 +21,7 @@ from backend.api_v1.supplier_status.supplier_status_success import (
     SupplierStatusUpdateSuccess,
     SupplierStatusDeleteSuccess,
 )
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class SupplierStatusService(BaseService):

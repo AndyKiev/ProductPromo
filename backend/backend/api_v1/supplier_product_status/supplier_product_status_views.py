@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.security import HTTPBearer
 from typing import Annotated, Optional, List
 
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import MutationResponse
 from backend.api_v1.supplier_product_status.supplier_product_status_schema import (
     SupplierProductStatus as SupplierProductStatusSchema,
     SupplierProductStatusCreate,

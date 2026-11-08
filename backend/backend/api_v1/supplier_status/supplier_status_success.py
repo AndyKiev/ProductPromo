@@ -3,7 +3,7 @@ from backend.api_v1.supplier_status.supplier_status_messages import (
     SUPPLIER_STATUS_UPDATE_SUCCESS,
     SUPPLIER_STATUS_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class SupplierStatusCreateSuccess(CreateSuccess):

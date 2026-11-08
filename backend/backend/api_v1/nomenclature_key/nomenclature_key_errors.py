@@ -3,7 +3,7 @@ from backend.api_v1.nomenclature_key.nomenclature_key_messages import (
     NOMENCLATURE_KEY_NAME_TAKEN,
     NOMENCLATURE_KEY_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class NomenclatureKeyNotFound(NotFoundError):

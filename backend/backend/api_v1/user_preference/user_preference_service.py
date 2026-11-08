@@ -1,7 +1,7 @@
-from backend.api_v1.base.base_service import BaseService
+from pp_common.crud import BaseService
 from backend.api_v1.lang.lang_errors import LangNotFound
 from backend.api_v1.lang.lang_model import Lang
-from backend.api_v1.lang.lang_schema import LangRead
+from pp_common.i18n import LangRead
 from backend.api_v1.user_preference.user_preference_schema import UserProfile
 
 

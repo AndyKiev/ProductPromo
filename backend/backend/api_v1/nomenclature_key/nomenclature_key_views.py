@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.security import HTTPBearer
 from typing import Annotated, Optional, List
 
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import MutationResponse
 from backend.api_v1.nomenclature_key.nomenclature_key_schema import NomenclatureKey as NomenclatureKeySchema, NomenclatureKeyCreate, NomenclatureKeyUpdate
 from backend.api_v1.nomenclature_key.nomenclature_key_dependencies import get_nomenclature_key_service, nomenclature_key_by_id
 from backend.api_v1.nomenclature_key.nomenclature_key_service import NomenclatureKeyService

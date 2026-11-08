@@ -1,4 +1,4 @@
-from backend.api_v1.base.errors import NotFoundError
+from pp_common.crud import NotFoundError
 from backend.api_v1.lang.lang_messages import LANG_NOT_FOUND
 
 

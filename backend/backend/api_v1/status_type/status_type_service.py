@@ -2,11 +2,11 @@ from typing import List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
+from pp_common.crud import BaseService
 from backend.api_v1.base.i18n import lang_suffix_for, localized_name
 from backend.api_v1.status_type.status_type_repository import StatusTypeRepository
 from backend.api_v1.status_type.status_type_schema import StatusType as StatusTypeSchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class StatusTypeService(BaseService):

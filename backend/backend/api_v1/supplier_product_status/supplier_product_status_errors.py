@@ -3,7 +3,7 @@ from backend.api_v1.supplier_product_status.supplier_product_status_messages imp
     SUPPLIER_PRODUCT_STATUS_CODE_TAKEN,
     SUPPLIER_PRODUCT_STATUS_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class SupplierProductStatusNotFound(NotFoundError):

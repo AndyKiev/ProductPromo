@@ -3,7 +3,7 @@ from backend.api_v1.family.family_messages import (
     FAMILY_UPDATE_SUCCESS,
     FAMILY_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class FamilyCreateSuccess(CreateSuccess):

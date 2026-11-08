@@ -3,7 +3,7 @@ from backend.api_v1.import_code.import_code_messages import (
     IMPORT_CODE_TAKEN,
     IMPORT_CODE_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class ImportCodeNotFound(NotFoundError):

@@ -3,8 +3,8 @@ from typing import List, Optional
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
 from backend.api_v1.base.i18n import lang_suffix_for, localized_name
 from backend.api_v1.market.market_repository import MarketRepository
 from backend.api_v1.market.market_schema import Market as MarketSchema, MarketCreate, MarketUpdate
@@ -14,7 +14,7 @@ from backend.api_v1.market.market_success import (
     MarketUpdateSuccess,
     MarketDeleteSuccess,
 )
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class MarketService(BaseService):

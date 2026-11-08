@@ -3,7 +3,7 @@ from backend.api_v1.ean.ean_messages import (
     EAN_TAKEN,
     EAN_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class EanNotFound(NotFoundError):

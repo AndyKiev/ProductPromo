@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy import select, func, or_, asc, desc
 
-from backend.api_v1.base.base_repository import BaseRepository
+from pp_common.crud import BaseRepository
 from backend.api_v1.product_tax.product_tax_model import ProductTax
 from backend.api_v1.product.product_model import Product
 

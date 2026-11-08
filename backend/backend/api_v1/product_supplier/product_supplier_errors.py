@@ -2,7 +2,7 @@ from backend.api_v1.product_supplier.product_supplier_messages import (
     PRODUCT_SUPPLIER_NOT_FOUND,
     PRODUCT_SUPPLIER_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, DeleteError, DomainError
 
 
 class ProductSupplierNotFound(NotFoundError):

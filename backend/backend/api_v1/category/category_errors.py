@@ -3,7 +3,7 @@ from backend.api_v1.category.category_messages import (
     CATEGORY_NAME_TAKEN,
     CATEGORY_DELETE_ERROR,
 )
-from backend.api_v1.base.errors import NotFoundError, AlreadyExistsError, DeleteError, DomainError
+from pp_common.crud import NotFoundError, AlreadyExistsError, DeleteError, DomainError
 
 
 class CategoryNotFound(NotFoundError):

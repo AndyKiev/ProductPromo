@@ -3,7 +3,7 @@ from backend.api_v1.tax_type.tax_type_messages import (
     TAX_TYPE_UPDATE_SUCCESS,
     TAX_TYPE_DELETE_SUCCESS,
 )
-from backend.api_v1.base.success import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
+from pp_common.crud import DomainSuccess, DeleteSuccess, CreateSuccess, UpdateSuccess
 
 
 class TaxTypeCreateSuccess(CreateSuccess):

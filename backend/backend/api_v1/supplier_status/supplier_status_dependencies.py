@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api_v1.supplier_status.supplier_status_schema import SupplierStatus as SupplierStatusSchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 from backend.api_v1.supplier_status.supplier_status_repository import SupplierStatusRepository
 from backend.api_v1.supplier_status.supplier_status_service import SupplierStatusService
 from backend.database.db_helper import db_helper

@@ -15,7 +15,7 @@ from backend.api_v1.user_preference.user_preference_service import UserPreferenc
 from backend.api_v1.user_preference.user_preference_dependencies import get_preference_service
 from backend.api_v1.user_preference.user_preference_schema import UserProfile, LanguageUpdate
 from backend.api_v1.msg.catalog import catalog_cache
-from backend.api_v1.employee.employee_schema import LangSchema
+from pp_common.auth import LangSchema
 
 router = APIRouter(prefix="/jwt", tags=["JWT"])
 
@@ -59,8 +59,7 @@ def get_current_user(
     return CurrentUser(code=code)
 
 
-# compatibility alias — 7 dependency files import this name and expect EmployeeSchema
-from backend.api_v1.employee.employee_schema import EmployeeSchema
+from pp_common.auth import CurrentUser as EmployeeSchema  # noqa: E402
 
 
 async def get_current_active_auth_user(

@@ -2,9 +2,9 @@ from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.api_v1.base.base_service import BaseService
-from backend.api_v1.base.mutation_response import MutationResponse
-from backend.api_v1.base.page import Page
+from pp_common.crud import BaseService
+from pp_common.crud import MutationResponse
+from pp_common.crud import Page
 from backend.api_v1.product_tax.product_tax_repository import ProductTaxRepository
 from backend.api_v1.product_tax.product_tax_schema import (
     ProductTax as ProductTaxSchema,
@@ -15,7 +15,7 @@ from backend.api_v1.product_tax.product_tax_success import (
     ProductTaxUpdateSuccess,
     ProductTaxDeleteSuccess,
 )
-from backend.api_v1.employee.employee_schema import EmployeeSchema as UserSchema
+from pp_common.auth import CurrentUser as UserSchema
 
 
 class ProductTaxService(BaseService):

@@ -1,4 +1,4 @@
-from backend.api_v1.base.base_repository import BaseRepository
+from pp_common.crud import BaseRepository
 from backend.api_v1.import_code.import_code_model import ImportCode
 
 

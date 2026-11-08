@@ -2,7 +2,7 @@
 // OpenAPI: columns (Read schema), form fields + zod rules (Create schema) and
 // which fields stay editable (Update schema).
 import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,6 +22,7 @@ import cfl from '../../../utils/capitalizeFirstLetter';
 import { useDataGridLocale } from '../../../hooks/useDataGridLocale';
 import catalogStrings from '../catalogStrings';
 import { DeleteConfirmDialog } from '../nomenclature/_shared/DeleteConfirmDialog';
+import { EntitySelect, entityLabel, type EntityOption } from '../nomenclature/_shared/EntitySelect';
 import { buildDirectoryMeta, useOpenApi, type DirectoryMeta, type FieldMeta } from './directoryMeta';
 import { camel, type DirectoryDef } from './directory';
 
@@ -31,13 +32,18 @@ interface Mutation { detail: string }
 
 const API_ROOT = import.meta.env.VITE_BACKEND_API_URL ?? '';
 
+/** Same query key as the referenced directory's own screen, so they share cache and invalidation. */
+const directoryKey = (path: string) => ['directory', path.split('/').pop()];
+/** `promo_type_id` → i18n key `promoType`. */
+const labelKey = (name: string) => camel(name.replace(/_id$/, ''));
+
 function fieldSchema(f: FieldMeta): z.ZodType {
     if (f.kind === 'boolean') return z.boolean();
     let s = z.string();
     if (f.required) s = s.min(1, 'required');
     if (f.maxLength) s = s.max(f.maxLength, 'max_length');
     if (f.pattern) s = s.regex(new RegExp(f.pattern), 'invalid_format');
-    if (f.kind !== 'number') return s;
+    if (f.kind === 'text' || f.kind === 'select') return s;
     return s.refine((v) => v === '' || (!Number.isNaN(Number(v))
         && (f.min == null || Number(v) >= f.min) && (f.max == null || Number(v) <= f.max)), 'invalid_format');
 }
@@ -47,7 +53,7 @@ const toFormValue = (f: FieldMeta, v: unknown) => (f.kind === 'boolean' ? !!v : 
 function toPayloadValue(f: FieldMeta, v: string | boolean) {
     if (f.kind === 'boolean') return v;
     if (v === '') return f.nullable ? null : v;
-    return f.kind === 'number' ? Number(v) : v;
+    return f.kind === 'number' || f.kind === 'select' ? Number(v) : v;
 }
 
 export function DirectoryCrud({ def }: { def: DirectoryDef }) {
@@ -62,7 +68,7 @@ export function DirectoryCrud({ def }: { def: DirectoryDef }) {
 
 function DirectoryTable({ def, meta }: { def: DirectoryDef; meta: DirectoryMeta }) {
     const getString = useString({ str: catalogStrings });
-    const label = (name: string) => cfl(getString(camel(name)));
+    const label = (name: string) => cfl(getString(labelKey(name)));
     const qc = useQueryClient();
     const queryKey = ['directory', def.key];
     const fields = useMemo(() => Object.values(meta.fields), [meta]);
@@ -84,6 +90,21 @@ function DirectoryTable({ def, meta }: { def: DirectoryDef; meta: DirectoryMeta 
         queryKey, staleTime: 2 * 60 * 1000,
         queryFn: async () => (await api.get(def.path)) as unknown as Row[],
     });
+
+    // Option lists for `x-lookup` fields, keyed by field name.
+    const lookupFields = useMemo(() => fields.filter((f) => f.lookup), [fields]);
+    const lookupResults = useQueries({
+        queries: lookupFields.map((f) => ({
+            queryKey: directoryKey(f.lookup!), staleTime: 2 * 60 * 1000,
+            queryFn: async () => (await axiosInstance.get<EntityOption[]>(`${API_ROOT}${f.lookup}`)).data,
+        })),
+    });
+    const options: Record<string, EntityOption[]> = Object.fromEntries(
+        lookupFields.map((f, i) => [f.name, lookupResults[i].data ?? []]));
+    const optionLabel = (field: string, id: unknown) => {
+        const o = options[field]?.find((x) => x.id === id);
+        return o ? entityLabel(o) : id == null ? '' : String(id);
+    };
 
     const itemUrl = (id: number) => `${API_ROOT}${meta.itemPath.replace(`{${meta.itemParam}}`, String(id))}`;
     const toPayload = (values: FormValues, onlyEditable: boolean) => Object.fromEntries(
@@ -121,15 +142,21 @@ function DirectoryTable({ def, meta }: { def: DirectoryDef; meta: DirectoryMeta 
         ? updateMutation.mutate({ id: editing.id, values })
         : createMutation.mutate(values));
     const close = () => { setFormOpen(false); setEditing(null); };
-    const rowLabel = (r: Row | null) => (r ? String(r.code ?? r.name ?? r.id) : undefined);
+    const rowLabel = (r: Row | null) => {
+        if (!r) return undefined;
+        if (r.code != null || r.name != null) return String(r.code ?? r.name);
+        const refs = lookupFields.map((f) => optionLabel(f.name, r[f.name])).filter(Boolean);
+        return refs.length ? refs.join(' – ') : String(r.id);
+    };
 
     const localeText = useDataGridLocale();
     const gridColumns: GridColDef[] = [
         ...columns.map((c): GridColDef => {
-            const isBool = meta.fields[c]?.kind === 'boolean';
+            const kind = meta.fields[c]?.kind;
             return {
-                field: c, headerName: label(c), flex: c === 'code' ? 1 : 2, minWidth: 120,
-                ...(isBool && { renderCell: (p: GridRenderCellParams<Row>) => (p.value ? <CheckIcon fontSize="small" /> : null) }),
+                field: c, headerName: label(c), flex: c === 'code' || kind === 'boolean' ? 1 : 2, minWidth: 120,
+                ...(kind === 'boolean' && { renderCell: (p: GridRenderCellParams<Row>) => (p.value ? <CheckIcon fontSize="small" /> : null) }),
+                ...(kind === 'select' && { valueGetter: (v: unknown) => optionLabel(c, v) }),
             };
         }),
         {
@@ -181,6 +208,12 @@ function DirectoryTable({ def, meta }: { def: DirectoryDef; meta: DirectoryMeta 
                                             control={<Checkbox checked={!!field.value} onChange={(e) => field.onChange(e.target.checked)} />} />;
                                     }
                                     const msg = errors[f.name]?.message;
+                                    if (f.kind === 'select') {
+                                        return <EntitySelect label={`${label(f.name)}${f.required ? ' *' : ''}`} fullWidth
+                                            value={Number(field.value) || 0} placeholder="—" options={options[f.name] ?? []}
+                                            onChange={(id) => field.onChange(id ? String(id) : '')} disabled={disabled}
+                                            error={!!msg} helperText={msg ? getString(String(msg)) : undefined} />;
+                                    }
                                     return (
                                         <TextField {...field} value={field.value as string} label={label(f.name)} fullWidth size="small"
                                             required={f.required} disabled={disabled} type={f.kind === 'number' ? 'number' : 'text'}

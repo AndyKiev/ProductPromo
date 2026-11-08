@@ -4,7 +4,7 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-export type FieldKind = 'text' | 'number' | 'boolean';
+export type FieldKind = 'text' | 'number' | 'boolean' | 'select';
 
 export interface FieldMeta {
     name: string;
@@ -16,6 +16,7 @@ export interface FieldMeta {
     max?: number;
     pattern?: string;
     editable: boolean;   // present in the Update schema
+    lookup?: string;     // `x-lookup` on the Pydantic Field: collection path of the referenced directory
 }
 
 export interface DirectoryMeta {
@@ -36,6 +37,7 @@ interface JsonSchema {
     minimum?: number;
     maximum?: number;
     pattern?: string;
+    'x-lookup'?: string;
 }
 interface OpenApiDoc {
     paths: Record<string, Record<string, {
@@ -86,9 +88,11 @@ export function buildDirectoryMeta(doc: OpenApiDoc, path: string): DirectoryMeta
     for (const [name, prop] of Object.entries(create.properties ?? {})) {
         const variants = prop.anyOf ?? [prop];
         const value = variants.find((v) => v.type !== 'null') ?? prop;
+        const lookup = prop['x-lookup'];
         fields[name] = {
             name,
-            kind: kindOf(value.type),
+            kind: lookup ? 'select' : kindOf(value.type),
+            lookup,
             required: required.has(name),
             nullable: variants.some((v) => v.type === 'null'),
             maxLength: value.maxLength,

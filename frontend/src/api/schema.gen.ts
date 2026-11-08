@@ -918,6 +918,80 @@ export interface paths {
         patch: operations["update_promo_type_api_v1_promo_types__item_id__patch"];
         trace?: never;
     };
+    "/api/v1/promo-subtypes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Promo Subtypes */
+        get: operations["list_promo_subtypes_api_v1_promo_subtypes_get"];
+        put?: never;
+        /** Create Promo Subtype */
+        post: operations["create_promo_subtype_api_v1_promo_subtypes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promo-subtypes/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Promo Subtype */
+        get: operations["get_promo_subtype_api_v1_promo_subtypes__item_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Promo Subtype */
+        delete: operations["delete_promo_subtype_api_v1_promo_subtypes__item_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Promo Subtype */
+        patch: operations["update_promo_subtype_api_v1_promo_subtypes__item_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/promo-type-subtypes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Promo Type Subtypes */
+        get: operations["list_promo_type_subtypes_api_v1_promo_type_subtypes_get"];
+        put?: never;
+        /** Create Promo Type Subtype */
+        post: operations["create_promo_type_subtype_api_v1_promo_type_subtypes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promo-type-subtypes/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Promo Type Subtype */
+        get: operations["get_promo_type_subtype_api_v1_promo_type_subtypes__item_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Promo Type Subtype */
+        delete: operations["delete_promo_type_subtype_api_v1_promo_type_subtypes__item_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Promo Type Subtype */
+        patch: operations["update_promo_type_subtype_api_v1_promo_type_subtypes__item_id__patch"];
+        trace?: never;
+    };
     "/api/v1/langs": {
         parameters: {
             query?: never;
@@ -1397,6 +1471,34 @@ export interface components {
             /** Lang Id */
             lang_id?: number | null;
         };
+        /** MutationResponse[PromoSubtype] */
+        MutationResponse_PromoSubtype_: {
+            /** Detail */
+            detail: string;
+            data?: components["schemas"]["PromoSubtype"] | null;
+            /** Message Key */
+            message_key?: string | null;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Lang Id */
+            lang_id?: number | null;
+        };
+        /** MutationResponse[PromoTypeSubtype] */
+        MutationResponse_PromoTypeSubtype_: {
+            /** Detail */
+            detail: string;
+            data?: components["schemas"]["PromoTypeSubtype"] | null;
+            /** Message Key */
+            message_key?: string | null;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Lang Id */
+            lang_id?: number | null;
+        };
         /** MutationResponse[PromoType] */
         MutationResponse_PromoType_: {
             /** Detail */
@@ -1746,6 +1848,41 @@ export interface components {
             /** Product Type Id */
             product_type_id?: number | null;
         };
+        /** PromoSubtype */
+        PromoSubtype: {
+            /** Code */
+            code: string;
+            /** Name */
+            name?: string | null;
+            /**
+             * Article Status Control
+             * @default false
+             */
+            article_status_control: boolean;
+            /** Id */
+            id: number;
+        };
+        /** PromoSubtypeCreate */
+        PromoSubtypeCreate: {
+            /** Code */
+            code: string;
+            /** Name */
+            name?: string | null;
+            /**
+             * Article Status Control
+             * @default false
+             */
+            article_status_control: boolean;
+        };
+        /** PromoSubtypeUpdate */
+        PromoSubtypeUpdate: {
+            /** Code */
+            code?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Article Status Control */
+            article_status_control?: boolean | null;
+        };
         /** PromoType */
         PromoType: {
             /** Code */
@@ -1761,6 +1898,29 @@ export interface components {
             code: string;
             /** Name */
             name?: string | null;
+        };
+        /** PromoTypeSubtype */
+        PromoTypeSubtype: {
+            /** Promo Type Id */
+            promo_type_id: number;
+            /** Promo Subtype Id */
+            promo_subtype_id: number;
+            /** Id */
+            id: number;
+        };
+        /** PromoTypeSubtypeCreate */
+        PromoTypeSubtypeCreate: {
+            /** Promo Type Id */
+            promo_type_id: number;
+            /** Promo Subtype Id */
+            promo_subtype_id: number;
+        };
+        /** PromoTypeSubtypeUpdate */
+        PromoTypeSubtypeUpdate: {
+            /** Promo Type Id */
+            promo_type_id?: number | null;
+            /** Promo Subtype Id */
+            promo_subtype_id?: number | null;
         };
         /** PromoTypeUpdate */
         PromoTypeUpdate: {
@@ -5681,6 +5841,328 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MutationResponse_PromoType_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_promo_subtypes_api_v1_promo_subtypes_get: {
+        parameters: {
+            query?: {
+                sort?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoSubtype"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_promo_subtype_api_v1_promo_subtypes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PromoSubtypeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_PromoSubtype_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_promo_subtype_api_v1_promo_subtypes__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoSubtype"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_promo_subtype_api_v1_promo_subtypes__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_NoneType_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_promo_subtype_api_v1_promo_subtypes__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PromoSubtypeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_PromoSubtype_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_promo_type_subtypes_api_v1_promo_type_subtypes_get: {
+        parameters: {
+            query?: {
+                sort?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoTypeSubtype"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_promo_type_subtype_api_v1_promo_type_subtypes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PromoTypeSubtypeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_PromoTypeSubtype_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_promo_type_subtype_api_v1_promo_type_subtypes__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoTypeSubtype"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_promo_type_subtype_api_v1_promo_type_subtypes__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_NoneType_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_promo_type_subtype_api_v1_promo_type_subtypes__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PromoTypeSubtypeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MutationResponse_PromoTypeSubtype_"];
                 };
             };
             /** @description Validation Error */

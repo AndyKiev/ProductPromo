@@ -22,6 +22,7 @@ from backend.api_v1.product_supplier.product_supplier_views import router as pro
 from backend.api_v1.tax_type.tax_type_views import router as tax_type_router
 from backend.api_v1.tax_rate.tax_rate_views import router as tax_rate_router
 from backend.api_v1.product_tax.product_tax_views import router as product_tax_router
+from backend.api_v1.promo_type.promo_type_views import router as promo_type_router
 
 router = APIRouter(prefix=settings.api_v1_prefix)
 
@@ -46,6 +47,7 @@ router.include_router(product_supplier_router)
 router.include_router(tax_type_router)
 router.include_router(tax_rate_router)
 router.include_router(product_tax_router)
+router.include_router(promo_type_router)
 from backend.api_v1.lang.lang_views import router as lang_router
 from backend.api_v1.msg.msg_views import router as msg_router
 router.include_router(lang_router)

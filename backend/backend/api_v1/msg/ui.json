@@ -1099,40 +1099,8 @@
     "eng": "Show path",
     "rus": "Показать полный путь"
   },
-  "promo": {
-    "eng": "promo",
-    "rus": "промо"
-  },
-  "promoTypes": {
-    "eng": "promo types",
-    "rus": "типы промо"
-  },
-  "promoType": {
-    "eng": "promo type",
-    "rus": "тип промо"
-  },
   "invalid_format": {
     "eng": "invalid format",
     "rus": "неверный формат"
-  },
-  "promoSubtypes": {
-    "eng": "promo subtypes",
-    "rus": "подтипы промо"
-  },
-  "promoSubtype": {
-    "eng": "promo subtype",
-    "rus": "подтип промо"
-  },
-  "promoTypeSubtypes": {
-    "eng": "type – subtype links",
-    "rus": "связи типов и подтипов"
-  },
-  "promoTypeSubtype": {
-    "eng": "type – subtype link",
-    "rus": "связь типа и подтипа"
-  },
-  "articleStatusControl": {
-    "eng": "article status control",
-    "rus": "контроль статуса товара"
   }
 }

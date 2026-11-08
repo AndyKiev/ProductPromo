@@ -1,5 +1,5 @@
 # Catalog (master data) service: FastAPI backend. Postgres is NOT in here.
-# The SPA lives in ../web, the promo service in ../promo.
+# The SPA lives in ../web, the promo service in ../promo; each starts on its own.
 #
 # The database is a native Windows cluster on the host —
 # C:\Users\andre\PostgresData\product_promo, port 5435 — so no `docker` command
@@ -22,10 +22,9 @@
 name: productpromo
 
 networks:
-  # Fixed name: the promo stack (../promo) joins it as an external network to
-  # reach this service (translations, and the token issuer's key) by name.
+  # Private to this project. Other ProductPromo projects (promo, web) never
+  # share a network with it: backends talk only through RabbitMQ (../broker).
   productpromo:
-    name: productpromo
     driver: bridge
 
 services:
@@ -61,6 +60,9 @@ services:
       # WSL2 filesystem, so inotify events reach the container and watchfiles
       # needs no polling — do not add WATCHFILES_FORCE_POLLING back.
       APP_CONFIG__RUN__RELOAD: "true"
+      # RabbitMQ (../broker, published on the host). Optional at startup: the
+      # service connects in the background and retries.
+      APP_CONFIG__BROKER__HOST: host.docker.internal
     ports:
       # 8012 on the host, not 8004: talent publishes 8005 and anee_data 8006,
       # and 8004 / 8009 are already taken by native dev servers here. Inside

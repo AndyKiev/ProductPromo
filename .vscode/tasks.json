@@ -1,13 +1,11 @@
 {
   "version": "2.0.0",
   // Runs from the WSL2 copy (~/projects/ProductPromo). Postgres stays a native
-  // Windows cluster (scripts/dev/pg.sh drives it through WSL interop); the
-  // services run in Docker. Ctrl+Alt+5 is bound to "ProductPromo: start".
+  // Windows cluster (scripts/dev/pg.sh drives it through WSL interop); the app
+  // runs in Docker. Ctrl+Alt+5 is bound to "ProductPromo: start".
   //
-  // One key starts the whole product, in dependency order:
-  //   catalog (this repo, :8012) -> promo (../promo, :8016) -> web (../web, :8013)
-  // Catalog goes first: it declares the shared `productpromo` network, issues
-  // tokens and serves translations that promo loads at startup.
+  // Starts THIS project only. promo (Ctrl+Alt+6), web (Ctrl+Alt+8) and the
+  // RabbitMQ broker (Ctrl+Alt+9) are separate projects with their own keys.
   "options": {
     "cwd": "${workspaceFolder}",
     "shell": {
@@ -32,7 +30,7 @@
     {
       "label": "ProductPromo-stack",
       "type": "shell",
-      "command": "docker compose up -d --wait && (cd ../promo && docker compose up -d) && (cd ../web && docker compose up -d) && docker compose logs -f --tail 20",
+      "command": "docker compose up -d && docker compose logs -f --tail 20",
       "isBackground": true,
       "problemMatcher": []
     },
@@ -45,7 +43,7 @@
     {
       "label": "ProductPromo: stop",
       "type": "shell",
-      "command": "(cd ../web && docker compose stop); (cd ../promo && docker compose stop); docker compose stop; scripts/dev/pg.sh stop",
+      "command": "docker compose stop; scripts/dev/pg.sh stop",
       "problemMatcher": []
     }
   ]

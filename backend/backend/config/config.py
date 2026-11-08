@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from pp_common.config import AuthJWT, CORSConfig, DbConfig, RunConfig
+from pp_common.config import AuthJWT, BrokerConfig, CORSConfig, DbConfig, RunConfig
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 KEYS_DIR = BASE_DIR / "backend" / "auth" / "keys"
@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # Login still lives here until the auth service exists, so this service signs too.
     auth_jwt: AuthJWT = AuthJWT(private_key_path=KEYS_DIR / "jwt-private.pem",
                                 public_key_path=KEYS_DIR / "jwt-public.pem")
+    broker: BrokerConfig = BrokerConfig(user="catalog")
 
 
 settings = Settings()

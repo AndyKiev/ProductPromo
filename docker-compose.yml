@@ -1,4 +1,5 @@
-# App stack: FastAPI backend + Vite dev server. Postgres is NOT in here.
+# Catalog (master data) service: FastAPI backend. Postgres is NOT in here.
+# The SPA lives in ../web, the promo service in ../promo.
 #
 # The database is a native Windows cluster on the host —
 # C:\Users\andre\PostgresData\product_promo, port 5435 — so no `docker` command
@@ -21,7 +22,10 @@
 name: productpromo
 
 networks:
+  # Fixed name: the promo stack (../promo) joins it as an external network to
+  # reach this service (translations, and the token issuer's key) by name.
   productpromo:
+    name: productpromo
     driver: bridge
 
 services:
@@ -29,6 +33,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      # Fetches the private pp-common git dependency with your WSL GitHub key.
+      ssh:
+        - default=${HOME}/.ssh/id_rsa
     container_name: productpromo-backend
     # Dev stack: no auto-start after a reboot — the file watchers poll (and cost
     # CPU) even when nobody is working on this project. Start it by hand with
@@ -72,30 +79,4 @@ services:
       timeout: 5s
       retries: 10
       start_period: 40s
-    networks: [productpromo]
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: productpromo-frontend
-    restart: "no"
-    depends_on:
-      - backend
-    ports:
-      # The container serves 8009 (matching vite.config.ts); 8009 on the host
-      # is already taken, so it is published on 8013.
-      - "8013:8009"
-    volumes:
-      - ./frontend:/app/frontend
-      # Keep the image's Linux node_modules — the bind mount above would
-      # otherwise expose the host's Windows install.
-      - /app/frontend/node_modules
-    environment:
-      # The browser runs on the host, so it calls the *published* backend port.
-      # Origin only, no /api/v1 — the client appends that itself
-      # (src/utils/eNums.ts, src/api/axiosInstance.ts).
-      VITE_BACKEND_API_URL: http://127.0.0.1:8012
-      # Sets the HMR client port in vite.config.ts.
-      VITE_IN_DOCKER: "true"
     networks: [productpromo]

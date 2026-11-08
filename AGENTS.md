@@ -1,18 +1,35 @@
 # ProductPromo — project guide for AI coding agents
 
+**ProductPromo is the catalog (master data) service**: nomenclature, products, EAN, taxes,
+suppliers and product-supplier links. It also issues JWTs and owns translations until the auth
+service exists. Sibling repos under `~/projects`:
+
+| Repo | Role | Port |
+|---|---|---|
+| `ProductPromo` | this service (catalog) | 8012 |
+| `promo` | promo service: promo types/subtypes, sessions, buyer entry, Excel upload | 8016 |
+| `web` | React SPA calling each service | 8013 |
+| `common` | `pp-common`, the shared Python base (tagged git dependency) | – |
+
+**No promo code here.** Promo features go in `../promo`; UI work goes in `../web`.
+
 ## Stack
 
 - **Backend**: FastAPI (Python 3.11+, Poetry), SQLAlchemy 2.0 async, PostgreSQL 18 via asyncpg, JWT auth (RS256)
-- **Frontend**: React 18, Vite 5, TypeScript 5.6, TanStack Router + Query, MUI 6, Zustand, react-hook-form + zod
 - **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker), data `D:\PostgresData\product_promo`. Once `scripts/register_postgres_service.ps1` has run (once, as Administrator) it is the Windows service `postgresql-productpromo`: Windows starts it at boot and stops it cleanly at shutdown. `make db-*` and the VS Code tasks go through `scripts/dev/pg.sh`, which never starts a console copy next to the service. Run `make` in WSL bash.
-- **Docker**: Compose with `backend` (8012) and `frontend` (8013) containers. DB is on the host.
+- **Docker**: Compose with `backend` (8012), on the fixed network `productpromo` that the promo stack joins. DB is on the host.
+- **VS Code**: Ctrl+Alt+5 (`ProductPromo: start`) starts DB → catalog → promo → web; `ProductPromo: stop` stops them all.
 
 ## Architecture
 
 - Layered: `models` → `repositories` → `services` → `views` (routers)
+- Shared base lives in **pp-common** (`~/projects/common`, git dep pinned by tag in
+  `backend/pyproject.toml`): `pp_common.crud` (BaseRepository/BaseService/errors/success/MutationResponse/Page),
+  `pp_common.i18n` (catalog engine; this service registers its cache in `api_v1/msg/catalog.py`),
+  `pp_common.auth` (tokens, `CurrentUser`), `pp_common.web` (`create_app`), `pp_common.config`, `pp_common.db`.
+  Don't re-add base classes here; change pp-common, tag a release, bump the tag, `poetry lock`.
+  `api_v1/base/` keeps only service-specific bits (`base_model.Base`, legacy mixins, `i18n.py` Name-column logic).
 - Dependency injection via FastAPI `Depends`
-- File-based routing (TanStack Router generates `routeTree.gen.ts` from `src/routes/**`)
-- Feature-based component directories under `src/components/admin/nomenclature/`
 
 ## Key commands
 
@@ -22,7 +39,6 @@ make db-down        # Stop PostgreSQL
 make db-status      # Check if PostgreSQL is running
 make init-db        # Create tables + seed data
 make run-backend    # FastAPI on :8004
-make run-frontend   # Vite on :8009
 make docker-up      # Build & start containers
 make docker-down    # Stop containers
 ```
@@ -33,21 +49,15 @@ make docker-down    # Stop containers
 
 - Backend uses **PascalCase** column names (e.g. `MarketName`, `StatusId`)
 - API prefix: `/api/v1`. Responses: `{ detail: string, data: T | null }`
-- Frontend API helpers: `src/components/admin/nomenclature/<entity>/<entity>Api.ts`
-- Mutations use TanStack Query `useMutation` with `qc.invalidateQueries` on success
 - i18n: DB tables `langs`, `msg_keys`, `msgs`; persisted account `lang_id` (never hardcode IDs).
-  English/Russian UI seeds: `backend/backend/api_v1/msg/ui.json`; sync frontend fallback with
-  `node scripts/sync_i18n.mjs`, seed using `make init-db`. Components use `useString()`.
+  English/Russian UI seeds: `backend/backend/api_v1/msg/ui.json` (canonical for the SPA; `../web` copies it
+  with `npm run i18n:sync`), seed using `make init-db`. Generic error keys come from pp-common.
   Domain keys + fallback + Russian seed live in `<domain>_messages.py`; use `${name}` parameters.
   Success resolver returns fields for `MutationResponse(**detail, data=...)`. See `docs/TRANSLATIONS.md`.
-- Button labels use lowercase English: `getString('create')` → `"create"`, `getString('save')` → `"save"`
 - Nomenclature hierarchy: Market → Segment → Category → Family → Link (4-way join)
-- API types: `cd frontend && npm run gen:api` regenerates `src/api/schema.gen.ts` (openapi-typescript) from the
-  running backend (`OPENAPI_URL`, default Docker :8012). Rerun after any backend schema change; typed calls go
-  through `src/api/typedApi.ts` (wraps `axiosInstance`, so auth refresh and translated errors still apply).
-- Simple lookups: add one line `directory('/api/v1/<resource>')` to a section config (e.g.
-  `components/admin/promo/promoDirectories.ts`). `DirectoryCrud` derives columns, form fields, required,
-  maxLength and editability from `/openapi.json` at runtime — put constraints on the Pydantic `Field`, not the UI.
+- The SPA reads this service's `/openapi.json` (typed client, generic lookup screens): put constraints on the
+  Pydantic `Field`, and mark reference fields with `json_schema_extra={"x-lookup": "<collection path>"}`.
+  After a schema change, run `npm run gen:api` in `../web`.
 
 ## Nomenclature entities
 
@@ -65,9 +75,9 @@ make docker-down    # Stop containers
 - Dev stub JWT (RS256), single user: `UKR7101004` / `111`
 - Login: POST `/api/v1/jwt/login` (form-encoded `username` + `password`)
 - Refresh: POST `/api/v1/jwt/refresh` (JSON `{ refresh_token }`)
-- Tokens stored in Zustand `authStore` persisted to `localStorage` (key: `productpromo-auth`)
+- Keys: `backend/backend/auth/keys/` (generated once, kept). The promo service mounts `jwt-public.pem` read-only to verify tokens.
 
 ## Env files
 
-- Native dev: `backend/.env`, `frontend/.env`
+- Native dev: `backend/.env`
 - Docker: `stack.env` (variables passed to containers, prefixed `APP_CONFIG__`)

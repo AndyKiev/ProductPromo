@@ -36,12 +36,14 @@
 
 UI-каталог: `backend/backend/api_v1/msg/ui.json`. После изменения:
 
-```powershell
-node scripts/sync_i18n.mjs
+```bash
 make init-db
+cd ../web && npm run i18n:sync
 ```
 
-Синхронизация обновляет `frontend/src/i18n/ui.json`, резервный каталог SPA.
+Синхронизация (в репозитории `web`) обновляет `src/i18n/ui.json`, резервный каталог SPA;
+`npm run i18n:check` падает, если копия отстала. Общие ключи ошибок (`notAuthenticated`,
+`validationFailed`, …) приходят из pp-common (`COMMON_FALLBACKS`).
 Старые feature `*Strings.ts` переэкспортируют его. В компонентах — `useString()`,
 в DataGrid — `useDataGridLocale()`. Статические переводы MUI взяты из установленных
 `@mui/x-data-grid` locales (MUI X, MIT); динамические подписи используют шаблоны
@@ -71,8 +73,8 @@ make init-db
 ## Проверка
 
 Из `backend/`: `poetry run python -m pytest tests/test_i18n.py -q`.
-Из `frontend/`: `npm run typecheck`, затем `npm run build`.
-Из `e2e/`: `npx playwright test tests/language.spec.ts --workers=1 --reporter=list`.
+Из `../web`: `make typecheck`.
+Из `../web/e2e`: `npx playwright test tests/language.spec.ts --workers=1 --reporter=list`.
 Браузерный тест временно меняет язык dev-аккаунта и создаёт тестовый рынок;
 в конце восстанавливает язык и удаляет рынок. Запускать отдельно от тестов,
 использующих тот же аккаунт.

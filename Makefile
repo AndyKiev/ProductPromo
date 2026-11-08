@@ -39,18 +39,13 @@ db-shell:
 db-backup:
 	pg_dump -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB) -Fc -f "C:/Users/andre/PostgresBackups/product_promo_$(shell date +%Y%m%d_%H%M).dump"
 
-# --- Docker: the app stack (backend + frontend) ------------------------------
+# --- Docker: the catalog service --------------------------------------------
 # Postgres is NOT in compose — run `make db-up` first. See docker-compose.yml.
-# Published: backend http://127.0.0.1:8012, frontend http://127.0.0.1:8013
+# Published: http://127.0.0.1:8012 (the SPA is in ../web, promo in ../promo)
 
 # build images and start everything (first run, or after a dependency change)
 docker-up:
 	docker compose up --build -d
-
-# rebuild the frontend after package.json changes; -V drops the old
-# node_modules anonymous volume so the new install is used
-docker-rebuild-frontend:
-	docker compose up -d --build -V frontend
 
 # rebuild the backend after pyproject.toml / Dockerfile changes
 docker-rebuild-backend:
@@ -68,13 +63,10 @@ docker-logs:
 	docker compose logs -f
 
 # --- Native dev (no docker) --------------------------------------------------
-# Requires poetry (backend), node 20+ (frontend), and `make db-up`.
+# Requires poetry and `make db-up`.
 
 install-backend:
 	cd backend && poetry install
-
-install-frontend:
-	cd frontend && npm install
 
 # Create tables in the DB (idempotent). Needs APP_CONFIG__DB__* in backend/.env.
 init-db:
@@ -94,6 +86,3 @@ import-ean:
 run-backend:
 	cd backend && poetry run uvicorn backend.main:app --host 127.0.0.1 --port 8004 --reload
 
-# Vite on :8009 (vite.config.ts). Uses frontend/.env for VITE_BACKEND_API_URL.
-run-frontend:
-	cd frontend && npm run dev -- --host 127.0.0.1

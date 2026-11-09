@@ -1102,5 +1102,9 @@
   "invalid_format": {
     "eng": "invalid format",
     "rus": "неверный формат"
+  },
+  "view": {
+    "eng": "view",
+    "rus": "просмотр"
   }
 }

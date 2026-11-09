@@ -34,9 +34,9 @@ class TaxRateService(BaseService):
         return s
 
     @staticmethod
-    def _label(row) -> str:
-        tax = row.tax_type.code if row.tax_type else "?"
-        return f"{tax} {row.rate}%"
+    def _label(row: TaxRateSchema) -> str:
+        """Message label from the schema (create/update/delete all build one first)."""
+        return f"{row.tax_type_code or '?'} {row.rate}%"
 
     async def get_by_id(self, id: int) -> TaxRateSchema:
         row = await self.repository.get_by_id(id)
@@ -79,11 +79,12 @@ class TaxRateService(BaseService):
         obj = await self.repository.get_by_id(id)
         if not obj:
             raise await self._resolve_domain_error(TaxRateNotFound(id))
+        label = self._label(self._to_schema(obj))
         await self.delete_by_id(
             id,
-            name=self._label(obj),
+            name=label,
             delete_error_exc=TaxRateDeleteError,
             delete_success_exc=TaxRateDeleteSuccess,
         )
-        detail = await self._resolve_domain_success(TaxRateDeleteSuccess(self._label(obj)))
+        detail = await self._resolve_domain_success(TaxRateDeleteSuccess(label))
         return MutationResponse(**detail, data=None)

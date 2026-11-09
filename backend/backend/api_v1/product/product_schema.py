@@ -1,6 +1,10 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
+# Codes are text but numeric by contract: ix_*_code_num indexes code::integer, so a
+# non-digit or out-of-int4 code would fail inside Postgres instead of as a 422.
+CODE_PATTERN = r"^\d{1,9}$"
+
 
 class ProductBase(BaseModel):
     code: str = Field(..., max_length=16)
@@ -12,11 +16,11 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
-    pass
+    code: str = Field(..., max_length=9, pattern=CODE_PATTERN)
 
 
 class ProductUpdate(BaseModel):
-    code: Optional[str] = Field(None, max_length=16)
+    code: Optional[str] = Field(None, max_length=9, pattern=CODE_PATTERN)
     name: Optional[str] = Field(None, max_length=128)
     nomenclature_id: Optional[int] = None
     status_id: Optional[int] = None

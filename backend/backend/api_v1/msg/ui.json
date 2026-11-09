@@ -1114,5 +1114,9 @@
   "no": {
     "eng": "no",
     "rus": "нет"
+  },
+  "digitsOnly": {
+    "eng": "digits only",
+    "rus": "только цифры"
   }
 }

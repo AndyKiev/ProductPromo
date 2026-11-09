@@ -1510,7 +1510,7 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pp-common"
-version = "0.2.0"
+version = "0.2.1"
 description = "Shared building blocks for the ProductPromo services (catalog, promo, auth)"
 optional = false
 python-versions = ">=3.11"
@@ -1529,8 +1529,8 @@ sqlalchemy = {version = ">=2.0.43,<3.0.0", extras = ["asyncio"]}
 [package.source]
 type = "git"
 url = "ssh://git@github.com/AndyKiev/common.git"
-reference = "v0.2.0"
-resolved_reference = "587ab3ed08684efa4d6516c6f12d1e8cf73be71b"
+reference = "v0.2.1"
+resolved_reference = "088aacfb120ce73906586f2ab929160eb67d5d57"
 
 [[package]]
 name = "propcache"
@@ -3035,4 +3035,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "545a19482f3ee89886e51dbb34bc4d2048ec366043f94dded71d8195b9f7e40c"
+content-hash = "23c11e7e2f249848685a93653765e8a7ab02c21264f9699e5161e159710454a0"

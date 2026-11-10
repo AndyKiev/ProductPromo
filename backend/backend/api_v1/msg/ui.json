@@ -439,10 +439,6 @@
     "eng": "Password",
     "rus": "Пароль"
   },
-  "devLogin": {
-    "eng": "Login: UKR7101004 / 111",
-    "rus": "Вход: UKR7101004 / 111"
-  },
   "loginFailed": {
     "eng": "Login failed",
     "rus": "Не удалось войти"
@@ -1118,5 +1114,17 @@
   "digitsOnly": {
     "eng": "digits only",
     "rus": "только цифры"
+  },
+  "appProducts": {
+    "eng": "Products",
+    "rus": "Товары"
+  },
+  "signedOutOfApp": {
+    "eng": "not signed in",
+    "rus": "вход не выполнен"
+  },
+  "devLoginHint": {
+    "eng": "Dev login: UKR7101004, any password",
+    "rus": "Вход для разработки: UKR7101004, любой пароль"
   }
 }

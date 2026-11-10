@@ -1,13 +1,13 @@
-# ProductPromo — project guide for AI coding agents
+# catalog — project guide for AI coding agents
 
-**ProductPromo is the catalog (master data) service**: nomenclature, products, EAN, taxes,
+**catalog is the master data service**: nomenclature, products, EAN, taxes,
 suppliers and product-supplier links. It logs its own users in and publishes the language list over
 RabbitMQ. Sibling repos under `~/projects`, each a **separate
 project launched on its own**; backends talk **only through RabbitMQ** (`../broker`):
 
 | Repo | Role | Port |
 |---|---|---|
-| `ProductPromo` | this service (catalog) | 8012 |
+| `catalog` | this service | 8012 |
 | `promo` | promo service: promo types/subtypes, sessions, buyer entry, Excel upload | 8016 |
 | `web` | React app calling each service over HTTP | 8013 |
 | `employee` | employees (matricule, names, job) and jobs; every app copies them over RabbitMQ | 8017 |
@@ -20,9 +20,9 @@ service over HTTP, share its network/DB/files, or start it from here: publish or
 ## Stack
 
 - **Backend**: FastAPI (Python 3.11+, Poetry), SQLAlchemy 2.0 async, PostgreSQL 18 via asyncpg, JWT auth (RS256)
-- **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker), data `D:\PostgresData\product_promo`. Once `scripts/register_postgres_service.ps1` has run (once, as Administrator) it is the Windows service `postgresql-productpromo`: Windows starts it at boot and stops it cleanly at shutdown. `make db-*` and the VS Code tasks go through `scripts/dev/pg.sh`, which never starts a console copy next to the service. Run `make` in WSL bash.
+- **Database**: Native Windows PostgreSQL 18 cluster at `127.0.0.1:5435` (not in Docker), data `D:\PostgresData\product_promo`. Once `scripts/register_postgres_service.ps1` has run (once, as Administrator) it is the Windows service `postgresql-catalog`: Windows starts it at boot and stops it cleanly at shutdown. `make db-*` and the VS Code tasks go through `scripts/dev/pg.sh`, which never starts a console copy next to the service. Run `make` in WSL bash.
 - **Docker**: Compose with `backend` (8012) on its own private network. DB is on the host.
-- **VS Code**: Ctrl+Alt+5 (`ProductPromo: start`) starts DB + this service only; Ctrl+Alt+Shift+5 stops them.
+- **VS Code**: Ctrl+Alt+5 (`catalog: start`) starts DB + this service only; Ctrl+Alt+Shift+5 stops them.
   promo (6), web (8) and broker (9) have their own keys.
 - **RabbitMQ**: `backend/messaging/identity.py` publishes the languages on exchange `identity` (on every
   (re)connect and on `identity.sync.requested`) and consumes exchange `employee` into the `employee` / `job`
@@ -79,7 +79,7 @@ make docker-down    # Stop containers
 | Nomenclature | `nomenclature` | `Id`, `IdMarket`, `IdSegment`, `IdCategory`, `IdFamily` |
 
 ## Auth: this app logs its users in itself
-Every ProductPromo app has its own login; no backend authenticates for another and no signing key is
+Every catalog app has its own login; no backend authenticates for another and no signing key is
 shared (vault: `Decisions/2026-11-09 Each App Logs In Itself`).
 
 - Login: POST `/api/v1/jwt/login` (form-encoded `username` + `password`); refresh: POST `/api/v1/jwt/refresh`

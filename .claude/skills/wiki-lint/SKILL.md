@@ -1,6 +1,6 @@
 ---
 name: wiki-lint
-description: Health-check the ProductPromo Obsidian vault (LLM_OBSIDIAN_VAULT) — dead wikilinks, ambiguous page names, empty stubs, orphan pages — and repair the findings. Use when asked "is the vault healthy", "fix the broken links", after any /wiki-ingest or /wiki-save batch, or when Obsidian shows unresolved links in the graph.
+description: Health-check the catalog Obsidian vault (LLM_OBSIDIAN_VAULT) — dead wikilinks, ambiguous page names, empty stubs, orphan pages — and repair the findings. Use when asked "is the vault healthy", "fix the broken links", after any /wiki-ingest or /wiki-save batch, or when Obsidian shows unresolved links in the graph.
 ---
 
 # Wiki lint
@@ -19,7 +19,7 @@ Exit 0 = clean, 1 = findings, 2 = vault not found/`LLM_OBSIDIAN_VAULT` unset.
 | **DEAD LINKS** | `[[X]]` with no page `X` | Either write the page (`/wiki-ingest` if derived, `/wiki-save` if primary), or drop the link. A planned-but-unwritten link is fine short-term — it is the vault's own to-do list. |
 | **AMBIGUOUS** | Same filename in two folders | Obsidian picks one by basename; the other silently becomes unreachable. **Rename one** — never leave it. |
 | **STUBS** | Body under 40 chars | Fill it or delete it. An empty page is worse than a dead link: the link resolves, the reader gets nothing. |
-| **ORPHANS** | No inbound link | Link it from [[ProductPromo Home]] or a sibling's `## Related`. Root-level pages (the numbered legacy analysis) and `index.md`/`hot.md` are exempt — so a new root page is never reported; put new pages in folders. |
+| **ORPHANS** | No inbound link | Link it from [[Catalog Home]] or a sibling's `## Related`. Root-level pages (the numbered legacy analysis) and `index.md`/`hot.md` are exempt — so a new root page is never reported; put new pages in folders. |
 | **FOLDER REFS** | `[[Folder/]]` placeholders | Not real links. Replace with links to actual pages once the folder has content. |
 
 ## Repair order

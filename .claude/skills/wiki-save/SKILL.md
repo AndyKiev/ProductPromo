@@ -1,6 +1,6 @@
 ---
 name: wiki-save
-description: File a durable finding from the current session into the ProductPromo Obsidian vault as a primary page — a decision (including a deliberate departure from the legacy VBA behaviour), a bug and its root cause, a business rule, a schema fact. Use when the user says "save this", "remember this in the vault", "file that decision", or when a non-trivial bug is solved, a design choice is settled, or a legacy open question is answered.
+description: File a durable finding from the current session into the catalog Obsidian vault as a primary page — a decision (including a deliberate departure from the legacy VBA behaviour), a bug and its root cause, a business rule, a schema fact. Use when the user says "save this", "remember this in the vault", "file that decision", or when a non-trivial bug is solved, a design choice is settled, or a legacy open question is answered.
 ---
 
 # Wiki save
@@ -73,7 +73,7 @@ Filenames are `Title Case With Spaces.md`. Decisions read best dated:
 python scripts/wiki/wiki.py index && python scripts/wiki/wiki.py lint
 ```
 
-Then link the new page from [[ProductPromo Home]] (or a sibling's `## Related`) so
+Then link the new page from [[Catalog Home]] (or a sibling's `## Related`) so
 it is not an orphan — for a legacy departure, also link it from the legacy page it
 overrides — and record the session line:
 

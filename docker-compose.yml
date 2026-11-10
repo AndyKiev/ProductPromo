@@ -19,12 +19,12 @@
 # There is no nginx service any more: the host's port 80 belongs to talent's
 # nginx, and with the backend published directly the SPA has nothing to proxy
 # through. nginx.conf and the root Dockerfile are left in the repo, unused.
-name: productpromo
+name: catalog
 
 networks:
-  # Private to this project. Other ProductPromo projects (promo, web) never
+  # Private to this project. Other catalog projects (promo, web) never
   # share a network with it: backends talk only through RabbitMQ (../broker).
-  productpromo:
+  catalog:
     driver: bridge
 
 services:
@@ -35,7 +35,7 @@ services:
       # Fetches the private pp-common git dependency with your WSL GitHub key.
       ssh:
         - default=${HOME}/.ssh/id_rsa
-    container_name: productpromo-backend
+    container_name: catalog-backend
     # Dev stack: no auto-start after a reboot — the file watchers poll (and cost
     # CPU) even when nobody is working on this project. Start it by hand with
     # `docker compose up -d`; pause with `docker compose stop`.
@@ -81,4 +81,4 @@ services:
       timeout: 5s
       retries: 10
       start_period: 40s
-    networks: [productpromo]
+    networks: [catalog]

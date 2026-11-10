@@ -1,6 +1,6 @@
 ---
 name: wiki
-description: Orchestrator for the ProductPromo Obsidian knowledge vault (LLM_OBSIDIAN_VAULT) — the legacy VBA "Promo Bery Bilshe" analysis plus the self-learning loop of ingest → query → save → lint → hot-cache refresh. Use when the user says "wiki", "vault", "second brain", "what do we know about X", "how did the legacy system do X", "file this in the vault", or asks to check/repair vault health. Routes to /wiki-ingest, /wiki-query, /wiki-save, /wiki-lint.
+description: Orchestrator for the catalog Obsidian knowledge vault (LLM_OBSIDIAN_VAULT) — the legacy VBA "Promo Bery Bilshe" analysis plus the self-learning loop of ingest → query → save → lint → hot-cache refresh. Use when the user says "wiki", "vault", "second brain", "what do we know about X", "how did the legacy system do X", "file this in the vault", or asks to check/repair vault health. Routes to /wiki-ingest, /wiki-query, /wiki-save, /wiki-lint.
 ---
 
 # Wiki — the knowledge loop
@@ -11,7 +11,7 @@ Plain Markdown, `[[wikilinks]]`, no plugin or API needed — direct filesystem a
 ## Vault location
 
 `LLM_OBSIDIAN_VAULT` in the repo-root `.env`
-(currently `C:\Users\andre\Documents\Andrey_Bakulin\LLM\LLM_PRODUCTPROMO`).
+(currently `C:\Users\andre\Documents\Andrey_Bakulin\LLM\LLM_CATALOG`).
 Never hardcode the path in a skill or script — read it from `.env`.
 It is outside the project, so it must stay listed in `.claude/settings.local.json`
 → `permissions.additionalDirectories`, or writes silently fail.
@@ -20,7 +20,7 @@ It is outside the project, so it must stay listed in `.claude/settings.local.jso
 
 The vault started as a reverse-engineering of the **legacy system** this repo
 replaces: the Excel/VBA app over MySQL `aula.*` + GICA AS/400. Those pages sit at the
-vault root, numbered for reading order, and the map of content is [[ProductPromo Home]]:
+vault root, numbered for reading order, and the map of content is [[Catalog Home]]:
 
 - `01 Domain Overview`, `02 Data Model`, `03.xx` process pages (session lifecycle,
   article lifecycle, upload validation, pricing, monitoring, reports) — except
@@ -93,7 +93,7 @@ is what closes the loop. The snippet for `.claude/settings.local.json`:
   `tags`. The legacy-analysis pages predate this and have none — don't bulk-add it.
 - Every new page ends with a `## Related` list of `[[links]]` — bidirectionality is
   what makes the graph useful. A page with no inbound link is an orphan; link it
-  from [[ProductPromo Home]] or a sibling page.
+  from [[Catalog Home]] or a sibling page.
 - Keep derived pages **short and pointing**: the rule plus the repo path that owns
   it. Duplicating a whole file into the vault guarantees drift.
 - English only. Legacy terminology (CUG, PCB, UVC, EAN, SiteFormatList) as defined

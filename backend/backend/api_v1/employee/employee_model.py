@@ -3,7 +3,7 @@
 the employee service's ids; rows are deactivated, never deleted.
 
 Column names are snake_case here (not this service's PascalCase): the columns come
-from the shared mixins every ProductPromo app uses for this copy."""
+from the shared mixins every catalog app uses for this copy."""
 from pp_common.employees import EmployeeReplicaMixin, JobReplicaMixin
 
 from backend.api_v1.base.base_model import Base

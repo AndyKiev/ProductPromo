@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "productpromo"
+name = "catalog"
 version = "0.1.0"
-description = "ProductPromo — product card & promotions back-office (FastAPI, legacy MySQL)"
+description = "catalog: master data service (nomenclature, products, suppliers)"
 authors = ["Andrey Bakulin <abakulin@auchan.ua>"]
 readme = "README.md"
 package-mode = false
@@ -19,7 +19,7 @@ pydantic-settings = ">=2.11.0,<3.0.0"
 orjson = "^3.11.8"
 pyjwt = "^2.9.0"
 # Shared base (crud, i18n, auth tokens, app factory). Bump the tag, then `poetry lock`.
-pp-common = { git = "ssh://git@github.com/AndyKiev/common.git", tag = "v0.3.2" }
+pp-common = { git = "ssh://git@github.com/AndyKiev/common.git", tag = "v0.3.3" }
 # --- add when porting real auth/i18n from talent ---
 # ldap3 = ">=2.9.1,<3.0.0"
 # redis = ">=5.0.0,<6.0.0"

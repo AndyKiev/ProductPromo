@@ -2,7 +2,7 @@
 # Start/stop the native Windows Postgres cluster (port 5435) from WSL.
 #
 # Two modes, chosen on every call:
-# - service: the Windows service postgresql-productpromo exists (made once by
+# - service: the Windows service postgresql-catalog exists (made once by
 #   scripts/register_postgres_service.ps1). Windows starts it at boot and stops
 #   it cleanly at shutdown, so a power cut needs nobody at the keyboard. This
 #   script then NEVER runs a console pg_ctl start/stop: a console postmaster
@@ -22,7 +22,7 @@ PG_DATA='D:\PostgresData\product_promo'
 PG_LOG='D:\PostgresData\product_promo.log'
 PG_LOG_WSL='/mnt/d/PostgresData/product_promo.log'
 PG_BIN="/mnt/c/Program Files/PostgreSQL/18/bin"
-SERVICE='postgresql-productpromo'
+SERVICE='postgresql-catalog'
 cd /mnt/c || exit 1
 
 ready() { "$PG_BIN/pg_isready.exe" -h 127.0.0.1 -p 5435 -q </dev/null >/dev/null 2>&1; }

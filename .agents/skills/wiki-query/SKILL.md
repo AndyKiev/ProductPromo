@@ -1,6 +1,6 @@
 ---
 name: wiki-query
-description: Answer a question from the ProductPromo Obsidian vault (LLM_OBSIDIAN_VAULT) with citations — read hot.md, then index.md, then only the pages that matter. Use when the user asks "what do we know about X", "how did the legacy VBA app do X", "check the vault", "did we decide this already", "why is it done this way", or before building a feature the legacy analysis already specifies.
+description: Answer a question from the catalog Obsidian vault (LLM_OBSIDIAN_VAULT) with citations — read hot.md, then index.md, then only the pages that matter. Use when the user asks "what do we know about X", "how did the legacy VBA app do X", "check the vault", "did we decide this already", "why is it done this way", or before building a feature the legacy analysis already specifies.
 ---
 
 # Wiki query
@@ -13,7 +13,7 @@ Answer from the vault, cheaply, with citations.
    explicitly (`python scripts/wiki/wiki.py hot --print`): the SessionStart hook
    that would preload it is not installed yet, so nothing puts it in context for you.
 2. **`index.md`** — the catalog. Pick candidate pages by title + one-line summary.
-   For legacy-behaviour questions, [[ProductPromo Home]] is the faster map.
+   For legacy-behaviour questions, [[Catalog Home]] is the faster map.
 3. **The pages themselves** — read fully, then follow their `## Related` / inline
    links one hop if the answer is incomplete. Legacy pages are long (`02 Data Model`
    is ~16 KB) — grep inside them for the table or function name rather than reading

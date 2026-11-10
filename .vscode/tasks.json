@@ -1,8 +1,8 @@
 {
   "version": "2.0.0",
-  // Runs from the WSL2 copy (~/projects/ProductPromo). Postgres stays a native
+  // Runs from the WSL2 copy (~/projects/catalog). Postgres stays a native
   // Windows cluster (scripts/dev/pg.sh drives it through WSL interop); the app
-  // runs in Docker. Ctrl+Alt+5 is bound to "ProductPromo: start".
+  // runs in Docker. Ctrl+Alt+5 is bound to "catalog: start".
   //
   // Starts THIS project only. promo (Ctrl+Alt+6), web (Ctrl+Alt+8) and the
   // RabbitMQ broker (Ctrl+Alt+9) are separate projects with their own keys.
@@ -17,31 +17,31 @@
     "echo": true,
     "reveal": "always",
     "panel": "dedicated",
-    "group": "productpromo",
+    "group": "catalog",
     "clear": true
   },
   "tasks": [
     {
-      "label": "ProductPromo-db",
+      "label": "catalog-db",
       "type": "shell",
       "command": "scripts/dev/pg.sh start",
       "problemMatcher": []
     },
     {
-      "label": "ProductPromo-stack",
+      "label": "catalog-stack",
       "type": "shell",
       "command": "docker compose up -d && docker compose logs -f --tail 20",
       "isBackground": true,
       "problemMatcher": []
     },
     {
-      "label": "ProductPromo: start",
-      "dependsOn": ["ProductPromo-db", "ProductPromo-stack"],
+      "label": "catalog: start",
+      "dependsOn": ["catalog-db", "catalog-stack"],
       "dependsOrder": "sequence",
       "problemMatcher": []
     },
     {
-      "label": "ProductPromo: stop",
+      "label": "catalog: stop",
       "type": "shell",
       "command": "docker compose stop; scripts/dev/pg.sh stop",
       "problemMatcher": []

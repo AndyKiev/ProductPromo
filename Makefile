@@ -1,4 +1,4 @@
-# ProductPromo — dev entry points.
+# catalog — dev entry points.
 #
 # The database is a NATIVE Windows PostgreSQL 18 cluster on the host, not a
 # container: C:\Users\andre\PostgresData\product_promo, 127.0.0.1:5435.
@@ -8,7 +8,7 @@
 
 PGPORT     = 5435
 PGUSER     = admin
-PGDB       = product_promo
+PGDB       = catalog
 PSQL       = /mnt/c/Program Files/PostgreSQL/18/bin/psql.exe
 
 # Source CSV for `make import-products` (override with `make import-products CSV=...`).
@@ -31,13 +31,13 @@ db-down:
 db-status:
 	scripts/dev/pg.sh status
 
-# open a psql shell on the product_promo database
+# open a psql shell on the catalog database
 db-shell:
 	"$(PSQL)" -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB)
 
 # timestamped -Fc dump (see docs/DB_MIGRATION.md)
 db-backup:
-	pg_dump -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB) -Fc -f "C:/Users/andre/PostgresBackups/product_promo_$(shell date +%Y%m%d_%H%M).dump"
+	pg_dump -h 127.0.0.1 -p $(PGPORT) -U $(PGUSER) -d $(PGDB) -Fc -f "C:/Users/andre/PostgresBackups/catalog_$(shell date +%Y%m%d_%H%M).dump"
 
 # --- Docker: the catalog service --------------------------------------------
 # Postgres is NOT in compose — run `make db-up` first. See docker-compose.yml.

@@ -20,7 +20,7 @@ fi
 
 # Keep idle connections 65 s (uvicorn default: 5 s). With 5 s, a client that reuses a
 # connection just as the server closes it gets "socket hang up" (seen in the e2e runs).
-echo "Starting ProductPromo API${RELOAD_FLAG:+ (auto-reload)}..."
+echo "Starting catalog API${RELOAD_FLAG:+ (auto-reload)}..."
 exec poetry run uvicorn backend.main:app \
   --host "${APP_CONFIG__RUN__HOST:-0.0.0.0}" \
   --port "${APP_CONFIG__RUN__PORT:-8004}" \

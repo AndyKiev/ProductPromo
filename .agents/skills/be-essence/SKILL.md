@@ -1,6 +1,6 @@
 ---
 name: be-essence
-description: Scaffold a new BACKEND essence (vertical slice) under backend/backend/api_v1/ for each entity for ProductPromo — model, schema, repository, service, dependencies, views, errors, success — plus router registration in main_router.py and model registration in database/init_db.py. Use when adding a new domain entity/table to the ProductPromo FastAPI backend. Pairs with /fe-essence.
+description: Scaffold a new BACKEND essence (vertical slice) under backend/backend/api_v1/ for each entity for catalog — model, schema, repository, service, dependencies, views, errors, success — plus router registration in main_router.py and model registration in database/init_db.py. Use when adding a new domain entity/table to the catalog FastAPI backend. Pairs with /fe-essence.
 ---
 
 # New backend essence

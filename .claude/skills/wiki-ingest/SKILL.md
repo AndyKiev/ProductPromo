@@ -1,6 +1,6 @@
 ---
 name: wiki-ingest
-description: Ingest a source (AGENTS.md, CLAUDE.md, a .claude skill, a code module, a dropped document or legacy VBA/SQL export) into the ProductPromo Obsidian vault as derived, cross-linked wiki pages. Use when asked to "add this to the vault", "ingest", "update the wiki from the repo", or after a convention/architecture change that the vault's derived pages now contradict.
+description: Ingest a source (AGENTS.md, CLAUDE.md, a .claude skill, a code module, a dropped document or legacy VBA/SQL export) into the catalog Obsidian vault as derived, cross-linked wiki pages. Use when asked to "add this to the vault", "ingest", "update the wiki from the repo", or after a convention/architecture change that the vault's derived pages now contradict.
 ---
 
 # Wiki ingest
@@ -39,7 +39,7 @@ Two-sentence orientation.
 ```
 
 5. **Cross-link both ways.** After adding a page, add it to the `## Related` of at
-   least one existing page and to the right section of [[ProductPromo Home]].
+   least one existing page and to the right section of [[Catalog Home]].
    When a repo page implements something described in a legacy-analysis page
    (`02 Data Model`, `03.xx`), link the legacy page from it. A page reachable only
    from `index.md` is effectively invisible.
@@ -67,7 +67,7 @@ python scripts/wiki/wiki.py hot --note "ingested X -> [[Page A]], [[Page B]]"
   go to `Decisions/` via `/wiki-save`.
 - **Legacy sources** (a VBA module, an `aula` table dump, a GICA spec) extend the
   numbered legacy-analysis pages — update the matching `03.xx` page in place, or add
-  the next number in its series and link it from [[ProductPromo Home]].
+  the next number in its series and link it from [[Catalog Home]].
 - **Ambiguous basenames break Obsidian.** Two pages with the same filename in
   different folders make every `[[link]]` to that name ambiguous, and the loser
   becomes an orphan. `wiki.py lint` reports both — fix by renaming, not by ignoring.

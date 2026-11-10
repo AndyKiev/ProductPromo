@@ -1,6 +1,6 @@
 ---
 name: fe-essence
-description: Scaffold a full FRONTEND CRUD slice for an essence in ProductPromo — TanStack Query api module, MUI DataGrid list page, react-hook-form + zod form, mutations hook, and optional server-side pagination. Use when adding a new admin/editable entity screen to the React + MUI frontend. Pairs with /be-essence (backend).
+description: Scaffold a full FRONTEND CRUD slice for an essence in catalog — TanStack Query api module, MUI DataGrid list page, react-hook-form + zod form, mutations hook, and optional server-side pagination. Use when adding a new admin/editable entity screen to the React + MUI frontend. Pairs with /be-essence (backend).
 ---
 
 # Frontend essence scaffold

@@ -1,4 +1,4 @@
-"""ProductPromo knowledge-vault CLI (Obsidian wiki loop).
+"""catalog knowledge-vault CLI (Obsidian wiki loop).
 
 Stdlib only - runs with any python 3.9+, no venv needed.
 
@@ -30,7 +30,7 @@ ENV_FILES = [
     Path(__file__).resolve().parents[2] / ".env",
 ]
 
-HOME_PAGE = "ProductPromo Home"
+HOME_PAGE = "Catalog Home"
 MACHINERY = {"index.md", "hot.md"}
 EMPTY_THRESHOLD = 40
 HOT_MAX_SESSIONS = 5

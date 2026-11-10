@@ -25,4 +25,4 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    return create_service_app(title="ProductPromo API", cors=settings.cors, lifespan=lifespan)
+    return create_service_app(title="catalog API", cors=settings.cors, lifespan=lifespan)

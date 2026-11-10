@@ -1,5 +1,7 @@
 # Moving the ProductPromo database out of Docker
 
+> **2026-11-10: the project was renamed from ProductPromo to catalog.** The database is now `catalog` (was `product_promo`), the compose project and container are `catalog` / `catalog-backend`. This page keeps the names as they were at the time of the migration; the data folder `D:\PostgresData\product_promo` and the old volume `productpromo_postgres_data` still have these names.
+
 Done 2026-07-27. Same pattern as `talent/docs/RECOVERY_RUNBOOK.md` and
 `anee_data/docs/DB_MIGRATION.md` — read the talent one for the *why*; this
 records what was actually done here and how to operate the result.

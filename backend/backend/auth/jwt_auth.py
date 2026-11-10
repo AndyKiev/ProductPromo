@@ -1,5 +1,5 @@
 """This app logs its users in itself (vault: Decisions/2026-11-09 Each App Logs In
-Itself). Same endpoints as every ProductPromo app, built by pp-common:
+Itself). Same endpoints as every catalog app, built by pp-common:
 
 - POST /jwt/login (form username + password), POST /jwt/refresh
 - GET /jwt/users/me, PATCH /jwt/users/me/language

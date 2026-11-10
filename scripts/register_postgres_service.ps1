@@ -1,4 +1,4 @@
-# Register the ProductPromo Postgres cluster (port 5435) as a Windows service.
+# Register the catalog Postgres cluster (port 5435) as a Windows service.
 #
 # WHY: power cuts are frequent here. A cluster started with `pg_ctl start` from a VSCode
 # task does not come back after a cut, and a normal Windows restart kills it uncleanly.
@@ -15,7 +15,7 @@ $ErrorActionPreference = 'Stop'
 
 $PgBin       = 'C:\Program Files\PostgreSQL\18\bin'
 $DataDir     = 'D:\PostgresData\product_promo'   # the real folder; C:\Users\andre\PostgresData is only a junction to D:\PostgresData
-$ServiceName = 'postgresql-productpromo'
+$ServiceName = 'postgresql-catalog'
 $Port        = 5435
 $Account     = 'NT AUTHORITY\NetworkService'   # mirrors postgresql-x64-18; no password needed
 

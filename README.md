@@ -1,6 +1,6 @@
-# ProductPromo
+# catalog
 
-The **catalog (master data) service** of ProductPromo: nomenclature, products, suppliers and
+The **catalog** service (master data): nomenclature, products, suppliers and
 their links. FastAPI, talent-app conventions, running against a **native host PostgreSQL**
 (legacy column names, no schema changes; the driver is parametrized, MySQL still works).
 
@@ -8,7 +8,7 @@ Since 2026-11-08 the product is split into repos under `~/projects`:
 
 | Repo | What | Port |
 |---|---|---|
-| `ProductPromo` (this) | catalog API; issues tokens, publishes its signing key and languages over RabbitMQ | 8012 |
+| `catalog` (this) | catalog API; issues tokens, publishes its signing key and languages over RabbitMQ | 8012 |
 | `promo` | promo service (own Postgres :5441, Alembic) | 8016 |
 | `broker` | RabbitMQ, the only link between backends | 5674 |
 | `web` | React SPA | 8013 |
@@ -21,7 +21,7 @@ port — both called out below.
 
 ## What's inside
 ```
-ProductPromo/
+catalog/
 ├── backend/            FastAPI (poetry). Package at backend/backend/
 │   ├── backend/
 │   │   ├── api_v1/     base/ + nomenclature features + status_type (read-only)
@@ -40,7 +40,7 @@ ProductPromo/
 
 It is a **native Windows PostgreSQL 18 cluster on the host** —
 `C:\Users\andre\PostgresData\product_promo`, `127.0.0.1:5435`, db/user
-`product_promo`/`admin` — so no `docker` command can destroy it, and it matches
+`catalog`/`admin` — so no `docker` command can destroy it, and it matches
 production, where the DB is an external server. It is **not** a Windows service,
 so it does not start at boot.
 
@@ -68,9 +68,9 @@ make -C .. install-backend && make -C .. run-backend     # :8004
 
 ## Push this to a new GitHub repo
 This repo is already git-initialized with an initial commit. Create an empty repo
-named **ProductPromo** on GitHub (no README/license), then:
+named **catalog** on GitHub (no README/license), then:
 ```bash
-git remote add origin git@github.com:<you>/ProductPromo.git
+git remote add origin git@github.com:<you>/catalog.git
 git branch -M main
 git push -u origin main
 ```

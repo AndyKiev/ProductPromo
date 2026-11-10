@@ -96,6 +96,16 @@ async def seed_taxes() -> None:
                 ))
 
 
+async def seed_dev_employee() -> None:
+    """The dev employee (version 0), so this app can be logged in to before the employee
+    service has ever run; the first real event (version >= 1) overwrites the row."""
+    from sqlalchemy.dialects.postgresql import insert
+    from pp_common.employees import DEV_EMPLOYEE
+    from backend.api_v1.employee.employee_model import Employee
+    async with db_helper.session_factory() as session, session.begin():
+        await session.execute(insert(Employee).values(**DEV_EMPLOYEE).on_conflict_do_nothing())
+
+
 async def bootstrap() -> None:
     """Create tables and seed, in a single event loop.
 
@@ -110,6 +120,7 @@ async def bootstrap() -> None:
     await seed_taxes()
     from backend.api_v1.msg.msg_seed import seed_translations
     await seed_translations()
+    await seed_dev_employee()
 
 
 # Explicitly import every model so its table is registered in Base.metadata.
@@ -141,3 +152,4 @@ import backend.api_v1.lang.lang_model  # noqa: F401,E402
 import backend.api_v1.msg_key.msg_key_model  # noqa: F401,E402
 import backend.api_v1.msg.msg_model  # noqa: F401,E402
 import backend.api_v1.user_preference.user_preference_model  # noqa: F401,E402
+import backend.api_v1.employee.employee_model  # noqa: F401,E402

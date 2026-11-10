@@ -1,21 +1,21 @@
-"""This service is the token issuer (until the auth service exists), so it
-publishes the identity state other ProductPromo projects need on exchange
-`identity` (contract: broker repo AGENTS.md, models: pp_common.messaging):
+"""This service on RabbitMQ (contract: broker repo AGENTS.md, models: pp_common.messaging).
 
-- its public signing key (with key id = the tokens' `kid`), and
-- its language list (these ids are THE language ids everywhere).
+Publishes on exchange `identity`: its language list (these ids are THE language ids
+everywhere), on every (re)connect and whenever a consumer sends `identity.sync.requested`.
 
-It publishes on every (re)connect and whenever a consumer sends
-`identity.sync.requested`. Nothing here is needed for this service to run:
-if RabbitMQ is down, HTTP keeps working and the runner retries.
+Consumes exchange `employee`: the employee service's employees and jobs, into this
+app's own copy (queues `catalog.employee-employees`, `catalog.employee-jobs`); login
+reads that copy. No signing key travels: every app logs its users in itself.
+
+Nothing here is needed for this service to run: if RabbitMQ is down, HTTP keeps
+working and the runner retries.
 """
 import logging
 
 from faststream.rabbit import RabbitQueue
-from pp_common.auth import key_id
 from pp_common.messaging import (
-    IDENTITY_EXCHANGE, LANGUAGES_PUBLISHED, SIGNING_KEY_PUBLISHED, SYNC_REQUESTED,
-    BrokerRunner, IdentitySyncRequested, LanguageInfo, LanguagesPublished, SigningKeyPublished,
+    IDENTITY_EXCHANGE, LANGUAGES_PUBLISHED, SYNC_REQUESTED,
+    BrokerRunner, IdentitySyncRequested, LanguageInfo, LanguagesPublished,
 )
 
 from backend.config.config import settings
@@ -24,12 +24,6 @@ logger = logging.getLogger(__name__)
 ISSUER = "catalog"
 
 runner = BrokerRunner(settings.broker.url, service=ISSUER)
-
-
-def signing_key_event() -> SigningKeyPublished:
-    pem = settings.auth_jwt.public_key_path.read_text()
-    return SigningKeyPublished(key_id=key_id(pem), algorithm=settings.auth_jwt.algorithm,
-                               public_key_pem=pem, issuer=ISSUER)
 
 
 async def languages_event() -> LanguagesPublished:
@@ -43,9 +37,8 @@ async def languages_event() -> LanguagesPublished:
 
 @runner.on_connected
 async def publish_identity() -> None:
-    await runner.publish(signing_key_event(), IDENTITY_EXCHANGE, SIGNING_KEY_PUBLISHED)
     await runner.publish(await languages_event(), IDENTITY_EXCHANGE, LANGUAGES_PUBLISHED)
-    logger.info("identity published (signing key + languages)")
+    logger.info("languages published")
 
 
 @runner.broker.subscriber(RabbitQueue("catalog.identity-sync", durable=True, routing_key=SYNC_REQUESTED),
@@ -53,3 +46,13 @@ async def publish_identity() -> None:
 async def on_sync_requested(request: IdentitySyncRequested) -> None:
     logger.info("identity sync requested by %s", request.requester)
     await publish_identity()
+
+
+def _register_employees() -> None:
+    from pp_common.employees import register_employee_replica
+    from backend.api_v1.employee.employee_model import Employee, Job
+    from backend.database.db_helper import db_helper
+    register_employee_replica(runner, ISSUER, db_helper.session_factory, Employee, Job)
+
+
+_register_employees()

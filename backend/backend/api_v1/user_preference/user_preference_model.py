@@ -4,7 +4,8 @@ from backend.api_v1.base.base_model import Base
 
 
 class UserPreference(Base):
-    """Profile settings keyed by the authenticated subject of the existing JWT auth."""
+    """Language of a signed-in employee IN THIS APP, keyed by the matricule
+    (shape expected by pp_common.auth.build_profile: `employee_code`, `lang_id`)."""
     __tablename__ = "user_preferences"
-    code: Mapped[str] = mapped_column("Code", String(128), primary_key=True)
+    employee_code: Mapped[str] = mapped_column("Code", String(128), primary_key=True)
     lang_id: Mapped[int] = mapped_column("LangId", ForeignKey("langs.Id"), index=True)

@@ -1,121 +1,34 @@
-"""JWT auth — single-user login, RS256 tokens, refresh endpoint.
+"""This app logs its users in itself (vault: Decisions/2026-11-09 Each App Logs In
+Itself). Same endpoints as every ProductPromo app, built by pp-common:
 
-Matches the shape of talent/anee_data jwt_auth so the frontend needs no
-changes: POST /jwt/login (form-encoded username+password), returns
-{access_token, refresh_token, token_type}.
+- POST /jwt/login (form username + password), POST /jwt/refresh
+- GET /jwt/users/me, PATCH /jwt/users/me/language
+
+LDAP like talent (bypass in dev); the matricule must be an active employee in this
+app's own copy (fed from the employee service over RabbitMQ); tokens are signed with
+this app's key for audience "catalog" only. No other app's token is accepted.
 """
-import os
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends, Form, HTTPException, status, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
+from pp_common.auth import access_payload, build_jwt_router, build_profile
+from pp_common.employees import ReplicaEmployeeLookup
 
-from backend.auth import auth_utils
-from backend.api_v1.user_preference.user_preference_service import UserPreferenceService
-from backend.api_v1.user_preference.user_preference_dependencies import get_preference_service
-from backend.api_v1.user_preference.user_preference_schema import UserProfile, LanguageUpdate
-from backend.api_v1.msg.catalog import catalog_cache
-from pp_common.auth import LangSchema
-
-router = APIRouter(prefix="/jwt", tags=["JWT"])
-
-http_bearer = HTTPBearer()
-
-AUTH_USER_CODE = os.environ.get("AUTH_USER_CODE", "UKR7101004")
-AUTH_USER_PASSWORD = os.environ.get("AUTH_USER_PASSWORD", "111")
+from backend.api_v1.employee.employee_model import Employee
+from backend.api_v1.user_preference.user_preference_model import UserPreference
+from backend.config.config import settings
+from backend.database.db_helper import db_helper
 
 
-class AuthResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str = "Bearer"
+async def get_lookup(session: AsyncSession = Depends(db_helper.session_getter)) -> ReplicaEmployeeLookup:
+    return ReplicaEmployeeLookup(session, Employee)
 
 
-class RefreshRequest(BaseModel):
-    refresh_token: str
+get_current_token_payload = access_payload(settings.auth_jwt)
+_jwt_router = build_jwt_router(jwt_cfg=settings.auth_jwt, ldap_cfg=settings.ldap, lookup=get_lookup)
+_profile_router, get_current_active_auth_user = build_profile(
+    access=get_current_token_payload, session=db_helper.session_getter, preference_model=UserPreference)
 
-
-class CurrentUser(BaseModel):
-    code: str
-
-
-def get_current_token_payload(
-    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
-) -> dict:
-    payload = auth_utils.decode_jwt(token=credentials.credentials)
-    auth_utils.validate_token_type(payload, auth_utils.ACCESS_TOKEN_TYPE)
-    return payload
-
-
-def get_current_user(
-    payload: dict = Depends(get_current_token_payload),
-) -> CurrentUser:
-    code = payload.get("sub")
-    if code != AUTH_USER_CODE:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unknown user",
-        )
-    return CurrentUser(code=code)
-
-
-from pp_common.auth import CurrentUser as EmployeeSchema  # noqa: E402
-
-
-async def get_current_active_auth_user(
-    request: Request,
-    payload: dict = Depends(get_current_token_payload),
-    service: UserPreferenceService = Depends(get_preference_service),
-) -> EmployeeSchema:
-    code = payload.get("sub")
-    if code != AUTH_USER_CODE:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unknown user",
-        )
-    catalog = await catalog_cache.get()
-    profile = await service.profile(code, catalog.default_id)
-    request.state.lang_id = profile.lang_id
-    return EmployeeSchema(id=1, name=code, lang_id=profile.lang_id,
-                          lang_acronym=profile.lang.short_name,
-                          lang=LangSchema(**profile.lang.model_dump()))
-
-
-@router.post("/login", response_model=AuthResponse)
-async def login(username: str = Form(...), password: str = Form(...)):
-    if username.strip().upper() != AUTH_USER_CODE or password != AUTH_USER_PASSWORD:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
-        )
-    access_token = auth_utils.create_access_token({"sub": AUTH_USER_CODE})
-    refresh_token = auth_utils.create_refresh_token(sub=AUTH_USER_CODE)
-    return AuthResponse(access_token=access_token, refresh_token=refresh_token)
-
-
-@router.post("/refresh", response_model=AuthResponse)
-async def refresh(body: RefreshRequest):
-    payload = auth_utils.decode_jwt(token=body.refresh_token)
-    auth_utils.validate_token_type(payload, auth_utils.REFRESH_TOKEN_TYPE)
-    code = payload.get("sub")
-    if code != AUTH_USER_CODE:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unknown user"
-        )
-    access_token = auth_utils.create_access_token({"sub": AUTH_USER_CODE})
-    refresh_token = auth_utils.create_refresh_token(sub=AUTH_USER_CODE)
-    return AuthResponse(access_token=access_token, refresh_token=refresh_token)
-
-
-@router.get("/users/me", response_model=UserProfile)
-async def me(user: EmployeeSchema = Depends(get_current_active_auth_user)):
-    return UserProfile(code=user.name, name=user.name, lang_id=user.lang_id, lang=user.lang.model_dump())
-
-
-@router.patch("/users/me/language", response_model=UserProfile)
-async def set_language(body: LanguageUpdate, request: Request,
-                       user: EmployeeSchema = Depends(get_current_active_auth_user),
-                       service: UserPreferenceService = Depends(get_preference_service)):
-    profile = await service.set_language(user.name, body.lang_id)
-    request.state.lang_id = profile.lang_id
-    return profile
+router = APIRouter()
+router.include_router(_jwt_router)
+router.include_router(_profile_router)

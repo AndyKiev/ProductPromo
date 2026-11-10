@@ -1,8 +1,8 @@
 # ProductPromo — project guide for AI coding agents
 
 **ProductPromo is the catalog (master data) service**: nomenclature, products, EAN, taxes,
-suppliers and product-supplier links. It also issues JWTs (and publishes its signing key and languages
-over RabbitMQ) until an auth service exists. Sibling repos under `~/projects`, each a **separate
+suppliers and product-supplier links. It logs its own users in and publishes the language list over
+RabbitMQ. Sibling repos under `~/projects`, each a **separate
 project launched on its own**; backends talk **only through RabbitMQ** (`../broker`):
 
 | Repo | Role | Port |
@@ -10,6 +10,7 @@ project launched on its own**; backends talk **only through RabbitMQ** (`../brok
 | `ProductPromo` | this service (catalog) | 8012 |
 | `promo` | promo service: promo types/subtypes, sessions, buyer entry, Excel upload | 8016 |
 | `web` | React app calling each service over HTTP | 8013 |
+| `employee` | employees (matricule, names, job) and jobs; every app copies them over RabbitMQ | 8017 |
 | `broker` | RabbitMQ; its AGENTS.md is the contract between backends | 5674 / 15674 |
 | `common` | `pp-common`, the shared Python base (tagged git dependency) | – |
 
@@ -23,8 +24,9 @@ service over HTTP, share its network/DB/files, or start it from here: publish or
 - **Docker**: Compose with `backend` (8012) on its own private network. DB is on the host.
 - **VS Code**: Ctrl+Alt+5 (`ProductPromo: start`) starts DB + this service only; Ctrl+Alt+Shift+5 stops them.
   promo (6), web (8) and broker (9) have their own keys.
-- **RabbitMQ**: `backend/messaging/identity.py` publishes the signing key (`kid`) and languages on exchange
-  `identity` on every (re)connect and on `identity.sync.requested`. The broker is optional at startup.
+- **RabbitMQ**: `backend/messaging/identity.py` publishes the languages on exchange `identity` (on every
+  (re)connect and on `identity.sync.requested`) and consumes exchange `employee` into the `employee` / `job`
+  copy. The broker is optional at startup.
 
 ## Architecture
 
@@ -76,13 +78,19 @@ make docker-down    # Stop containers
 | NomenclatureKey | `nomenclature_key` | `Id`, `Name` |
 | Nomenclature | `nomenclature` | `Id`, `IdMarket`, `IdSegment`, `IdCategory`, `IdFamily` |
 
-## Auth
+## Auth: this app logs its users in itself
+Every ProductPromo app has its own login; no backend authenticates for another and no signing key is
+shared (vault: `Decisions/2026-11-09 Each App Logs In Itself`).
 
-- Dev stub JWT (RS256), single user: `UKR7101004` / `111`
-- Login: POST `/api/v1/jwt/login` (form-encoded `username` + `password`)
-- Refresh: POST `/api/v1/jwt/refresh` (JSON `{ refresh_token }`)
-- Keys: `backend/backend/auth/keys/` (generated once, kept). Tokens carry `kid`; other services get the public key
-  only from the `identity.signing_key.published` event, never from this folder.
+- Login: POST `/api/v1/jwt/login` (form-encoded `username` + `password`); refresh: POST `/api/v1/jwt/refresh`
+  (JSON `{ refresh_token }`); profile: GET `/api/v1/jwt/users/me`, PATCH `/api/v1/jwt/users/me/language`.
+  All built by `pp_common.auth` in `backend/auth/jwt_auth.py`.
+- LDAP like talent (`APP_CONFIG__LDAP__SERVER`). **Dev: `APP_CONFIG__LDAP__BYPASS=true`** = the username is
+  the matricule and the password is not checked. Dev login: `UKR7101004`, any password.
+- The matricule must be an active row of this app's `employee` copy (`backend/api_v1/employee`, fed from the
+  employee service over RabbitMQ; the dev employee is seeded by `make init-db`).
+- Keys: `backend/backend/auth/keys/` (generated once, kept). Tokens carry `aud = catalog`; a promo or employee
+  token gets 401 here, and this app's token gets 401 there.
 
 ## Env files
 

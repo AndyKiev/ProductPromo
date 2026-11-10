@@ -11,7 +11,6 @@ Since 2026-11-08 the product is split into repos under `~/projects`:
 | `catalog` (this) | catalog API; issues tokens, publishes its signing key and languages over RabbitMQ | 8012 |
 | `promo` | promo service (own Postgres :5441, Alembic) | 8016 |
 | `broker` | RabbitMQ, the only link between backends | 5674 |
-| `web` | React SPA | 8013 |
 | `common` | `pp-common` shared Python base | – |
 
 This is a **working slim scaffold**: it boots and serves the **Nomenclature** CRUD
@@ -31,7 +30,7 @@ catalog/
 │   │   ├── routers/    main_router (auth + nomenclature + /health)
 │   │   └── utils/      create_fastapi_app
 │   ├── pyproject.toml  trimmed deps  ·  Dockerfile  ·  entrypoint.sh  ·  .env.example
-├── docker-compose.yml  backend only (the database is NOT in here; the SPA is in ../web)
+├── docker-compose.yml  backend + this app's frontend (the database is NOT in here)
 ├── docs/DB_MIGRATION.md  where the database lives and how to operate it
 ├── Makefile  ·  stack.env.example  ·  Dockerfile + nginx.conf (unused)
 ```
@@ -54,7 +53,7 @@ make docker-up                      # build + start the catalog backend
 ```
 - Backend / Swagger → <http://127.0.0.1:8012/docs>
 - Ctrl+Alt+5 in VS Code starts this project (DB + backend) only. Each project is separate:
-  promo Ctrl+Alt+6, web Ctrl+Alt+8 (<http://127.0.0.1:8013>, login `UKR7101004` / `111`), broker Ctrl+Alt+9.
+  This app's UI: <http://127.0.0.1:8013> (login `UKR7101004`, any password in dev). promo Ctrl+Alt+6 and employee Ctrl+Alt+E are separate apps with their own UIs; broker Ctrl+Alt+9.
 
 Host port 8012 because talent (8005) and anee_data (8006, 5173) are already
 running; inside the container the app still listens on 8004.

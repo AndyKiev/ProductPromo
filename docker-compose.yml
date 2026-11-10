@@ -1,5 +1,5 @@
 # Catalog (master data) service: FastAPI backend. Postgres is NOT in here.
-# The SPA lives in ../web, the promo service in ../promo; each starts on its own.
+# Backend + this app's own frontend. promo and employee are separate apps in their own projects.
 #
 # The database is a native Windows cluster on the host —
 # C:\Users\andre\PostgresData\product_promo, port 5435 — so no `docker` command
@@ -22,7 +22,7 @@
 name: catalog
 
 networks:
-  # Private to this project. Other catalog projects (promo, web) never
+  # Private to this project. Other projects (promo, employee) never
   # share a network with it: backends talk only through RabbitMQ (../broker).
   catalog:
     driver: bridge

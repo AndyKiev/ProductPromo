@@ -4,7 +4,7 @@
   // Windows cluster (scripts/dev/pg.sh drives it through WSL interop); the app
   // runs in Docker. Ctrl+Alt+5 is bound to "catalog: start".
   //
-  // Starts THIS project only. promo (Ctrl+Alt+6), web (Ctrl+Alt+8) and the
+  // Starts THIS project only. promo (Ctrl+Alt+6), employee (Ctrl+Alt+E) and the
   // RabbitMQ broker (Ctrl+Alt+9) are separate projects with their own keys.
   "options": {
     "cwd": "${workspaceFolder}",

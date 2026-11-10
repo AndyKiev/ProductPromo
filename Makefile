@@ -41,7 +41,7 @@ db-backup:
 
 # --- Docker: the catalog service --------------------------------------------
 # Postgres is NOT in compose — run `make db-up` first. See docker-compose.yml.
-# Published: http://127.0.0.1:8012 (the SPA is in ../web, promo in ../promo)
+# Published: http://127.0.0.1:8012 (this app's frontend: http://127.0.0.1:8013)
 
 # build images and start everything (first run, or after a dependency change)
 docker-up:

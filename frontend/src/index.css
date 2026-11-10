@@ -1,0 +1,5 @@
+/* Theme tokens, Tailwind and layout classes come from the shared kit. */
+@import "@catalog/ui/src/index.css";
+
+/* This app's own files. */
+@source ".";

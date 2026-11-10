@@ -82,3 +82,26 @@ services:
       retries: 10
       start_period: 40s
     networks: [catalog]
+
+  # This app's own frontend (React, Vite dev server with HMR): http://127.0.0.1:8013
+  # It talks only to this project's backend. The browser runs on the host, so it calls the
+  # backend on its published port.
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      # Fetches the private @catalog/ui git dependency with your WSL GitHub key.
+      ssh:
+        - default=${HOME}/.ssh/id_rsa
+    container_name: catalog-frontend
+    restart: "no"
+    ports:
+      # The container serves 8009 (frontend/vite.config.ts).
+      - "8013:8009"
+    volumes:
+      - ./frontend:/app
+      # Keep the image's Linux node_modules; the bind mount would expose the host's.
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://127.0.0.1:8012
+      VITE_IN_DOCKER: "true"
